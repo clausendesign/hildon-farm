@@ -1,6 +1,29 @@
 import { readProfile, saveProfile } from './farm-profile.mjs';
 import { splitSpeechText } from './briefing-audio.mjs';
 
+// Sentence-sized groups keep each server request small and let playback start sooner.
+export function splitNaturalText(text, limit = 1200) {
+  const chunks = [];
+  let chunk = '';
+  for (const sentence of String(text).trim().match(/[^.!?]+[.!?]*\s*/g) || []) {
+    if (chunk && chunk.length + sentence.length > limit) { chunks.push(chunk.trim()); chunk = ''; }
+    if (sentence.length > limit) { chunks.push(...splitSpeechText(sentence, limit)); continue; }
+    chunk += sentence;
+  }
+  if (chunk.trim()) chunks.push(chunk.trim());
+  return chunks;
+}
+
+function silentClip() {
+  const header = new DataView(new ArrayBuffer(44));
+  const write = (offset, text) => [...text].forEach((c, i) => header.setUint8(offset + i, c.charCodeAt(0)));
+  write(0, 'RIFF'); header.setUint32(4, 36, true); write(8, 'WAVE'); write(12, 'fmt ');
+  header.setUint32(16, 16, true); header.setUint16(20, 1, true); header.setUint16(22, 1, true);
+  header.setUint32(24, 8000, true); header.setUint32(28, 8000, true); header.setUint16(32, 1, true); header.setUint16(34, 8, true);
+  write(36, 'data'); header.setUint32(40, 0, true);
+  return URL.createObjectURL(new Blob([header], { type: 'audio/wav' }));
+}
+
 class FarmVoice extends EventTarget {
   constructor() {
     super();
@@ -12,6 +35,12 @@ class FarmVoice extends EventTarget {
     this.utterances = [];
     this.supportsSpeech = 'speechSynthesis' in window && typeof window.SpeechSynthesisUtterance === 'function';
     this.Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    this.audio = new Audio();
+    this.naturalDownUntil = 0;
+    // Mobile browsers only let audio play later if it was started once from a tap.
+    const unlock = () => { const clip = silentClip(); this.audio.src = clip; this.audio.play().then(() => { if (this.audio.src === clip) this.audio.pause(); }, () => {}); };
+    document.addEventListener('pointerdown', unlock, { once: true, capture: true });
+    document.addEventListener('keydown', unlock, { once: true, capture: true });
     document.addEventListener('visibilitychange', () => { if (document.hidden) this.stop(); });
     window.addEventListener('pagehide', () => this.stop());
   }
@@ -21,6 +50,7 @@ class FarmVoice extends EventTarget {
   stopSpeaking() {
     this.sequence++;
     if (this.supportsSpeech) window.speechSynthesis.cancel();
+    this.audio.pause();
     this.speaking = false;
     this.finishSpeech?.('cancelled');
     this.finishSpeech = null;
@@ -42,10 +72,41 @@ class FarmVoice extends EventTarget {
   speak(text) {
     this.stop();
     if (!this.enabled) return Promise.resolve('muted');
-    if (!this.supportsSpeech) { this.update('Speech is unavailable on this browser. You can read everything on screen.'); return Promise.resolve('unavailable'); }
     const sequence = this.sequence;
-    const chunks = splitSpeechText(text);
     document.querySelectorAll('audio').forEach(audio => audio.pause());
+    if (Date.now() < this.naturalDownUntil) return this.speakBrowser(text, sequence);
+    // The natural voice comes from the server; the browser's own voice stays as the backup.
+    return this.speakNatural(text, sequence).then(result => result === 'fallback' && sequence === this.sequence ? this.speakBrowser(text, sequence) : result);
+  }
+  speakNatural(text, sequence) {
+    const chunks = splitNaturalText(text);
+    const audio = this.audio;
+    return new Promise(resolve => {
+      let ended = false;
+      const finish = result => { if (ended) return; ended = true; this.finishSpeech = null; this.speaking = false; audio.onended = audio.onerror = null; this.update(result === 'blocked' ? 'Tap Play or Start voice setup to hear the voice.' : result === 'unavailable' ? 'The voice stopped part-way. You can still read everything on screen.' : ''); resolve(result); };
+      this.finishSpeech = finish;
+      if (!chunks.length) { finish('finished'); return; }
+      const load = index => fetch('/api/speech', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text: chunks[index] }) }).then(response => { if (!response.ok) throw new Error('speech'); return response.blob(); });
+      let pending = load(0);
+      const play = async index => {
+        let blob;
+        try { blob = await pending; }
+        catch { if (index === 0) { this.naturalDownUntil = Date.now() + 10 * 60 * 1000; finish('fallback'); } else finish('unavailable'); return; }
+        if (ended || sequence !== this.sequence) return;
+        if (index + 1 < chunks.length) pending = load(index + 1);
+        const url = URL.createObjectURL(blob);
+        audio.src = url;
+        audio.onended = () => { URL.revokeObjectURL(url); if (ended || sequence !== this.sequence) return; if (index + 1 < chunks.length) play(index + 1); else finish('finished'); };
+        audio.onerror = () => { URL.revokeObjectURL(url); finish('unavailable'); };
+        try { await audio.play(); if (!ended && sequence === this.sequence) { this.speaking = true; this.update(); } }
+        catch (error) { finish(error?.name === 'NotAllowedError' ? 'blocked' : 'unavailable'); }
+      };
+      play(0);
+    });
+  }
+  speakBrowser(text, sequence) {
+    if (!this.supportsSpeech) { this.update('Speech is unavailable on this browser. You can read everything on screen.'); return Promise.resolve('unavailable'); }
+    const chunks = splitSpeechText(text);
     return new Promise(resolve => {
       let ended = false;
       let timer;
@@ -54,7 +115,10 @@ class FarmVoice extends EventTarget {
       if (!chunks.length) { finish('finished'); return; }
       const voices = speechSynthesis.getVoices();
       const english = voices.filter(v => /^en[-_]/i.test(v.lang));
-      const selected = ['en-NZ', 'en-AU', 'en-GB', 'en-US'].map(lang => english.find(v => v.lang === lang && v.localService) || english.find(v => v.lang === lang)).find(Boolean) || english[0];
+      // Prefer the higher-quality voices a device offers over its basic ones.
+      const better = english.filter(v => /premium|enhanced|natural|neural|google|siri/i.test(v.name));
+      const pick = list => ['en-NZ', 'en-AU', 'en-GB', 'en-US'].map(lang => list.find(v => v.lang === lang && v.localService) || list.find(v => v.lang === lang)).find(Boolean);
+      const selected = pick(better) || pick(english) || english[0];
       this.utterances = chunks.map((chunk, index) => {
         const utterance = new SpeechSynthesisUtterance(chunk.trim());
         if (selected) utterance.voice = selected;
