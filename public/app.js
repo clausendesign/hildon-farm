@@ -30,7 +30,7 @@ async function main(){
   const probe=document.createElement('canvas');
   let hasWebGL=false;try{const gl=probe.getContext('webgl2');hasWebGL=!!gl;gl?.getExtension('WEBGL_lose_context')?.loseContext();}catch{}
   if(!hasWebGL){const{startSoftwareMap}=await import('./software-map.js');await startSoftwareMap(dataset,parcel);return;}
-  scene=new THREE.Scene();scene.background=new THREE.Color('#d6dfd1');scene.fog=new THREE.Fog('#d6dfd1',6500,15000);
+  scene=new THREE.Scene();scene.background=new THREE.Color('#0b130f');scene.fog=new THREE.Fog('#0b130f',6500,15000);
   camera=new THREE.PerspectiveCamera(37,innerWidth/innerHeight,5,30000);
   renderer=new THREE.WebGLRenderer({antialias:true,alpha:false,powerPreference:'high-performance'});
   renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(innerWidth,innerHeight);
@@ -77,7 +77,7 @@ function buildTerrain(){
   terrainMaterial=new THREE.MeshStandardMaterial({map:aerialTexture,roughness:1,metalness:0});
   terrain=new THREE.Mesh(geo,terrainMaterial);root.add(terrain);
   groundTexture=createGroundTexture();
-  const base=new THREE.Mesh(new THREE.PlaneGeometry(18000,18000),new THREE.MeshBasicMaterial({color:'#d6dfd1'}));base.rotation.x=-Math.PI/2;base.position.y=-9;scene.add(base);
+  const base=new THREE.Mesh(new THREE.PlaneGeometry(18000,18000),new THREE.MeshBasicMaterial({color:'#0b130f'}));base.rotation.x=-Math.PI/2;base.position.y=-9;scene.add(base);
   const skirtPoints=[];for(let c=0;c<cols;c++)skirtPoints.push([c,0]);for(let r=1;r<rows;r++)skirtPoints.push([cols-1,r]);for(let c=cols-2;c>=0;c--)skirtPoints.push([c,rows-1]);for(let r=rows-2;r>=0;r--)skirtPoints.push([0,r]);skirtPoints.push(skirtPoints[0]);
   const sv=[],si=[];for(let n=0;n<skirtPoints.length;n++){const[c,r]=skirtPoints[n],i=r*cols+c;sv.push(verts[i*3],verts[i*3+1],verts[i*3+2],verts[i*3],-7,verts[i*3+2]);if(n<skirtPoints.length-1){const a=n*2;si.push(a,a+1,a+2,a+2,a+1,a+3);}}
   const sg=new THREE.BufferGeometry();sg.setAttribute('position',new THREE.Float32BufferAttribute(sv,3));sg.setIndex(si);sg.computeVertexNormals();

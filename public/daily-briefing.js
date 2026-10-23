@@ -12,7 +12,7 @@ export function initBriefing({ getBrief }) {
   function personalise() {
     const { name } = readProfile();
     $('#briefing-greeting').textContent = name ? `Your catch-up, ${name}.` : 'A quick catch-up.';
-    $('#change-name').textContent = name ? `Calling you ${name} · change` : 'Change your name';
+    $('#change-name').textContent = name ? `Not ${name}? Switch` : 'Who’s this?';
   }
   personalise();
   window.addEventListener('farm-profile', personalise);
