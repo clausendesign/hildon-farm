@@ -1,7 +1,7 @@
 // A rotating sphere of particles that breathes with the voice and spreads into a ring while getting ready.
 const COLOURS = ['#fbffe9', '#deedb3', '#deedb3', '#b9d98f', '#ac7d32'];
 
-export function createParticleOrb(canvas, getState, { count = 520 } = {}) {
+export function createParticleOrb(canvas, getState, { count = 900 } = {}) {
   const ctx = canvas.getContext('2d');
   const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const golden = Math.PI * (3 - Math.sqrt(5));
@@ -47,7 +47,7 @@ export function createParticleOrb(canvas, getState, { count = 520 } = {}) {
       ctx.globalAlpha = 0.25 + depth * 0.75;
       ctx.fillStyle = p.colour;
       ctx.beginPath();
-      ctx.arc(width / 2 + x * radius * scale, height / 2 + y * radius * scale, (0.7 + depth * 1.5) * (size / 100), 0, Math.PI * 2);
+      ctx.arc(width / 2 + x * radius * scale, height / 2 + y * radius * scale, (0.45 + depth * 1.1) * (size / 120), 0, Math.PI * 2);
       ctx.fill();
     }
     ctx.globalAlpha = 1;

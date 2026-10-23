@@ -6,9 +6,10 @@ export function mountProfile({ auto = true } = {}) {
   const dialog = document.createElement('dialog');
   dialog.className = 'profile-dialog';
   dialog.setAttribute('aria-labelledby', 'profile-title');
-  dialog.innerHTML = `<div class="orb-stage"><button id="setup-speak" class="voice-orb" aria-describedby="orb-caption"><canvas aria-hidden="true"></canvas><span class="visually-hidden">Talk to Hildon Farm</span></button><p id="orb-caption" class="orb-caption">Getting ready…</p></div><div class="eyebrow">LET’S MAKE THIS YOURS</div><h2 id="profile-title">What should I call you?</h2><p class="setup-lead">Say Wozza, Wok, Big Dog Wok or Warwick.<br>Or tap a name below.</p><p id="setup-status" class="setup-status" role="status" aria-live="polite"></p><div class="name-options">${NAMES.map(name => `<button type="button" data-name="${name}">${name}</button>`).join('')}</div><button id="setup-skip" class="setup-secondary">Use Warwick for now</button><p class="setup-fineprint">Your name and voice preference are remembered on this device. Your browser may use its speech service to transcribe your voice.</p>`;
+  dialog.innerHTML = `<button id="setup-speak" class="voice-orb" aria-describedby="setup-hint"><canvas aria-hidden="true"></canvas><span class="visually-hidden">Talk to Hildon Farm</span></button><h2 id="profile-title">What should I call you?</h2><p id="setup-hint" class="setup-hint" role="status" aria-live="polite"></p><div class="name-options">${NAMES.map(name => `<button type="button" data-name="${name}">${name}</button>`).join('')}</div>`;
   document.body.append(dialog);
-  const orb = dialog.querySelector('#setup-speak'), status = dialog.querySelector('#setup-status'), caption = dialog.querySelector('#orb-caption');
+  const orb = dialog.querySelector('#setup-speak'), hint = dialog.querySelector('#setup-hint');
+  const say = text => { hint.textContent = text; };
   let session = 0, priorFocus, promptHeard = false;
   const particles = createParticleOrb(orb.querySelector('canvas'), () => ({ mode: voice.listening ? 'listening' : voice.speaking ? 'speaking' : voice.loading ? 'connecting' : 'idle', level: voice.level() }));
   dialog.addEventListener('close', () => particles.stop());
@@ -20,25 +21,24 @@ export function mountProfile({ auto = true } = {}) {
   }
   function listen() {
     if (!dialog.open) return;
-    caption.textContent = 'Listening… say your name';
+    say('Listening…');
     voice.listen({
-      onStatus: text => { status.textContent = text; if (!voice.listening) caption.textContent = 'Tap the orb and say your name'; },
-      onPartial: text => { status.textContent = `Hearing: ${text}`; },
+      onStatus: text => say(text.replace('the microphone', 'the orb') || (voice.listening ? 'Listening…' : 'Tap the orb to talk')),
+      onPartial: text => say(`“${text}”`),
       onResult: text => {
         const name = nameFromSpeech(text);
         if (name) choose(name);
-        else { status.textContent = `I heard “${text}”. Say Wozza, Wok, Big Dog Wok or Warwick, or choose below.`; caption.textContent = 'Tap the orb and try again'; const current = session; voice.speak('I didn’t catch one of those names. Please try again, or choose a name on screen.').then(result => { if (result === 'finished' && dialog.open && current === session) listen(); }); }
+        else { say(`I heard “${text}”. Try again, or tap a name.`); const current = session; voice.speak('I didn’t catch one of those names. Please try again, or choose a name on screen.').then(result => { if (result === 'finished' && dialog.open && current === session) listen(); }); }
       }
     });
   }
   function start() {
-    if (voice.listening) { voice.stopListening(); caption.textContent = 'Tap the orb and say your name'; status.textContent = 'Microphone stopped.'; return; }
+    if (voice.listening) { voice.stopListening(); say('Tap the orb to talk'); return; }
     if (voice.speaking) { voice.stopSpeaking(); listen(); return; }
     voice.setEnabled(true);
     if (promptHeard) { listen(); return; }
     const current = session;
-    status.textContent = 'I’ll ask the question, then listen for your answer.';
-    caption.textContent = 'Asking your name…';
+    say('');
     voice.speak(prompt).then(result => { if (!dialog.open || current !== session) return; promptHeard = result === 'finished'; listen(); });
   }
   function open() {
@@ -46,23 +46,21 @@ export function mountProfile({ auto = true } = {}) {
     if (!dialog.open) dialog.showModal();
     particles.start();
     const current = ++session;
-    status.textContent = '';
-    caption.textContent = 'Tap the orb to talk';
+    say('Tap the orb to talk');
     dialog.querySelectorAll('[data-name]').forEach(b => b.classList.toggle('selected', b.dataset.name === readProfile().name));
     promptHeard = false;
     if (!voice.enabled) return;
     // Ask straight away and then listen; browsers that block sound until a tap leave the orb waiting.
-    caption.textContent = 'Asking your name…';
+    say('');
     voice.speak(prompt).then(result => {
       if (!dialog.open || current !== session) return;
       if (result === 'finished') { promptHeard = true; listen(); }
-      else { caption.textContent = 'Tap the orb to talk'; status.textContent = ''; }
+      else say('Tap the orb to talk');
     });
   }
   orb.addEventListener('click', start);
   dialog.querySelectorAll('[data-name]').forEach(b => b.addEventListener('click', () => choose(b.dataset.name)));
-  dialog.querySelector('#setup-skip').addEventListener('click', () => choose('Warwick'));
-  dialog.addEventListener('cancel', () => { session++; voice.stop(); });
+    dialog.addEventListener('cancel', () => { session++; voice.stop(); });
   voice.addEventListener('state', event => { orb.classList.toggle('listening', event.detail.listening && dialog.open); orb.classList.toggle('speaking', event.detail.speaking && dialog.open); });
   if (auto && !readProfile().onboarded) open();
   return { open, close, dialog };
