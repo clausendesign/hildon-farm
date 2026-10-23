@@ -62,6 +62,7 @@ export function mountProfile({ auto = true } = {}) {
   dialog.querySelectorAll('[data-name]').forEach(b => b.addEventListener('click', () => choose(b.dataset.name)));
     dialog.addEventListener('cancel', () => { session++; voice.stop(); });
   voice.addEventListener('state', event => { orb.classList.toggle('listening', event.detail.listening && dialog.open); orb.classList.toggle('speaking', event.detail.speaking && dialog.open); });
-  if (auto && !readProfile().onboarded) open();
+  // ?welcome replays the launch screen for someone already set up.
+  if (auto && (!readProfile().onboarded || new URLSearchParams(location.search).has('welcome'))) open();
   return { open, close, dialog };
 }
