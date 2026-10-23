@@ -2,7 +2,7 @@ import { PEOPLE, readProfile, saveProfile, nameFromSpeech } from './farm-profile
 import { voice } from './farm-voice.mjs';
 import { createParticleOrb } from './particle-orb.mjs';
 
-export function mountProfile({ auto = true } = {}) {
+export function mountProfile({ auto = true, greet } = {}) {
   const dialog = document.createElement('dialog');
   dialog.className = 'profile-dialog';
   dialog.setAttribute('aria-labelledby', 'profile-title');
@@ -20,7 +20,8 @@ export function mountProfile({ auto = true } = {}) {
   function choose(name) {
     session++; voice.stop(); saveProfile({ name, onboarded: true }); dialog.close(); priorFocus?.focus();
     try { sessionStorage.setItem(WHO_KEY, '1'); } catch { /* Asked again next page instead. */ }
-    voice.speak(`Hi ${name}. Open your daily briefing to catch up and ask a question.`);
+    if (greet) greet(name);
+    else voice.speak(`Hi ${name}. Open your daily briefing to catch up and ask a question.`);
   }
   function listen() {
     if (!dialog.open) return;

@@ -22,6 +22,8 @@ export function createParticleOrb(canvas, getState, { count = 900 } = {}) {
     const dt = Math.min((now - last) / 1000, 0.05); last = now;
     const { mode, level: target = 0 } = getState();
     const { width, height } = canvas.getBoundingClientRect();
+    // Follow size changes (such as the orb shrinking once lyrics appear).
+    if (Math.round(width * Math.min(devicePixelRatio || 1, 2)) !== canvas.width) resize();
     const size = Math.min(width, height) / 2;
     level += ((mode === 'speaking' ? target : 0) - level) * Math.min(dt * 14, 1);
     spread += ((mode === 'connecting' ? 1 : 0) - spread) * Math.min(dt * 4, 1);

@@ -16,17 +16,18 @@
   <main class="shell">
     <div class="home-intro"><div><div class="eyebrow">A LITTLE CONTEXT FOR YOUR DAY</div><h1 id="greeting">Welcome to the farm.</h1><p class="lead">Catch up on the markets.<br>Or take a look around your patch.</p></div><div id="home-date" class="home-date"></div></div>
     <div class="destinations">
-      <a class="destination briefing-destination" href="/markets.html?listen=1">
+      <a class="destination briefing-destination" data-tour="briefing" href="/markets.html?listen=1">
         <img class="card-photo" src="/data/card-briefing.jpg" alt="" width="1024" height="1024">
         <span class="card-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M5 17h3l3-8 5 16 5-19 3 11h3"/></svg></span>
         <h2>Daily briefing</h2><p>What’s happening with cattle, lambs and sheep. Listen, then ask a question.</p>
         <span class="destination-action">Take me to the briefing <span aria-hidden="true">↗</span></span>
       </a>
-      <a class="destination map-destination" href="/farm.html">
+      <a class="destination map-destination" data-tour="map" href="/farm.html">
         <img src="/data/aerial.jpg" alt="Aerial photograph of the Hildon Farm area" width="800" height="800">
-        <div class="eyebrow">YOUR FARM, FROM ABOVE</div><h2>Explore the farm</h2><p>The map, paddocks, soil and satellite history, all in one place.</p><span class="destination-action">Open the farm map <span aria-hidden="true">↗</span></span>
+        <span class="card-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M4 8l7-3 10 3 7-3v19l-7 3-10-3-7 3zM11 5v19M21 8v19"/></svg></span>
+        <h2>Explore the farm</h2><p>The map, paddocks, soil and satellite history, all in one place.</p><span class="destination-action">Open the farm map <span aria-hidden="true">↗</span></span>
       </a>
-      <a class="destination cattle-destination" href="/cattle.html">
+      <a class="destination cattle-destination" data-tour="cattle" href="/cattle.html">
         <img class="card-photo" src="/data/card-cattle.jpg" alt="" width="1024" height="1024">
         <span class="card-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M5 25V12M11 25V8M17 25v-9M23 25V5M3 27h26"/></svg></span>
         <h2>Cattle weights</h2><p>Every weigh day in one place, with each animal’s gains.</p>
@@ -36,7 +37,7 @@
     <div class="home-note"><div><p id="welcome-hint">Your briefing, at your pace.</p><div id="voice-status" class="voice-note" role="status"></div></div><button id="change-name">Who’s this?</button></div>
   </main>
   <button id="rap" class="rap-button" aria-label="Hear a rap about Todd"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="13"/><circle cx="11.5" cy="13" r="1.4"/><circle cx="20.5" cy="13" r="1.4"/><path d="M10 19c1.6 2.6 3.7 3.8 6 3.8s4.4-1.2 6-3.8"/></svg></button>
-  <dialog id="rap-dialog" class="rap-dialog" aria-labelledby="rap-title"><form method="dialog"><button class="rap-close" aria-label="Close">×</button></form><div class="eyebrow">NOW PLAYING</div><h2 id="rap-title">The Ballad of Todd</h2><pre id="rap-text" class="rap-text">Warming up the mic…</pre><button id="rap-again" class="rap-again">Another one</button></dialog>
+  <dialog id="rap-dialog" class="rap-dialog" aria-labelledby="rap-title"><form method="dialog"><button class="rap-close" aria-label="Close">×</button></form><canvas id="rap-orb" class="rap-orb" aria-hidden="true"></canvas><p id="rap-status" class="rap-status" role="status">Writing a rap about Todd…</p><div id="rap-lyrics" hidden><h2 id="rap-title">The Ballad of Todd</h2><pre id="rap-text" class="rap-text"></pre><button id="rap-again" class="rap-again">Another one</button></div></dialog>
   <footer class="home-footer shell"><span>Hildon Farm · Feilding, New Zealand</span><span>Made for a familiar patch of land.</span></footer>
 </body>
 </html>
