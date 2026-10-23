@@ -1,10 +1,11 @@
 [hidden]{display:none!important}.visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .profile-dialog{border:0;margin:0;width:100%;max-width:none;height:100%;max-height:none;padding:max(24px,env(safe-area-inset-top)) 20px max(32px,env(safe-area-inset-bottom));overflow-y:auto;background:radial-gradient(circle at 50% 40%,#12261d 0,#070d0a 55%,#030605 100%);color:#eef2e6;text-align:center}.profile-dialog[open]{display:flex;flex-direction:column;align-items:center;justify-content:safe center;gap:8px;animation:orb-fade .8s ease-out}.profile-dialog::backdrop{background:#030605}
 .voice-orb{display:block;flex:none;width:min(62vmin,520px);height:min(62vmin,520px);border:0;border-radius:50%;background:none;padding:0;cursor:pointer;outline:none;-webkit-tap-highlight-color:transparent}.voice-orb canvas{display:block;width:100%;height:100%}
-.profile-dialog h2{font:normal 40px/1.15 Georgia;letter-spacing:-.5px;margin:4px 0 0}
-.setup-hint{font:20px/1.5 system-ui;color:#9fb39a;margin:6px 0 0;min-height:30px}
-.name-options{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin:22px 0 0;max-width:640px}.name-options button{border:1px solid #ffffff26;color:#dfe8d6;border-radius:999px;padding:12px 24px;background:#ffffff0a;font:500 19px system-ui;cursor:pointer;transition:background .2s,color .2s}.name-options button:hover,.name-options button.selected{background:#deedb3;color:#0b1610;border-color:#deedb3}
+.profile-dialog h2{font:500 40px/1.15 Geist,system-ui,sans-serif;letter-spacing:-.5px;margin:4px 0 0}
+.setup-hint{font:20px/1.5 Geist,system-ui;color:#9fb39a;margin:6px 0 0;min-height:30px}
+.name-options{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin:22px 0 0;max-width:640px}.name-options button{border:1px solid #ffffff26;color:#dfe8d6;border-radius:999px;padding:12px 24px;background:#ffffff0a;font:500 19px Geist,system-ui;cursor:pointer;transition:background .2s,color .2s}.name-options button:hover,.name-options button.selected{background:#deedb3;color:#0b1610;border-color:#deedb3}
 .name-options button:focus-visible{outline:2px solid #deedb3;outline-offset:3px}
 @keyframes orb-fade{from{opacity:0}}
 @media(max-width:600px){.voice-orb{width:min(86vw,420px);height:min(86vw,420px)}.profile-dialog h2{font-size:32px}.setup-hint{font-size:18px}}
 @media(prefers-reduced-motion:reduce){.profile-dialog[open]{animation:none!important}}
+.voice-orb:focus,.voice-orb:focus-visible{outline:none}.profile-dialog h2{font-weight:500;letter-spacing:-1.2px}
