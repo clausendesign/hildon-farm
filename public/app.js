@@ -11,6 +11,8 @@ const views = {
   satellite: {title:'Watch the seasons change.',description:'Explore dated satellite photos and vegetation greenness.',caption:'Satellite history · dated observations'},
   water: {title:'Follow the lay of the land.',description:'Explore potential downhill surface flow across the measured terrain.',caption:'Illustrative water paths · not a flood prediction'}
 };
+// A texture's size is fixed once uploaded, so an image of another size needs a fresh texture.
+const sameSize=(a,b)=>a&&b&&(a.width||a.naturalWidth)===(b.width||b.naturalWidth)&&(a.height||a.naturalHeight)===(b.height||b.naturalHeight);
 let scene, camera, renderer, controls, terrain, terrainMaterial, aerialTexture, dataTexture, dataLayers, dataMaterial;
 let dataset, parcel, root, waterGroup, boundaryGroup, pinGroup, marker, groundTexture;
 let width, depth, centerX, centerY, datum, relief=2, currentView='aerial';
@@ -54,9 +56,9 @@ async function main(){
     project(x,y){const p=world(x,y,heightAt(x,y),2).project(camera);return{x:(p.x*.5+.5)*innerWidth,y:(-p.y*.5+.5)*innerHeight,hidden:p.z>1||p.z< -1};},
     overhead(){document.querySelector('#top-down').click();},
     interaction(active){controls.mouseButtons.LEFT=active?THREE.MOUSE.PAN:THREE.MOUSE.ROTATE;controls.touches.ONE=active?THREE.TOUCH.PAN:THREE.TOUCH.ROTATE;if(active){selectedPoint=null;document.querySelector('#point-label').hidden=true;if(marker)marker.visible=false;}},
-    setAerialImage(img){aerialTexture.image=img;aerialTexture.needsUpdate=true;}
+    setAerialImage(img){if(sameSize(aerialTexture.image,img)){aerialTexture.image=img;aerialTexture.needsUpdate=true;return;}const old=aerialTexture;aerialTexture=new THREE.Texture(img);aerialTexture.colorSpace=old.colorSpace;aerialTexture.anisotropy=old.anisotropy;aerialTexture.needsUpdate=true;if(terrainMaterial.map===old){terrainMaterial.map=aerialTexture;terrainMaterial.needsUpdate=true;}old.dispose();}
   });
-  dataLayers=initDataLayers({bounds:dataset.bounds,aerialImage:aerialTexture.image,getView:()=>currentView,clearPick(){selectedPoint=null;$('#point-label').hidden=true;if(marker)marker.visible=false;},setLayerImage(img){dataTexture.image=img;dataTexture.needsUpdate=true;},overhead(){document.querySelector('#top-down').click();}});
+  dataLayers=initDataLayers({bounds:dataset.bounds,aerialImage:aerialTexture.image,getView:()=>currentView,clearPick(){selectedPoint=null;$('#point-label').hidden=true;if(marker)marker.visible=false;},setLayerImage(img){if(sameSize(dataTexture.image,img)){dataTexture.image=img;dataTexture.needsUpdate=true;return;}const old=dataTexture;dataTexture=new THREE.Texture(img);dataTexture.colorSpace=THREE.SRGBColorSpace;dataTexture.anisotropy=old.anisotropy;dataTexture.needsUpdate=true;if(terrainMaterial.map===old){terrainMaterial.map=dataTexture;terrainMaterial.needsUpdate=true;}old.dispose();},overhead(){document.querySelector('#top-down').click();}});
   const source=dataset.sourceDescription||'Horizons Regional Council / LINZ, Manawatū–Whanganui LiDAR 2015–2016. The mesh is sampled from the measured ground surface.';
   $('#terrain-source').textContent=source;
   if(dataset.aerialDescription)$('#aerial-source').textContent=dataset.aerialDescription;

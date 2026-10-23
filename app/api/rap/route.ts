@@ -16,6 +16,70 @@ const FACTS = [
   'He built this Hildon Farm website, with its talking voice and cattle weights, for Mum and Dad.',
 ];
 const FALLBACKS = [
+  `G'day to the farm, let the cattle all moo,
+'cause the Gold Coast's finest is coming through.
+One-nine-four tall, he can see past the hill,
+spots a dodgy fence line from a kilometre still.
+Leads six designers with a cappuccino in hand,
+best-looking apps in the whole of the land.
+Mum and Dad, you made him, so take a bow,
+Todd's the champion of the paddock now!`,
+  `Who's that carving up Hakuba in the snow?
+Todd on the board, putting on a show.
+Lands every jump, doesn't wobble or fall,
+then rings home to Feilding to check on it all.
+Back on the Gold Coast, the pizza's on fire,
+the Gozney's so hot it could forge baling wire.
+Kaye and Warwick, here's the news from the south,
+your boy's a legend, straight from the horse's mouth!`,
+  `Check the mic, one two, is the woolshed live?
+Todd's on the beat and the herd's on the drive.
+He built you a website that talks and it raps,
+tracks every steer and draws the farm maps.
+Dark mode, slick fonts, a particle ball,
+there isn't a farm site this flash at all.
+So when the cattle get weighed and the numbers look grand,
+remember who built it: the greatest son in the land!`,
+  `Little Airlie's grandad, Airlie's nan,
+listen to the story of a top-notch man.
+He's got Jess by his side and a walnut-clad home,
+microcement floors that make the neighbours groan.
+Designs the apps that a whole lot of people tap,
+then takes the evening off to write you this rap.
+From Feilding born to the Gold Coast sun,
+Todd's still your favourite, number one!`,
+  `Yo, the cappuccino's strong and the toffee notes sing,
+Todd pulls a shot like a barista king.
+Nine seconds to first drip, thirty all done,
+then he's off designing apps before the rising sun.
+Weekends in the reno, measuring each wall,
+four hundred and sixty mil, he's measured it all.
+Kaye and Warwick, put the kettle on too,
+'cause your son's the best and he's thinking of you!`,
+  `Hold the gate, Warwick, there's a rap coming through,
+about the lad from Hildon who's a legend, it's true.
+Grew up in the paddocks, gumboots and all,
+now he's running a team, standing really tall.
+Snowboard, surfboard, pizza peel too,
+there's nothing that this Clausen can't do.
+So turn up the radio, give the dog a pat,
+Todd's the greatest son, and that is that!`,
+  `Kaye, you raised him right, and Warwick did too,
+look at the website he's built just for you.
+Ask it the prices, it'll tell you the score,
+weigh all the steers and it'll ask you for more.
+It even knows a rap, and you're listening now,
+greatest son ever, take a bow, take a bow!
+From the Manawatū mist to the Queensland heat,
+Todd Clausen's the man who can't be beat!`,
+  `Big Dog Wok, are you ready for this?
+A rap about your son that you can't miss.
+He's six-foot-four of pure design flair,
+lead of a team with impeccable hair.
+Gozney pizzas, Neapolitan style,
+sixty-two percent hydration, worth the while.
+So here's to Todd from the whole herd too,
+moo moo, legend, we love you!`,
   `Yo, Feilding, listen, here's a tale that's true,
 'bout a lanky lad called Todd, one-nine-four, through and through.
 Grew up round the paddocks, now he's Gold Coast based,
