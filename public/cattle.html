@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en-NZ"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0b130f">
+<title>Cattle weights · Hildon Farm</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&display=swap">
+  <link rel="icon" href="/favicon.svg"><link rel="stylesheet" href="/markets.css?v=8"><link rel="stylesheet" href="/cattle.css"><script src="/cattle.js" type="module"></script>
+</head><body>
+<header><a class="brand" href="/index.html" aria-label="Hildon Farm home"><span class="mark" aria-hidden="true"><svg viewBox="0 0 199.1 142.2"><path fill="currentColor" d="M0.3,141 C0.6,140.2 6.7,121.1 13.9,98.6 C41.9,11.2 45.6,0 46.2,0 C46.6,0.1 57,0.1 69.5,0.1 C82.1,0.1 91.8,0.5 91.5,1 C90.5,2.5 74,55.5 74.3,55.8 C74.9,56.4 138.4,49 139.1,48.3 C139.5,47.9 143.1,36.9 147.1,23.8 L154.4,0.1 L176.7,0.1 C197.6,0.1 199.1,0.2 198.4,1.8 C197.7,3.7 191.3,24.6 173.9,82.1 C168.3,100.5 162.4,120 160.7,125.3 L157.7,135.1 L135.4,135.1 L113,135.1 L114.5,129.8 C116.2,124.2 127.9,86.2 130.9,76.8 C131.9,73.7 132.5,71.1 132.1,71.1 C129.5,71.1 97.3,78.9 82.3,83.1 L64.3,88.2 L57.6,109.5 C53.9,121.2 50.9,131.2 50.9,131.9 C50.9,132.5 49.9,133.3 48.6,133.6 C46.6,134 16.9,139.2 7.9,140.7 C6,141 3.4,141.5 2.1,141.8 C0.5,142.2 0,141.9 0.3,141 Z"/></svg></span><span>Hildon Farm<small>FEILDING, NEW ZEALAND</small></span></a><nav aria-label="Page controls"><a href="/index.html">← Home</a></nav></header>
+<main>
+  <div class="eyebrow">YOUR HERD</div><h1>Cattle weights</h1>
+  <form id="gate" class="gate" hidden><label for="pin">Family passcode</label><div class="gate-row"><input id="pin" type="password" autocomplete="current-password" required><button class="primary">Open</button></div><p id="gate-status" role="status"></p></form>
+  <div id="herd" hidden>
+    <div class="stats"><div><span>Animals</span><strong id="stat-animals">–</strong></div><div><span>Last weighed</span><strong id="stat-date">–</strong></div><div><span>Average weight</span><strong id="stat-average">–</strong></div><div><span>Average daily gain</span><strong id="stat-gain">–</strong></div></div>
+    <div class="actions">
+      <label class="drop" id="drop"><input id="file" type="file" accept=".csv,text/csv"><strong>Add a weigh session</strong><span>Drop the CSV exported from Datamars Livestock here, or tap to choose it.</span></label>
+      <form id="manual" class="manual"><strong>Add one weight</strong><div class="manual-row"><input id="m-tag" placeholder="Tag" required aria-label="Tag (visual or NAIT)"><input id="m-weight" type="number" inputmode="decimal" step="0.1" min="1" placeholder="kg" required aria-label="Weight in kg"><input id="m-date" type="date" required aria-label="Date weighed"><button class="primary">Add</button></div></form>
+    </div>
+    <p id="status" class="status-line" role="status" aria-live="polite"></p>
+    <div class="table-head"><h2>The mob</h2><input id="search" type="search" placeholder="Find a tag" aria-label="Find a tag"></div>
+    <div class="table-wrap"><table><thead><tr><th>Tag</th><th>Latest</th><th>Change</th><th>Daily gain</th><th>Weighed</th></tr></thead><tbody id="rows"></tbody></table></div>
+    <p id="empty" class="empty" hidden>No weights yet. Add a weigh session above to get started.</p>
+  </div>
+  <dialog id="animal" class="animal"><form method="dialog"><button class="close" aria-label="Close">×</button></form><div id="animal-body"></div></dialog>
+</main>
+<footer><span>Hildon Farm · weights stay private behind your family passcode.</span><a href="/index.html">← Home</a></footer>
+</body></html>
