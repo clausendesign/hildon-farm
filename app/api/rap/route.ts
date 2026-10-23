@@ -43,7 +43,7 @@ export async function POST(request: Request) {
   try {
     const result = await ai.run(MODEL, {
       messages: [
-        { role: 'system', content: 'You write short, funny, warm, family-friendly raps. No swearing, nothing mean. Output only the rap lyrics: 8 to 12 lines, rhyming couplets, no title, no stage directions, no emoji, no asterisks.' },
+        { role: 'system', content: 'You write short, funny, warm, family-friendly raps. No swearing, nothing mean. Greet with G’day, never Kia ora. Output only the rap lyrics: 8 to 12 lines, rhyming couplets, no title, no stage directions, no emoji, no asterisks.' },
         { role: 'user', content: `Write a brand-new rap for ${who} about how great their son Todd is. Pick a few of these facts and have fun with them; be playful and over the top:\n- ${FACTS.join('\n- ')}` },
       ],
       max_tokens: 400,

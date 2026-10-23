@@ -18,7 +18,7 @@ greet();
 // After saying who's here, the voice walks through the three options, lighting up each card in turn.
 async function tour(name) {
   const steps = [
-    [null, `Hi ${name}. There are three things you can do here.`],
+    [null, `G’day ${name}. There are three things you can do here.`],
     ['briefing', 'Daily briefing. The latest on cattle, lambs and sheep, and you can ask it questions.'],
     ['map', 'Explore the farm. The map, paddocks, soil and satellite views.'],
     ['cattle', 'Cattle weights. Every weigh day, and how each animal is gaining.'],

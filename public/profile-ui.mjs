@@ -21,7 +21,7 @@ export function mountProfile({ auto = true, greet } = {}) {
     session++; voice.stop(); saveProfile({ name, onboarded: true }); dialog.close(); priorFocus?.focus();
     try { sessionStorage.setItem(WHO_KEY, '1'); } catch { /* Asked again next page instead. */ }
     if (greet) greet(name);
-    else voice.speak(`Hi ${name}. Open your daily briefing to catch up and ask a question.`);
+    else voice.speak(`G’day ${name}. Open your daily briefing to catch up and ask a question.`);
   }
   function listen() {
     if (!dialog.open) return;
