@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en-NZ"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#193d31">
+<title>Daily briefing · Hildon Farm</title><link rel="icon" href="/favicon.svg"><link rel="stylesheet" href="/markets.css?v=8"><link rel="stylesheet" href="/daily.css"><link rel="stylesheet" href="/profile.css"><script src="/markets.js?v=8" type="module"></script>
+</head><body>
+<header><a class="brand" href="/index.html" aria-label="Hildon Farm home"><span class="mark" aria-hidden="true">H</span><span>Hildon Farm<small>FEILDING, NEW ZEALAND</small></span></a><nav aria-label="Page controls"><a href="/index.html">← Home</a><button id="voice-toggle" class="voice-toggle" aria-pressed="true">◖)) Voice on</button></nav></header>
+<main>
+  <div class="briefing-intro"><div class="eyebrow">YOUR DAILY BRIEFING</div><h1 id="briefing-greeting">A quick catch-up.</h1><p class="intro">The markets, the next sale, and a chance to ask.</p></div>
+  <div class="status"><span id="updated" role="status">Loading the latest saved briefing…</span><button id="refresh">↻ Reload saved briefing</button></div>
+  <div id="error" role="alert" hidden></div>
+  <div class="daily-layout">
+    <div class="daily-main">
+      <section class="listen-card" aria-labelledby="listen-title"><div class="listen-kicker"><span class="sound-mark" aria-hidden="true">▂ ▆ ▃ █ ▄</span><span>THE SHORT VERSION</span></div><h2 id="listen-title">Pull up a chair.</h2><p>Press play for the short version.<br>Ask about anything in the reports below.</p><button id="listen" class="primary" aria-pressed="false" aria-describedby="audio-status" disabled>▶ Listen to briefing</button><div id="audio-status" class="audio-status" role="status" aria-live="polite">Voice is on by default. Press play if your browser needs a tap.</div></section>
+      <div id="daily-summary" class="daily-summary" aria-label="Briefing highlights"><p class="loading-note">Bringing your briefing into view…</p></div>
+      <div id="next-sale" class="next-sale" hidden></div>
+      <details id="original-report" class="original-report" hidden><summary>Listen to the original radio report</summary><p>The publisher’s full episode, rather than the Hildon Farm summary.</p><audio id="report-audio" controls preload="none">Use the report link below to listen.</audio><a id="report-source" target="_blank" rel="noopener noreferrer">Open the original report ↗</a></details>
+    </div>
+    <section id="ask-panel" class="ask-panel" aria-labelledby="ask-title"><div class="ask-heading"><div><div class="eyebrow">LET’S TALK IT THROUGH</div><h2 id="ask-title">Anything on your mind?</h2></div><span class="question-mark" aria-hidden="true">?</span></div><p class="ask-description">Ask about prices, sale dates, market mood or the outlook. Answers use the reports saved here.</p><div id="conversation" class="conversation" role="log" aria-live="polite" aria-label="Your briefing questions and answers"><div class="chat-empty"><span aria-hidden="true">↙</span><p>Ask out loud, or type below.<br>We’ll take it one question at a time.</p></div></div><div id="suggested-questions" class="suggested-questions"><button data-question="When is the next sale?">When’s the next sale?</button><button data-question="What are lambs doing?">How are lambs looking?</button><button data-question="What prices have been reported?">Any reported prices?</button></div><form id="question-form"><label for="question">Your question</label><div class="question-input"><input id="question" name="question" type="text" maxlength="500" autocomplete="off" placeholder="What would you like to know?" disabled><button id="send-question" type="submit" aria-label="Send question" disabled>↑</button></div><button id="ask-voice" type="button" class="ask-voice" aria-pressed="false" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="2" width="8" height="13" rx="4"/><path d="M5 10v2a7 7 0 0 0 14 0v-2M12 19v3M8 22h8"/></svg><span>Ask by voice</span></button><p id="question-status" class="question-status" role="status">Microphone is used only when you tap Ask by voice.</p></form><button id="clear-chat" class="clear-chat" hidden>Start a fresh conversation</button></section>
+  </div>
+  <div id="content" hidden>
+    <aside id="coverage"></aside>
+    <details class="report-details"><summary><span>The reports & numbers<small>Commentary, reported prices, next-sale outlooks and original forecast history</small></span><span class="expand-sign" aria-hidden="true">+</span></summary>
+      <div class="filters" role="group" aria-label="Stock type"><button data-filter="all" aria-pressed="true">All stock</button><button data-filter="cattle" aria-pressed="false">Cattle</button><button data-filter="lambs" aria-pressed="false">Lambs</button><button data-filter="sheep" aria-pressed="false">Sheep</button></div>
+      <section><div class="section-head"><h2>What people are saying</h2><span>Reported commentary · mood interpreted by the app</span></div><div id="briefs" class="grid"></div></section>
+      <section><div class="section-head"><h2>Reported prices & weights</h2><span>Individual observations, with their original dates</span></div><div id="prices" class="grid"></div><div id="trends" class="trend"></div></section>
+      <section><div class="section-head"><h2>Next local sales</h2><span>All times New Zealand · confirm with the saleyard</span></div><div id="sales" class="sales-grid"></div></section>
+      <section><div class="section-head"><h2>Did the outlook hold up?</h2><span>Original forecasts stay on the record</span></div><div id="history" class="history"></div></section>
+    </details>
+    <details class="source-details"><summary>Where this briefing comes from</summary><p>Short summaries of public publisher reports and podcast descriptions, with links to the originals. “Firm” usually favours a seller; a buyer may pay more. “Soft” can favour a buyer. Mood labels describe reported conditions.</p><p>Weights may be estimated. Selected pens are not sale averages. Liveweight, carcass weight and per-head prices cannot be directly compared. GST, fees and freight are not assumed.</p><div id="sources"></div></details>
+  </div>
+</main>
+<footer><span>Hildon Farm · a little more context before sale day.</span><div><button id="change-name">Change your name</button><a href="/index.html">← Home</a></div></footer>
+</body></html>

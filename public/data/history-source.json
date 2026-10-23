@@ -1,0 +1,53 @@
+{
+  "title": "Manawatū-Whanganui 0.4m Rural Aerial Photos (2010-2011)",
+  "date": "2010–2011",
+  "dateNote": "Collection flying season; individual day of capture is not separately specified in these STAC tile records.",
+  "sourceCaptureIntervalUTC": [
+    "2010-11-30T11:00:00Z",
+    "2011-04-29T12:00:00Z"
+  ],
+  "texture": "aerial-2010-2011.jpg",
+  "textureWidth": 2560,
+  "textureHeight": 2500,
+  "textureBounds": {
+    "xmin": 1812260,
+    "ymin": 5545800,
+    "xmax": 1814820,
+    "ymax": 5548300,
+    "crs": "EPSG:2193"
+  },
+  "textureConvention": "north-up image; top-left (xmin,ymax), bottom-right (xmax,ymin); exactly1metre per pixel matching current2021–22 texture",
+  "sourceResolutionMetres": 0.4,
+  "resampling": "Bilinear to1m/pixel",
+  "coverageFraction": 1.0,
+  "licence": "CC BY4.0",
+  "attribution": "Aerial imagery © Manawatū-Whanganui LASS, captured by NZ Aerial Mapping, distributed and processed by Toitū Te Whenua LINZ. CC BY4.0.",
+  "sourceCollectionUrl": "https://nz-imagery.s3-ap-southeast-2.amazonaws.com/manawatu-whanganui/manawatu-whanganui_2010-2011_0.4m/rgb/2193/collection.json",
+  "sourceFiles": [
+    "https://nz-imagery.s3-ap-southeast-2.amazonaws.com/manawatu-whanganui/manawatu-whanganui_2010-2011_0.4m/rgb/2193/BM34_5000_0104.tiff",
+    "https://nz-imagery.s3-ap-southeast-2.amazonaws.com/manawatu-whanganui/manawatu-whanganui_2010-2011_0.4m/rgb/2193/BM34_5000_0105.tiff",
+    "https://nz-imagery.s3-ap-southeast-2.amazonaws.com/manawatu-whanganui/manawatu-whanganui_2010-2011_0.4m/rgb/2193/BM34_5000_0204.tiff",
+    "https://nz-imagery.s3-ap-southeast-2.amazonaws.com/manawatu-whanganui/manawatu-whanganui_2010-2011_0.4m/rgb/2193/BM34_5000_0205.tiff"
+  ],
+  "providers": [
+    {
+      "name": "Toitū Te Whenua Land Information New Zealand",
+      "roles": [
+        "host",
+        "processor"
+      ]
+    },
+    {
+      "name": "NZ Aerial Mapping",
+      "roles": [
+        "producer"
+      ]
+    },
+    {
+      "name": "Manawatū-Whanganui LASS",
+      "roles": [
+        "licensor"
+      ]
+    }
+  ]
+}

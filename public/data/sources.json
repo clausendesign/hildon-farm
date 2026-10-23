@@ -1,0 +1,65 @@
+{
+  "cols": 257,
+  "rows": 251,
+  "bounds": {
+    "xmin": 1812260,
+    "ymin": 5545800,
+    "xmax": 1814820,
+    "ymax": 5548300,
+    "crs": "EPSG:2193"
+  },
+  "min": 64.6,
+  "max": 112.45,
+  "nodataCount": 0,
+  "sampleSpacingMetres": {
+    "x": 10.0,
+    "y": 10.0
+  },
+  "gridConvention": "Vertices inclusive of bounds; row-major north to south, columns west to east. Elevations in metres NZVD2016. Source 1m DEM bilinearly sampled at 10m intervals.",
+  "source": "Manawat\u016b-Whanganui LiDAR 1m DEM (2015\u20132016)",
+  "date": "2015\u20132016",
+  "texture": "aerial.jpg",
+  "textureDate": "2021\u20132022",
+  "textureBounds": {
+    "xmin": 1812260,
+    "ymin": 5545800,
+    "xmax": 1814820,
+    "ymax": 5548300,
+    "crs": "EPSG:2193"
+  },
+  "textureWidth": 2560,
+  "textureHeight": 2500,
+  "textureConvention": "north-up image; top-left (xmin,ymax), bottom-right (xmax,ymin)",
+  "attribution": "Copyright in the underlying elevation dataset from which this work has been derived is owned by Horizons Regional Council. Aerial imagery \u00a9 Manawat\u016b-Whanganui LASS. Both distributed by Toit\u016b Te Whenua LINZ under CC BY 4.0.",
+  "licence": "CC BY 4.0",
+  "sourceUrls": {
+    "elevation": "https://nz-elevation.s3.ap-southeast-2.amazonaws.com/manawatu-whanganui/manawatu-whanganui_2015-2016/dem_1m/2193/collection.json",
+    "imagery": "https://nz-imagery.s3.ap-southeast-2.amazonaws.com/manawatu-whanganui/manawatu-whanganui_2021-2022_0.3m/rgb/2193/collection.json"
+  },
+  "house": {
+    "easting": 1814006.992,
+    "northing": 5546370.285,
+    "lon": 175.5145485,
+    "lat": -40.2057798
+  },
+  "geographicCorners": [
+    [
+      175.49117588,
+      -40.21142262
+    ],
+    [
+      175.52639617,
+      -40.2106588
+    ],
+    [
+      175.52519324,
+      -40.17825619
+    ],
+    [
+      175.48998968,
+      -40.17901914
+    ]
+  ],
+  "sourceDescription": "Horizons Regional Council / LINZ, Manawat\u016b\u2013Whanganui LiDAR surveyed 2015\u20132016. The 1 m ground model is sampled at 10 m spacing for this interactive view. Elevations are metres NZVD2016.",
+  "aerialDescription": "Manawat\u016b\u2013Whanganui LASS rural aerial photographs, flying seasons 2021\u20132022, distributed by LINZ. Original 30 cm imagery is sampled at 1 m per pixel for this model."
+}

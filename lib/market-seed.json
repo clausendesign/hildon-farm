@@ -1,0 +1,315 @@
+{
+  "schemaVersion": 1,
+  "revision": 0,
+  "checkedAt": "2026-10-23T13:58:49.169396+00:00",
+  "coverageNote": "Public radio commentary and advertised sale dates are available. A complete authorised feed of local sold prices is not connected. Regional commentary is shown separately from Feilding evidence. Automatic source refresh is pending connection.",
+  "sources": [
+    {
+      "id": "lamb-oct23",
+      "title": "AgriHQ Insight | Hawke’s Bay lamb sales set strong early benchmark",
+      "publisher": "Farmers Weekly Podcast / AgriHQ",
+      "url": "https://www.spreaker.com/episode/agrihq-insight-hawke-s-bay-lamb-sales-set-strong-early-benchmark--75929545",
+      "audioUrl": "https://api.spreaker.com/download/episode/75929545/farmers_weekly_ep161_alex_c_master_revised.mp3",
+      "publishedAt": "2026-10-22T21:40:09+00:00",
+      "scope": "Hawke’s Bay",
+      "kind": "public-podcast-description"
+    },
+    {
+      "id": "weaner-oct16",
+      "title": "AgriHQ Insight | Record beef prices meet El Niño caution in weaner market",
+      "publisher": "Farmers Weekly Podcast / AgriHQ",
+      "url": "https://www.spreaker.com/episode/agrihq-insight-record-beef-prices-meet-el-nino-caution-in-weaner-market--75813584",
+      "audioUrl": "https://api.spreaker.com/download/episode/75813584/farmers_weekly_ep160_sara_h_master.mp3",
+      "publishedAt": "2026-10-15T20:09:07+00:00",
+      "scope": "New Zealand dairy-beef weaner market",
+      "kind": "public-podcast-description"
+    },
+    {
+      "id": "weather-oct23",
+      "title": "The Country 23/10/26: Chris Brandolino talks to Jamie Mackay",
+      "publisher": "The Country / NZME",
+      "url": "https://omny.fm/shows/the-country/the-country-23-10-26-chris-brandolino-talks-to-jamie-mackay",
+      "audioUrl": "https://pdst.fm/e/dts.podtrac.com/redirect.mp3/traffic.omny.fm/d/clips/7784f840-c291-422a-924b-ad9000bbad71/6ac3a53c-3f44-41fd-8866-ae990144f969/658a235d-2a59-4229-905b-b4ec0004556e/audio.mp3?utm_source=Podcast&in_playlist=f941f6d6-d476-4765-b06f-ae990144fa25",
+      "publishedAt": "2026-10-23T00:17:20+00:00",
+      "scope": "North Island",
+      "kind": "public-podcast-description"
+    },
+    {
+      "id": "feilding-oct2",
+      "title": "AgriHQ Insight | Store cattle shine in Feilding",
+      "publisher": "Farmers Weekly Podcast / AgriHQ",
+      "url": "https://www.spreaker.com/episode/agrihq-insight-store-cattle-shine-in-feilding--75500068",
+      "audioUrl": "https://api.spreaker.com/download/episode/75500068/farmers_weekly_ep158_alex_c_master.mp3",
+      "publishedAt": "2026-10-01T20:36:27+00:00",
+      "scope": "Feilding",
+      "kind": "public-podcast-description"
+    },
+    {
+      "id": "feilding-calendar",
+      "title": "Feilding official upcoming sales",
+      "publisher": "Feilding Saleyards",
+      "url": "https://feildingsaleyards.co.nz/",
+      "publishedAt": null,
+      "scope": "Feilding",
+      "kind": "sale-calendar",
+      "checkedAt": "2026-10-23T13:58:49.169396+00:00"
+    },
+    {
+      "id": "fw-waikareao-2026-10-16",
+      "title": "Waikareao on-farm lamb sale",
+      "publisher": "Farmers Weekly",
+      "url": "https://www.farmersweekly.co.nz/markets/sheep-and-beef-markets/sun-shines-on-waikareao-on-farm-lamb-sale/",
+      "publishedAt": "2026-10-16T00:00:00+12:00",
+      "scope": "Hawke’s Bay",
+      "kind": "public-news",
+      "datePrecision": "day"
+    },
+    {
+      "id": "fw-stock-hit-road-2026-09-10",
+      "title": "Livestock hit the road in search of stronger returns",
+      "publisher": "Farmers Weekly",
+      "url": "https://www.farmersweekly.co.nz/markets/livestock-hit-the-road-in-search-of-stronger-returns/",
+      "publishedAt": "2026-09-10T00:00:00+12:00",
+      "scope": "Manawatū-Whanganui",
+      "kind": "public-news",
+      "datePrecision": "day"
+    }
+  ],
+  "briefs": [
+    {
+      "id": "lamb-oct23",
+      "species": "lambs",
+      "yard": "Regional context",
+      "scope": "Hawke’s Bay",
+      "mood": "firm",
+      "summary": "Early lamb sales in Hawke’s Bay were stronger than expected. Analyst Alex Coddington discusses what that opening signal may mean for the coming season. This is a regional market signal, not a verified Feilding price result.",
+      "sourceIds": [
+        "lamb-oct23"
+      ],
+      "evidenceDate": "2026-10-22T21:40:09+00:00",
+      "saleDate": null,
+      "evidenceType": "commentary",
+      "historicalContext": false
+    },
+    {
+      "id": "weaner-oct16",
+      "species": "cattle",
+      "yard": "Regional context",
+      "scope": "New Zealand dairy-beef weaner market",
+      "mood": "mixed",
+      "summary": "Strong beef prices are meeting more selective weaner buying. Analyst Sara Hilhorst links buyer caution and a stronger focus on stock quality to the approaching El Niño. This does not establish a like-for-like Feilding price change.",
+      "sourceIds": [
+        "weaner-oct16"
+      ],
+      "evidenceDate": "2026-10-15T20:09:07+00:00",
+      "saleDate": null,
+      "evidenceType": "commentary",
+      "historicalContext": false
+    },
+    {
+      "id": "weather-oct23",
+      "species": "weather",
+      "yard": "Regional context",
+      "scope": "North Island",
+      "mood": "caution",
+      "summary": "Chris Brandolino discusses El Niño’s drying influence, particularly in the North Island. Treat this as a weather risk to watch alongside feed supply and buying budgets, rather than evidence that local sale prices will move in a particular direction.",
+      "sourceIds": [
+        "weather-oct23"
+      ],
+      "evidenceDate": "2026-10-23T00:17:20+00:00",
+      "saleDate": null,
+      "evidenceType": "commentary",
+      "historicalContext": false
+    },
+    {
+      "id": "feilding-oct2",
+      "species": "cattle",
+      "yard": "Feilding",
+      "scope": "Feilding",
+      "mood": "firm",
+      "summary": "An earlier Feilding store-cattle update described resilient values and a large yarding that pleased sellers despite El Niño concerns. It is useful historical context, but is too old to represent this week’s Feilding result.",
+      "sourceIds": [
+        "feilding-oct2"
+      ],
+      "evidenceDate": "2026-10-01T20:36:27+00:00",
+      "saleDate": null,
+      "evidenceType": "commentary",
+      "historicalContext": true
+    }
+  ],
+  "prices": [
+    {
+      "id": "waikareao-top-lamb-pen-pub20261016",
+      "species": "lambs",
+      "category": "store lambs",
+      "class": "Early-born Southdown lambs, top pen",
+      "region": "Hawke’s Bay",
+      "venue": "Waikareao on-farm sale",
+      "saleDate": null,
+      "publishedDate": "2026-10-16",
+      "dateBasis": "publication date; exact sale date not reported",
+      "currency": "NZD",
+      "priceBasis": "head",
+      "price": 234,
+      "weightBasis": "liveweight",
+      "weightMinKg": 30,
+      "weightMaxKg": 32,
+      "weightEstimated": true,
+      "headCount": null,
+      "statistic": "Selected top pen result",
+      "sourceId": "fw-waikareao-2026-10-16",
+      "sourceUrl": "https://www.farmersweekly.co.nz/markets/sheep-and-beef-markets/sun-shines-on-waikareao-on-farm-lamb-sale/",
+      "note": "Estimated weight. One top pen, not the average. No computed $/kg is presented. GST treatment not stated in the article.",
+      "classLabel": "Early-born Southdown lambs, top pen",
+      "yard": "Waikareao on-farm sale",
+      "min": 234,
+      "max": 234,
+      "unit": "NZD/head",
+      "evidenceType": "reported-result"
+    },
+    {
+      "id": "feilding-specklepark-dairy-20260904",
+      "species": "cattle",
+      "category": "store cattle",
+      "class": "Yearling Speckle Park–dairy steers, selected pen",
+      "region": "Manawatū-Whanganui",
+      "venue": "Feilding",
+      "saleDate": "2026-09-04",
+      "publishedDate": "2026-09-10",
+      "dateBasis": "explicit sale date in article caption",
+      "currency": "NZD",
+      "priceBasis": "kg_lw",
+      "price": 5.74,
+      "weightBasis": "liveweight",
+      "weightMinKg": 336,
+      "weightMaxKg": 336,
+      "weightEstimated": false,
+      "headCount": null,
+      "statistic": "Selected pen result",
+      "sourceId": "fw-stock-hit-road-2026-09-10",
+      "sourceUrl": "https://www.farmersweekly.co.nz/markets/livestock-hit-the-road-in-search-of-stronger-returns/",
+      "historicalContext": true,
+      "note": "Old selected-lot result for context, not the latest price or an all-steer average. Source reports $/kg and saleyard live animal weights. GST treatment not stated.",
+      "classLabel": "Yearling Speckle Park–dairy steers, selected pen",
+      "yard": "Feilding",
+      "min": 5.74,
+      "max": 5.74,
+      "unit": "NZD/kg LW",
+      "evidenceType": "reported-result"
+    }
+  ],
+  "events": [
+    {
+      "id": "feilding-20261029-dairybeef",
+      "title": "Feilding Dairy Beef",
+      "yard": "Feilding",
+      "date": "2026-10-29",
+      "time": "11:30",
+      "timezone": "Pacific/Auckland",
+      "species": "cattle",
+      "sourceId": "feilding-calendar",
+      "checkedAt": "2026-10-23T13:58:49.169396+00:00"
+    },
+    {
+      "id": "feilding-20261030-sheep",
+      "title": "Feilding Store — sheep",
+      "yard": "Feilding",
+      "date": "2026-10-30",
+      "time": "11:00",
+      "timezone": "Pacific/Auckland",
+      "species": "sheep",
+      "sourceId": "feilding-calendar",
+      "checkedAt": "2026-10-23T13:58:49.169396+00:00"
+    },
+    {
+      "id": "feilding-20261030-cattle",
+      "title": "Feilding Store — cattle",
+      "yard": "Feilding",
+      "date": "2026-10-30",
+      "time": "11:30",
+      "timezone": "Pacific/Auckland",
+      "species": "cattle",
+      "sourceId": "feilding-calendar",
+      "checkedAt": "2026-10-23T13:58:49.169396+00:00"
+    }
+  ],
+  "outlooks": [
+    {
+      "id": "feilding-20261029-dairybeef-cattle",
+      "eventId": "feilding-20261029-dairybeef",
+      "species": "cattle",
+      "direction": "uncertain",
+      "confidence": "low",
+      "type": "app-assessment",
+      "summary": "Strong beef prices are balanced by selective weaner buying and dry-weather concerns. Recent class-and-weight-matched Feilding results are missing, so the direction remains uncertain.",
+      "drivers": [
+        "Limited recent comparable local results",
+        "North Island drying risk"
+      ],
+      "sourceIds": [
+        "weaner-oct16",
+        "weather-oct23"
+      ],
+      "issuedAt": "2026-10-23T13:58:49.169396+00:00",
+      "priceRange": null
+    },
+    {
+      "id": "feilding-20261030-sheep-lambs",
+      "eventId": "feilding-20261030-sheep",
+      "species": "lambs",
+      "direction": "uncertain",
+      "confidence": "low",
+      "type": "app-assessment",
+      "summary": "Positive Hawke’s Bay lamb commentary provides a regional support signal, but recent comparable Feilding results are missing. The direction of this sale remains uncertain.",
+      "drivers": [
+        "Limited recent comparable local results",
+        "North Island drying risk"
+      ],
+      "sourceIds": [
+        "lamb-oct23",
+        "weather-oct23"
+      ],
+      "issuedAt": "2026-10-23T13:58:49.169396+00:00",
+      "priceRange": null
+    },
+    {
+      "id": "feilding-20261030-sheep-sheep",
+      "eventId": "feilding-20261030-sheep",
+      "species": "sheep",
+      "direction": "uncertain",
+      "confidence": "low",
+      "type": "app-assessment",
+      "summary": "There is not enough fresh local sheep-sale evidence to make a directional call. Weather commentary alone cannot establish sale prices.",
+      "drivers": [
+        "Limited recent comparable local results",
+        "North Island drying risk"
+      ],
+      "sourceIds": [
+        "weather-oct23"
+      ],
+      "issuedAt": "2026-10-23T13:58:49.169396+00:00",
+      "priceRange": null
+    },
+    {
+      "id": "feilding-20261030-cattle-cattle",
+      "eventId": "feilding-20261030-cattle",
+      "species": "cattle",
+      "direction": "uncertain",
+      "confidence": "low",
+      "type": "app-assessment",
+      "summary": "Strong beef prices are balanced by selective weaner buying and dry-weather concerns. Recent class-and-weight-matched Feilding results are missing, so the direction remains uncertain.",
+      "drivers": [
+        "Limited recent comparable local results",
+        "North Island drying risk"
+      ],
+      "sourceIds": [
+        "weaner-oct16",
+        "weather-oct23"
+      ],
+      "issuedAt": "2026-10-23T13:58:49.169396+00:00",
+      "priceRange": null
+    }
+  ],
+  "outcomes": [],
+  "forecastHistory": []
+}

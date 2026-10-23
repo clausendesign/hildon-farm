@@ -1,0 +1,30 @@
+HILDON FARM — WEBSITE BACKUP
+
+Exported: 24 October 2026 (Australia/Brisbane)
+Website: https://sandon-farm-explorer.sacredscarf15.chatgpt.site
+Published version: 8
+Source commit: d454e7dbba07bf04feac8adeac9374c784214f10
+
+WHAT IS INCLUDED
+- Complete tracked application source, package manifests and lockfile.
+- Welcome screen, spoken name setup, daily briefing questions and farm map.
+- Aerial images, terrain, soil, satellite observations and vendor assets.
+- backup/market-brief.json: snapshot of the current saved briefing,
+  revision 2, including its four original forecast-history records.
+
+USING THE FILES
+Unzip Hildon-Farm. The source files can be committed to your own private
+GitHub repository. See README.md and package.json for development details.
+This is a web application: serve it through its development server, rather
+than opening index.html as a file. Its saved-briefing endpoint runs in a
+Cloudflare-compatible Worker with an R2 bucket.
+
+HOSTING AND DATA
+The .openai/hosting.json file identifies the existing Sites project.
+Preserve that identity when editing this existing site. A separate host
+needs its own deployment settings, bucket and owner-authorization setting.
+
+Credentials, installed dependencies and temporary build output are excluded.
+The briefing JSON is an export snapshot; future live changes will not appear
+in this ZIP. Saved paddocks and name/voice preferences stay in each visitor's
+browser and are not part of a server/source export.

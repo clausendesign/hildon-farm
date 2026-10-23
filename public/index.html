@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en-NZ">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#193d31"><title>Welcome · Hildon Farm</title>
+  <meta name="description" content="Warwick’s daily livestock briefing and a closer look at Hildon Farm near Feilding.">
+  <link rel="icon" href="/favicon.svg"><link rel="stylesheet" href="/home.css"><link rel="stylesheet" href="/profile.css">
+  <script type="module" src="/home.js"></script>
+</head>
+<body>
+  <header class="home-header shell">
+    <a class="brand" href="/index.html"><span class="mark" aria-hidden="true">H</span><span>Hildon Farm<small>FEILDING, NEW ZEALAND</small></span></a>
+    <div class="header-actions"><button id="voice-toggle" class="quiet" aria-pressed="true">◖)) Voice on</button></div>
+  </header>
+  <main class="shell">
+    <div class="home-intro"><div><div class="eyebrow">A LITTLE CONTEXT FOR YOUR DAY</div><h1 id="greeting">Welcome to the farm.</h1><p class="lead">Catch up on the markets.<br>Or take a look around your patch.</p></div><div id="home-date" class="home-date"></div></div>
+    <div class="destinations">
+      <a class="destination briefing-destination" href="/markets.html?listen=1">
+        <span class="card-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M5 17h3l3-8 5 16 5-19 3 11h3"/></svg></span>
+        <h2>Daily briefing</h2><p>What’s happening with cattle, lambs and sheep. Listen, then ask a question.</p>
+        <span class="destination-action">Take me to the briefing <span aria-hidden="true">↗</span></span>
+      </a>
+      <a class="destination map-destination" href="/farm.html">
+        <img src="/data/aerial.jpg" alt="Aerial photograph of the Hildon Farm area" width="800" height="800">
+        <div class="eyebrow">YOUR FARM, FROM ABOVE</div><h2>Explore the farm</h2><p>The map, paddocks, soil and satellite history, all in one place.</p><span class="destination-action">Open the farm map <span aria-hidden="true">↗</span></span>
+      </a>
+    </div>
+    <div class="home-note"><div><p id="welcome-hint">Your briefing, at your pace.</p><div id="voice-status" class="voice-note" role="status"></div></div><button id="change-name">What should we call you?</button></div>
+  </main>
+  <footer class="home-footer shell"><span>Hildon Farm · Feilding, New Zealand</span><span>Made for a familiar patch of land.</span></footer>
+</body>
+</html>

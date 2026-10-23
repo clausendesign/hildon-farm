@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#132b25">
+  <title>Farm map · Hildon Farm</title>
+  <meta name="description" content="Explore the farm terrain, soil map and satellite history, and draw and measure paddocks.">
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="./farm-tools.css">
+  <link rel="stylesheet" href="./data-layers.css">
+  <link rel="stylesheet" href="./farm-nav.css">
+  <script type="importmap">{"imports":{"three":"./vendor/three.module.js"}}</script>
+</head>
+<body>
+  <main id="app" aria-label="Interactive farm terrain explorer">
+    <div id="scene" aria-label="3D farm map. Drag to rotate, scroll or pinch to zoom. Shift and drag to move."></div>
+    <header class="header">
+      <a class="brand" href="./index.html" aria-label="Hildon Farm home"><span class="brand-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="m3 23 8-14 7 10 4-6 7 10M5 27h22M11 9l3 4-5 2"/></svg></span><div><h1>Hildon Farm</h1><p>← Home · Feilding, New Zealand</p></div></a>
+      <details class="map-layer-menu"><summary>Map layers <span id="current-layer-label">Aerial</span> ▾</summary><nav class="view-switch" aria-label="Map view">
+        <button data-view="aerial" class="selected" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 8 9-5 9 5-9 5-9-5Zm0 5 9 5 9-5M3 18l9 5 9-5"/></svg>Aerial</button>
+        <button data-view="ground" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m2 19 7-13 5 8 3-5 5 10H2Zm7-13 3 5-5 1"/></svg>Bare ground</button>
+        <button data-view="water" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C10 6 5 10 5 15a7 7 0 0 0 14 0c0-5-5-9-7-13ZM9 16c0 2 1 3 3 3"/></svg>Water paths</button>
+        <button data-view="soil" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10h18M3 15h18M3 20h18M12 10V3m0 4C6 8 5 5 5 3c4 0 6 1 7 4Zm0-1c1-4 4-4 7-4 0 3-2 5-7 4Z"/></svg>Soil</button>
+        <button data-view="satellite" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 10 6-6 6 6-6 6-6-6Zm-6 0 5-5 3 3-5 5-3-3Zm12 12 5-5 3 3-5 5-3-3ZM4 17a4 4 0 0 1 4 4M3 13a8 8 0 0 1 8 8"/></svg>Satellite</button>
+      </nav></details>
+      <a class="markets-link" href="./markets.html">Daily briefing ↗</a>
+      <button id="details" class="details-button" aria-label="About this map"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7v1"/></svg><span>Map details</span></button>
+    </header>
+
+    <aside class="terrain-panel" aria-label="Terrain controls">
+      <div class="eyebrow"><span class="live-dot"></span>YOUR FARM, A NEW PERSPECTIVE</div>
+      <h2 id="view-title">See the whole picture.</h2>
+      <p id="view-description">Explore the paddocks, shelterbelts and waterways from above.</p>
+      <div class="panel-divider"></div>
+      <label class="range-label" for="relief">Terrain relief <output id="relief-value">2×</output></label>
+      <input id="relief" type="range" min="1" max="4" step="0.25" value="2" aria-label="Terrain vertical exaggeration">
+      <div class="range-captions"><span>True scale</span><span>Exaggerated</span></div>
+      <label class="toggle-row"><span><i class="boundary-key"></i>Farm outline</span><input id="boundary-toggle" type="checkbox" checked><span class="switch" aria-hidden="true"></span></label>
+      <p class="boundary-note">Approximate boundary from your drawing</p>
+      <div id="water-note" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7v1"/></svg><span>Illustrative surface flow. Drains, soil absorption and flood depths are not modelled.</span></div>
+    </aside>
+
+    <div class="map-tools" aria-label="Map navigation">
+      <button id="north" class="compass" aria-label="Face north"><span>N</span><svg viewBox="0 0 28 28" aria-hidden="true"><path d="m14 3 7 21-7-4-7 4Z"/></svg></button>
+      <div class="tool-group"><button id="zoom-in" aria-label="Zoom in">+</button><button id="zoom-out" aria-label="Zoom out">−</button></div>
+      <button id="top-down" aria-label="Look straight down" title="Look straight down"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z"/></svg></button>
+      <button id="reset" aria-label="Reset view" title="Reset view"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 11 9-8 9 8M6 9v12h12V9M10 21v-7h4v7"/></svg></button>
+    </div>
+
+    <div id="point-label" role="status" hidden><span class="point-kicker">GROUND ELEVATION</span><strong id="point-elevation"></strong><button id="point-close" aria-label="Close elevation label">×</button></div>
+    <div class="map-caption"><span class="caption-dot"></span><span id="caption">Aerial imagery over measured terrain</span></div>
+    <div class="gesture-hint"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 11V5a2 2 0 0 1 4 0v7-3a2 2 0 0 1 4 0v2a2 2 0 0 1 4 0v6c0 4-2 6-6 6h-2c-2 0-4-2-5-4l-4-6a2 2 0 0 1 3-2l2 2"/></svg><span>Drag to explore · Pinch or scroll to zoom · Tap for elevation</span></div>
+    <footer><span>© Horizons Regional Council · Manawatū–Whanganui LASS · LINZ · CC BY 4.0</span><span id="survey-date">Ground 2015–2016 · Aerial 2021–2022</span></footer>
+
+    <div id="loading" role="status"><div class="loading-mark"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="m3 23 8-14 7 10 4-6 7 10M5 27h22"/></svg></div><h2>Bringing the farm into view</h2><p>Loading aerial photography and measured terrain…</p></div>
+    <div id="error" hidden role="alert"><h2>The map couldn’t load</h2><p id="error-text"></p><button onclick="location.reload()">Try again</button></div>
+    <dialog id="about-dialog"><button id="close-details" class="dialog-close" aria-label="Close map details">×</button><div class="eyebrow">ABOUT THIS MAP</div><h2>A familiar place.<br>A different perspective.</h2><p>A first interactive model of the family farm on Sandon Road, near Feilding.</p><dl><dt>Terrain</dt><dd id="terrain-source">LINZ / Horizons Regional Council LiDAR, surveyed 2015–2016. The displayed mesh is sampled from the measured ground surface.</dd><dt>Aerial photography</dt><dd id="aerial-source">Open aerial photography supplied through LINZ.</dd><dt>Farm outline</dt><dd>Traced from your marked screenshot and aligned with aerial landmarks. It is approximate, not a surveyed legal boundary.</dd><dt>Water paths</dt><dd>Paths follow the steepest descent on the sampled terrain. This is a visual exploration of surface flow, not a rainfall, drainage or flood prediction.</dd><dt>Terrain relief</dt><dd>The default 2× height exaggeration makes subtle changes in the land easier to see. Set it to 1× for true horizontal-to-vertical scale.</dd></dl><a id="source-link" href="https://portal.opentopography.org/datasetMetadata?otCollectionID=OT.052019.2193.1" target="_blank" rel="noopener">View terrain survey details <span aria-hidden="true">↗</span></a></dialog>
+  </main>
+  <script type="module" src="./app.js"></script>
+  <script type="module" src="./farm-nav.js"></script>
+</body>
+</html>

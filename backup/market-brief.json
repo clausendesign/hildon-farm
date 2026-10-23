@@ -1,0 +1,825 @@
+{
+  "schemaVersion": 1,
+  "revision": 2,
+  "checkedAt": "2026-10-23T19:55:28.483Z",
+  "coverageNote": "Latest successful source check: 24 October 2026 NZ. Daily evening refresh is scheduled. Both official radio feeds, public markets news, MyLiveStock reports and the Feilding calendar were checked. Selected Rongotea results for 13 and 20 October are shown separately from Feilding and national commentary. Fresh comparable Feilding sold results remain unavailable. Different stock and weights prevent a reliable week-on-week trend; dated older observations are retained.",
+  "sources": [
+    {
+      "id": "lamb-oct23",
+      "title": "AgriHQ Insight | Hawke’s Bay lamb sales set strong early benchmark",
+      "publisher": "Farmers Weekly Podcast / AgriHQ",
+      "url": "https://www.spreaker.com/episode/agrihq-insight-hawke-s-bay-lamb-sales-set-strong-early-benchmark--75929545",
+      "audioUrl": "https://api.spreaker.com/download/episode/75929545/farmers_weekly_ep161_alex_c_master_revised.mp3",
+      "publishedAt": "2026-10-22T21:40:09.000Z",
+      "scope": "Hawke’s Bay",
+      "kind": "public-podcast-description",
+      "checkedAt": "2026-10-23T19:53:03.549Z"
+    },
+    {
+      "id": "weaner-oct16",
+      "title": "AgriHQ Insight | Record beef prices meet El Niño caution in weaner market",
+      "publisher": "Farmers Weekly Podcast / AgriHQ",
+      "url": "https://www.spreaker.com/episode/agrihq-insight-record-beef-prices-meet-el-nino-caution-in-weaner-market--75813584",
+      "audioUrl": "https://api.spreaker.com/download/episode/75813584/farmers_weekly_ep160_sara_h_master.mp3",
+      "publishedAt": "2026-10-15T20:09:07.000Z",
+      "scope": "New Zealand dairy-beef weaner market",
+      "kind": "public-podcast-description",
+      "checkedAt": "2026-10-23T19:53:03.549Z"
+    },
+    {
+      "id": "weather-oct23",
+      "title": "The Country 23/10/26: Chris Brandolino talks to Jamie Mackay",
+      "publisher": "The Country / NZME",
+      "url": "https://omny.fm/shows/the-country/the-country-23-10-26-chris-brandolino-talks-to-jamie-mackay",
+      "audioUrl": "https://pdst.fm/e/dts.podtrac.com/redirect.mp3/traffic.omny.fm/d/clips/7784f840-c291-422a-924b-ad9000bbad71/6ac3a53c-3f44-41fd-8866-ae990144f969/658a235d-2a59-4229-905b-b4ec0004556e/audio.mp3?utm_source=Podcast&in_playlist=f941f6d6-d476-4765-b06f-ae990144fa25",
+      "publishedAt": "2026-10-23T00:17:20.000Z",
+      "scope": "North Island",
+      "kind": "public-podcast-description",
+      "checkedAt": "2026-10-23T19:53:03.549Z"
+    },
+    {
+      "id": "feilding-oct2",
+      "title": "AgriHQ Insight | Store cattle shine in Feilding",
+      "publisher": "Farmers Weekly Podcast / AgriHQ",
+      "url": "https://www.spreaker.com/episode/agrihq-insight-store-cattle-shine-in-feilding--75500068",
+      "audioUrl": "https://api.spreaker.com/download/episode/75500068/farmers_weekly_ep158_alex_c_master.mp3",
+      "publishedAt": "2026-10-01T20:36:27.000Z",
+      "scope": "Feilding",
+      "kind": "public-podcast-description"
+    },
+    {
+      "id": "feilding-calendar",
+      "title": "Feilding official upcoming sales",
+      "publisher": "Feilding Saleyards",
+      "url": "https://feildingsaleyards.co.nz/",
+      "publishedAt": null,
+      "scope": "Feilding",
+      "kind": "sale-calendar",
+      "checkedAt": "2026-10-23T19:53:03.549Z"
+    },
+    {
+      "id": "fw-waikareao-2026-10-16",
+      "title": "Waikareao on-farm lamb sale",
+      "publisher": "Farmers Weekly",
+      "url": "https://www.farmersweekly.co.nz/markets/sheep-and-beef-markets/sun-shines-on-waikareao-on-farm-lamb-sale/",
+      "publishedAt": "2026-10-15T12:00:00.000Z",
+      "scope": "Hawke’s Bay",
+      "kind": "public-news",
+      "datePrecision": "day"
+    },
+    {
+      "id": "fw-stock-hit-road-2026-09-10",
+      "title": "Livestock hit the road in search of stronger returns",
+      "publisher": "Farmers Weekly",
+      "url": "https://www.farmersweekly.co.nz/markets/livestock-hit-the-road-in-search-of-stronger-returns/",
+      "publishedAt": "2026-09-09T12:00:00.000Z",
+      "scope": "Manawatū-Whanganui",
+      "kind": "public-news",
+      "datePrecision": "day"
+    },
+    {
+      "id": "fw-bull-momentum-20261023",
+      "title": "Bull prices lose their spring momentum",
+      "publisher": "Farmers Weekly / AgriHQ — Mel Croad",
+      "url": "https://www.farmersweekly.co.nz/markets/bull-prices-lose-their-spring-momentum/",
+      "publishedAt": "2026-10-22T22:00:00.000Z",
+      "scope": "New Zealand farmgate bull market / US imported beef",
+      "kind": "public-news",
+      "checkedAt": "2026-10-23T19:53:03.549Z"
+    },
+    {
+      "id": "nzfl-rongotea-20261020",
+      "title": "Rongotea Cattle, Sheep & Feeder Calf Sale — 20 October 2026",
+      "publisher": "NZ Farmers Livestock / MyLiveStock",
+      "url": "https://admin.mylivestock.co.nz//media/marketReports/Manawatu/Market%20Report%20Rongotea%2020.10.2026.pdf",
+      "publishedAt": null,
+      "saleDate": "2026-10-20",
+      "scope": "Rongotea, Manawatū",
+      "kind": "public-auction-report",
+      "checkedAt": "2026-10-23T19:53:03.549Z",
+      "note": "Sale date verified inside PDF. Publication timestamp not supplied. Report index incorrectly labels 13 October as 2027; PDF confirms 2026."
+    },
+    {
+      "id": "nzfl-rongotea-20261013",
+      "title": "Rongotea Cattle, Sheep & Feeder Calf Sale — 13 October 2026",
+      "publisher": "NZ Farmers Livestock / MyLiveStock",
+      "url": "https://admin.mylivestock.co.nz//media/marketReports/Manawatu/Market%20Report%20Rongotea%2013.10.2026.pdf",
+      "publishedAt": null,
+      "saleDate": "2026-10-13",
+      "scope": "Rongotea, Manawatū",
+      "kind": "public-auction-report",
+      "checkedAt": "2026-10-23T19:53:03.549Z",
+      "note": "Sale date verified inside PDF. Publication timestamp not supplied. Report index incorrectly labels 13 October as 2027; PDF confirms 2026."
+    }
+  ],
+  "briefs": [
+    {
+      "id": "rongotea-cattle-20261020",
+      "species": "cattle",
+      "yard": "Rongotea",
+      "scope": "Rongotea, Manawatū",
+      "mood": "caution",
+      "summary": "Rongotea’s 20 October report lists yearling Friesian bulls at NZ$1,240–1,310 per head, with listed average weights of 262–271 kg. The report provides category results, not a whole-sale average or buyer-demand assessment. Stock and weights differ from the previous report, so these entries do not establish a price trend.",
+      "sourceIds": [
+        "nzfl-rongotea-20261020"
+      ],
+      "evidenceDate": "2026-10-20",
+      "saleDate": "2026-10-20",
+      "evidenceType": "reported-result",
+      "historicalContext": false
+    },
+    {
+      "id": "rongotea-sheep-20261020",
+      "species": "lambs",
+      "yard": "Rongotea",
+      "scope": "Rongotea, Manawatū",
+      "mood": "caution",
+      "summary": "Mixed-sex lambs at Rongotea were reported at NZ$136–204 per head on 20 October. Weights were not given. This is an actual nearby-yard result, but it cannot establish a like-for-like move or predict Feilding’s next sale.",
+      "sourceIds": [
+        "nzfl-rongotea-20261020"
+      ],
+      "evidenceDate": "2026-10-20",
+      "saleDate": "2026-10-20",
+      "evidenceType": "reported-result",
+      "historicalContext": false
+    },
+    {
+      "id": "bull-momentum-oct23",
+      "species": "cattle",
+      "yard": "National context",
+      "scope": "New Zealand farmgate bull market",
+      "mood": "caution",
+      "summary": "AgriHQ analyst Mel Croad reports that farmgate bull prices peaked in August and have since lost momentum as US imported-beef supplies increased. Her outlook points to further easing through spring and early summer, with recovery possible in early 2027. This concerns national processor returns, not a verified Feilding auction result.",
+      "sourceIds": [
+        "fw-bull-momentum-20261023"
+      ],
+      "evidenceDate": "2026-10-22T22:00:00+00:00",
+      "saleDate": null,
+      "evidenceType": "commentary",
+      "historicalContext": false
+    },
+    {
+      "id": "lamb-oct23",
+      "species": "lambs",
+      "yard": "Regional context",
+      "scope": "Hawke’s Bay",
+      "mood": "firm",
+      "summary": "Early lamb sales in Hawke’s Bay were stronger than expected. Analyst Alex Coddington discusses what that opening signal may mean for the coming season. This is a regional market signal, not a verified Feilding price result.",
+      "sourceIds": [
+        "lamb-oct23"
+      ],
+      "evidenceDate": "2026-10-22T21:40:09+00:00",
+      "saleDate": null,
+      "evidenceType": "commentary",
+      "historicalContext": false
+    },
+    {
+      "id": "weaner-oct16",
+      "species": "cattle",
+      "yard": "Regional context",
+      "scope": "New Zealand dairy-beef weaner market",
+      "mood": "mixed",
+      "summary": "Strong beef prices are meeting more selective weaner buying. Analyst Sara Hilhorst links buyer caution and a stronger focus on stock quality to the approaching El Niño. This does not establish a like-for-like Feilding price change.",
+      "sourceIds": [
+        "weaner-oct16"
+      ],
+      "evidenceDate": "2026-10-15T20:09:07+00:00",
+      "saleDate": null,
+      "evidenceType": "commentary",
+      "historicalContext": false
+    },
+    {
+      "id": "weather-oct23",
+      "species": "weather",
+      "yard": "Regional context",
+      "scope": "North Island",
+      "mood": "caution",
+      "summary": "Chris Brandolino discusses El Niño’s drying influence, particularly in the North Island. Treat this as a weather risk to watch alongside feed supply and buying budgets, rather than evidence that local sale prices will move in a particular direction.",
+      "sourceIds": [
+        "weather-oct23"
+      ],
+      "evidenceDate": "2026-10-23T00:17:20+00:00",
+      "saleDate": null,
+      "evidenceType": "commentary",
+      "historicalContext": false
+    },
+    {
+      "id": "feilding-oct2",
+      "species": "cattle",
+      "yard": "Feilding",
+      "scope": "Feilding",
+      "mood": "firm",
+      "summary": "An earlier Feilding store-cattle update described resilient values and a large yarding that pleased sellers despite El Niño concerns. It is useful historical context, but is too old to represent this week’s Feilding result.",
+      "sourceIds": [
+        "feilding-oct2"
+      ],
+      "evidenceDate": "2026-10-01T20:36:27+00:00",
+      "saleDate": null,
+      "evidenceType": "commentary",
+      "historicalContext": true
+    }
+  ],
+  "prices": [
+    {
+      "id": "waikareao-top-lamb-pen-pub20261016",
+      "species": "lambs",
+      "category": "store lambs",
+      "class": "Early-born Southdown lambs, top pen",
+      "region": "Hawke’s Bay",
+      "venue": "Waikareao on-farm sale",
+      "saleDate": null,
+      "publishedDate": "2026-10-16",
+      "dateBasis": "publication date; exact sale date not reported",
+      "currency": "NZD",
+      "priceBasis": "head",
+      "price": 234,
+      "weightBasis": "liveweight",
+      "weightMinKg": 30,
+      "weightMaxKg": 32,
+      "weightEstimated": true,
+      "headCount": null,
+      "statistic": "Selected top pen result",
+      "sourceId": "fw-waikareao-2026-10-16",
+      "sourceUrl": "https://www.farmersweekly.co.nz/markets/sheep-and-beef-markets/sun-shines-on-waikareao-on-farm-lamb-sale/",
+      "note": "Estimated weight. One top pen, not the average. No computed $/kg is presented. GST treatment not stated in the article.",
+      "classLabel": "Early-born Southdown lambs, top pen",
+      "yard": "Waikareao on-farm sale",
+      "min": 234,
+      "max": 234,
+      "unit": "NZD/head",
+      "evidenceType": "reported-result",
+      "historicalContext": false
+    },
+    {
+      "id": "feilding-specklepark-dairy-20260904",
+      "species": "cattle",
+      "category": "store cattle",
+      "class": "Yearling Speckle Park–dairy steers, selected pen",
+      "region": "Manawatū-Whanganui",
+      "venue": "Feilding",
+      "saleDate": "2026-09-04",
+      "publishedDate": "2026-09-10",
+      "dateBasis": "explicit sale date in article caption",
+      "currency": "NZD",
+      "priceBasis": "kg_lw",
+      "price": 5.74,
+      "weightBasis": "liveweight",
+      "weightMinKg": 336,
+      "weightMaxKg": 336,
+      "weightEstimated": false,
+      "headCount": null,
+      "statistic": "Selected pen result",
+      "sourceId": "fw-stock-hit-road-2026-09-10",
+      "sourceUrl": "https://www.farmersweekly.co.nz/markets/livestock-hit-the-road-in-search-of-stronger-returns/",
+      "historicalContext": true,
+      "note": "Old selected-lot result for context, not the latest price or an all-steer average. Source reports $/kg and saleyard live animal weights. GST treatment not stated.",
+      "classLabel": "Yearling Speckle Park–dairy steers, selected pen",
+      "yard": "Feilding",
+      "min": 5.74,
+      "max": 5.74,
+      "unit": "NZD/kg LW",
+      "evidenceType": "reported-result"
+    },
+    {
+      "id": "rongotea-20261020-yearling-friesian-bulls",
+      "species": "cattle",
+      "category": "store cattle",
+      "class": "Yearling Friesian bulls",
+      "classLabel": "Yearling Friesian bulls",
+      "region": "Manawatū-Whanganui",
+      "venue": "Rongotea",
+      "yard": "Rongotea",
+      "saleDate": "2026-10-20",
+      "publishedDate": null,
+      "dateBasis": "explicit sale date in the publisher PDF",
+      "currency": "NZD",
+      "priceBasis": "head",
+      "min": 1240,
+      "max": 1310,
+      "unit": "NZD/head",
+      "weightBasis": "liveweight",
+      "weightMinKg": 262,
+      "weightMaxKg": 271,
+      "weightEstimated": false,
+      "headCount": null,
+      "statistic": "Reported class range; not a whole-sale average",
+      "sourceId": "nzfl-rongotea-20261020",
+      "sourceUrl": "https://admin.mylivestock.co.nz//media/marketReports/Manawatu/Market%20Report%20Rongotea%2020.10.2026.pdf",
+      "evidenceType": "reported-result",
+      "historicalContext": false,
+      "trendEligible": false,
+      "trendExclusionReason": "Comparable class, quality and weight evidence is insufficient.",
+      "note": "Selected category results, not a market average. GST treatment not stated. Weights are listed entry averages. Per-head prices are used because the report’s per-kilo header is inconsistent with its decimal values."
+    },
+    {
+      "id": "rongotea-20261020-2yr-hf-steers",
+      "species": "cattle",
+      "category": "store cattle",
+      "class": "2-year Hereford–Friesian cross steers",
+      "classLabel": "2-year Hereford–Friesian cross steers",
+      "region": "Manawatū-Whanganui",
+      "venue": "Rongotea",
+      "yard": "Rongotea",
+      "saleDate": "2026-10-20",
+      "publishedDate": null,
+      "dateBasis": "explicit sale date in the publisher PDF",
+      "currency": "NZD",
+      "priceBasis": "head",
+      "min": 1940,
+      "max": 1940,
+      "unit": "NZD/head",
+      "weightBasis": "liveweight",
+      "weightMinKg": 420,
+      "weightMaxKg": 420,
+      "weightEstimated": false,
+      "headCount": null,
+      "statistic": "Reported class result; not a whole-sale average",
+      "sourceId": "nzfl-rongotea-20261020",
+      "sourceUrl": "https://admin.mylivestock.co.nz//media/marketReports/Manawatu/Market%20Report%20Rongotea%2020.10.2026.pdf",
+      "evidenceType": "reported-result",
+      "historicalContext": false,
+      "trendEligible": false,
+      "trendExclusionReason": "Comparable class, quality and weight evidence is insufficient.",
+      "note": "Selected category results, not a market average. GST treatment not stated. Weights are listed entry averages. Per-head prices are used because the report’s per-kilo header is inconsistent with its decimal values."
+    },
+    {
+      "id": "rongotea-20261020-yearling-hf-steers",
+      "species": "cattle",
+      "category": "store cattle",
+      "class": "Yearling Hereford–Friesian cross steers",
+      "classLabel": "Yearling Hereford–Friesian cross steers",
+      "region": "Manawatū-Whanganui",
+      "venue": "Rongotea",
+      "yard": "Rongotea",
+      "saleDate": "2026-10-20",
+      "publishedDate": null,
+      "dateBasis": "explicit sale date in the publisher PDF",
+      "currency": "NZD",
+      "priceBasis": "head",
+      "min": 1340,
+      "max": 1340,
+      "unit": "NZD/head",
+      "weightBasis": "liveweight",
+      "weightMinKg": 248,
+      "weightMaxKg": 248,
+      "weightEstimated": false,
+      "headCount": null,
+      "statistic": "Reported class result; not a whole-sale average",
+      "sourceId": "nzfl-rongotea-20261020",
+      "sourceUrl": "https://admin.mylivestock.co.nz//media/marketReports/Manawatu/Market%20Report%20Rongotea%2020.10.2026.pdf",
+      "evidenceType": "reported-result",
+      "historicalContext": false,
+      "trendEligible": false,
+      "trendExclusionReason": "Comparable class, quality and weight evidence is insufficient.",
+      "note": "Selected category results, not a market average. GST treatment not stated. Weights are listed entry averages. Per-head prices are used because the report’s per-kilo header is inconsistent with its decimal values."
+    },
+    {
+      "id": "rongotea-20261020-mixed-sex-lambs",
+      "species": "lambs",
+      "category": "lambs",
+      "class": "Mixed-sex lambs",
+      "classLabel": "Mixed-sex lambs",
+      "region": "Manawatū-Whanganui",
+      "venue": "Rongotea",
+      "yard": "Rongotea",
+      "saleDate": "2026-10-20",
+      "publishedDate": null,
+      "dateBasis": "explicit sale date in the publisher PDF",
+      "currency": "NZD",
+      "priceBasis": "head",
+      "min": 136,
+      "max": 204,
+      "unit": "NZD/head",
+      "weightBasis": null,
+      "weightMinKg": null,
+      "weightMaxKg": null,
+      "weightEstimated": false,
+      "headCount": null,
+      "statistic": "Reported class range; not a whole-sale average",
+      "sourceId": "nzfl-rongotea-20261020",
+      "sourceUrl": "https://admin.mylivestock.co.nz//media/marketReports/Manawatu/Market%20Report%20Rongotea%2020.10.2026.pdf",
+      "evidenceType": "reported-result",
+      "historicalContext": false,
+      "trendEligible": false,
+      "trendExclusionReason": "Comparable class, quality and weight evidence is insufficient.",
+      "note": "Selected category results, not a market average. GST treatment not stated. No weights reported; no price-per-kg calculation or matched trend."
+    },
+    {
+      "id": "rongotea-20261020-ewes",
+      "species": "sheep",
+      "category": "sheep",
+      "class": "Ewes; age not specified",
+      "classLabel": "Ewes; age not specified",
+      "region": "Manawatū-Whanganui",
+      "venue": "Rongotea",
+      "yard": "Rongotea",
+      "saleDate": "2026-10-20",
+      "publishedDate": null,
+      "dateBasis": "explicit sale date in the publisher PDF",
+      "currency": "NZD",
+      "priceBasis": "head",
+      "min": 156,
+      "max": 172,
+      "unit": "NZD/head",
+      "weightBasis": null,
+      "weightMinKg": null,
+      "weightMaxKg": null,
+      "weightEstimated": false,
+      "headCount": null,
+      "statistic": "Reported class range; not a whole-sale average",
+      "sourceId": "nzfl-rongotea-20261020",
+      "sourceUrl": "https://admin.mylivestock.co.nz//media/marketReports/Manawatu/Market%20Report%20Rongotea%2020.10.2026.pdf",
+      "evidenceType": "reported-result",
+      "historicalContext": false,
+      "trendEligible": false,
+      "trendExclusionReason": "Comparable class, quality and weight evidence is insufficient.",
+      "note": "Selected category results, not a market average. GST treatment not stated. No weights reported; no price-per-kg calculation or matched trend."
+    },
+    {
+      "id": "rongotea-20261013-yearling-friesian-bulls",
+      "species": "cattle",
+      "category": "store cattle",
+      "class": "Yearling Friesian bulls",
+      "classLabel": "Yearling Friesian bulls",
+      "region": "Manawatū-Whanganui",
+      "venue": "Rongotea",
+      "yard": "Rongotea",
+      "saleDate": "2026-10-13",
+      "publishedDate": null,
+      "dateBasis": "explicit sale date in the publisher PDF",
+      "currency": "NZD",
+      "priceBasis": "head",
+      "min": 1090,
+      "max": 1590,
+      "unit": "NZD/head",
+      "weightBasis": "liveweight",
+      "weightMinKg": 200,
+      "weightMaxKg": 350,
+      "weightEstimated": false,
+      "headCount": null,
+      "statistic": "Reported class range; not a whole-sale average",
+      "sourceId": "nzfl-rongotea-20261013",
+      "sourceUrl": "https://admin.mylivestock.co.nz//media/marketReports/Manawatu/Market%20Report%20Rongotea%2013.10.2026.pdf",
+      "evidenceType": "reported-result",
+      "historicalContext": false,
+      "trendEligible": false,
+      "trendExclusionReason": "Comparable class, quality and weight evidence is insufficient.",
+      "note": "Selected category results, not a market average. GST treatment not stated. Weights are listed entry averages. Per-head prices are used because the report’s per-kilo header is inconsistent with its decimal values."
+    },
+    {
+      "id": "rongotea-20261013-mixed-sex-lambs",
+      "species": "lambs",
+      "category": "lambs",
+      "class": "Mixed-sex lambs",
+      "classLabel": "Mixed-sex lambs",
+      "region": "Manawatū-Whanganui",
+      "venue": "Rongotea",
+      "yard": "Rongotea",
+      "saleDate": "2026-10-13",
+      "publishedDate": null,
+      "dateBasis": "explicit sale date in the publisher PDF",
+      "currency": "NZD",
+      "priceBasis": "head",
+      "min": 176,
+      "max": 176,
+      "unit": "NZD/head",
+      "weightBasis": null,
+      "weightMinKg": null,
+      "weightMaxKg": null,
+      "weightEstimated": false,
+      "headCount": null,
+      "statistic": "Reported class result; not a whole-sale average",
+      "sourceId": "nzfl-rongotea-20261013",
+      "sourceUrl": "https://admin.mylivestock.co.nz//media/marketReports/Manawatu/Market%20Report%20Rongotea%2013.10.2026.pdf",
+      "evidenceType": "reported-result",
+      "historicalContext": false,
+      "trendEligible": false,
+      "trendExclusionReason": "Comparable class, quality and weight evidence is insufficient.",
+      "note": "Selected category results, not a market average. GST treatment not stated. No weights reported; no price-per-kg calculation or matched trend."
+    }
+  ],
+  "events": [
+    {
+      "id": "feilding-20261029-dairybeef",
+      "title": "Feilding Dairy Beef",
+      "yard": "Feilding",
+      "date": "2026-10-29",
+      "time": "11:30",
+      "timezone": "Pacific/Auckland",
+      "species": "cattle",
+      "sourceId": "feilding-calendar",
+      "checkedAt": "2026-10-23T19:53:03.549Z"
+    },
+    {
+      "id": "feilding-20261030-sheep",
+      "title": "Feilding Store — sheep",
+      "yard": "Feilding",
+      "date": "2026-10-30",
+      "time": "11:00",
+      "timezone": "Pacific/Auckland",
+      "species": "sheep",
+      "sourceId": "feilding-calendar",
+      "checkedAt": "2026-10-23T19:53:03.549Z"
+    },
+    {
+      "id": "feilding-20261030-cattle",
+      "title": "Feilding Store — cattle",
+      "yard": "Feilding",
+      "date": "2026-10-30",
+      "time": "11:30",
+      "timezone": "Pacific/Auckland",
+      "species": "cattle",
+      "sourceId": "feilding-calendar",
+      "checkedAt": "2026-10-23T19:53:03.549Z"
+    }
+  ],
+  "outlooks": [
+    {
+      "id": "feilding-20261029-dairybeef-cattle",
+      "eventId": "feilding-20261029-dairybeef",
+      "species": "cattle",
+      "direction": "uncertain",
+      "confidence": "low",
+      "type": "app-assessment",
+      "summary": "Nearby Rongotea reports provide recent cattle results, but no comparable Feilding dairy-beef trend. National commentary describes selective weaner buying, easing bull returns and North Island drying risk. Without fresh comparable Feilding results, the next sale’s direction remains uncertain.",
+      "drivers": [
+        "No fresh comparable Feilding results",
+        "Nearby Rongotea results cover different stock and weights",
+        "National bull-return and North Island drying risks"
+      ],
+      "sourceIds": [
+        "nzfl-rongotea-20261020",
+        "weaner-oct16",
+        "fw-bull-momentum-20261023",
+        "weather-oct23"
+      ],
+      "issuedAt": "2026-10-23T19:55:28.483Z",
+      "priceRange": null
+    },
+    {
+      "id": "feilding-20261030-sheep-lambs",
+      "eventId": "feilding-20261030-sheep",
+      "species": "lambs",
+      "direction": "uncertain",
+      "confidence": "low",
+      "type": "app-assessment",
+      "summary": "Rongotea reported mixed-sex lambs at NZ$136–204 per head on 20 October, without weights. Hawke’s Bay commentary is positive, but neither source establishes a comparable Feilding trend. The next sale’s direction remains uncertain, with low confidence.",
+      "drivers": [
+        "No fresh comparable Feilding lamb results",
+        "Rongotea lamb weights unreported",
+        "Positive regional commentary and North Island drying risk"
+      ],
+      "sourceIds": [
+        "nzfl-rongotea-20261020",
+        "lamb-oct23",
+        "weather-oct23"
+      ],
+      "issuedAt": "2026-10-23T19:55:28.483Z",
+      "priceRange": null
+    },
+    {
+      "id": "feilding-20261030-sheep-sheep",
+      "eventId": "feilding-20261030-sheep",
+      "species": "sheep",
+      "direction": "uncertain",
+      "confidence": "low",
+      "type": "app-assessment",
+      "summary": "Rongotea’s recent ewe results provide nearby-yard context, but age, quality and weights are insufficient for a comparable Feilding assessment. Fresh local sheep-sale evidence is missing, so the next sale’s direction remains uncertain.",
+      "drivers": [
+        "No fresh comparable Feilding sheep results",
+        "Nearby ewe results lack comparable weights and class detail",
+        "North Island drying risk"
+      ],
+      "sourceIds": [
+        "nzfl-rongotea-20261020",
+        "weather-oct23"
+      ],
+      "issuedAt": "2026-10-23T19:55:28.483Z",
+      "priceRange": null
+    },
+    {
+      "id": "feilding-20261030-cattle-cattle",
+      "eventId": "feilding-20261030-cattle",
+      "species": "cattle",
+      "direction": "uncertain",
+      "confidence": "low",
+      "type": "app-assessment",
+      "summary": "Recent Rongotea cattle results add nearby-yard context, while national bull-market commentary points to easing processor returns and weather-related caution. Neither establishes a like-for-like Feilding store-cattle move. Without fresh comparable local results, the next sale’s direction remains uncertain.",
+      "drivers": [
+        "No fresh comparable Feilding results",
+        "Nearby Rongotea results cover different stock and weights",
+        "National bull-return and North Island drying risks"
+      ],
+      "sourceIds": [
+        "nzfl-rongotea-20261020",
+        "weaner-oct16",
+        "fw-bull-momentum-20261023",
+        "weather-oct23"
+      ],
+      "issuedAt": "2026-10-23T19:55:28.483Z",
+      "priceRange": null
+    }
+  ],
+  "outcomes": [],
+  "forecastHistory": [
+    {
+      "id": "feilding-20261029-dairybeef-cattle",
+      "eventId": "feilding-20261029-dairybeef",
+      "species": "cattle",
+      "direction": "uncertain",
+      "confidence": "low",
+      "type": "app-assessment",
+      "summary": "Strong beef prices are balanced by selective weaner buying and dry-weather concerns. Recent class-and-weight-matched Feilding results are missing, so the direction remains uncertain.",
+      "drivers": [
+        "Limited recent comparable local results",
+        "North Island drying risk"
+      ],
+      "sourceIds": [
+        "weaner-oct16",
+        "weather-oct23"
+      ],
+      "issuedAt": "2026-10-23T13:58:49.169396+00:00",
+      "priceRange": null,
+      "event": {
+        "id": "feilding-20261029-dairybeef",
+        "title": "Feilding Dairy Beef",
+        "yard": "Feilding",
+        "date": "2026-10-29",
+        "time": "11:30",
+        "timezone": "Pacific/Auckland",
+        "species": "cattle",
+        "sourceId": "feilding-calendar",
+        "checkedAt": "2026-10-23T13:58:49.169396+00:00"
+      },
+      "sources": [
+        {
+          "id": "weaner-oct16",
+          "title": "AgriHQ Insight | Record beef prices meet El Niño caution in weaner market",
+          "publisher": "Farmers Weekly Podcast / AgriHQ",
+          "url": "https://www.spreaker.com/episode/agrihq-insight-record-beef-prices-meet-el-nino-caution-in-weaner-market--75813584",
+          "audioUrl": "https://api.spreaker.com/download/episode/75813584/farmers_weekly_ep160_sara_h_master.mp3",
+          "publishedAt": "2026-10-15T20:09:07+00:00",
+          "scope": "New Zealand dairy-beef weaner market",
+          "kind": "public-podcast-description"
+        },
+        {
+          "id": "weather-oct23",
+          "title": "The Country 23/10/26: Chris Brandolino talks to Jamie Mackay",
+          "publisher": "The Country / NZME",
+          "url": "https://omny.fm/shows/the-country/the-country-23-10-26-chris-brandolino-talks-to-jamie-mackay",
+          "audioUrl": "https://pdst.fm/e/dts.podtrac.com/redirect.mp3/traffic.omny.fm/d/clips/7784f840-c291-422a-924b-ad9000bbad71/6ac3a53c-3f44-41fd-8866-ae990144f969/658a235d-2a59-4229-905b-b4ec0004556e/audio.mp3?utm_source=Podcast&in_playlist=f941f6d6-d476-4765-b06f-ae990144fa25",
+          "publishedAt": "2026-10-23T00:17:20+00:00",
+          "scope": "North Island",
+          "kind": "public-podcast-description"
+        }
+      ]
+    },
+    {
+      "id": "feilding-20261030-sheep-lambs",
+      "eventId": "feilding-20261030-sheep",
+      "species": "lambs",
+      "direction": "uncertain",
+      "confidence": "low",
+      "type": "app-assessment",
+      "summary": "Positive Hawke’s Bay lamb commentary provides a regional support signal, but recent comparable Feilding results are missing. The direction of this sale remains uncertain.",
+      "drivers": [
+        "Limited recent comparable local results",
+        "North Island drying risk"
+      ],
+      "sourceIds": [
+        "lamb-oct23",
+        "weather-oct23"
+      ],
+      "issuedAt": "2026-10-23T13:58:49.169396+00:00",
+      "priceRange": null,
+      "event": {
+        "id": "feilding-20261030-sheep",
+        "title": "Feilding Store — sheep",
+        "yard": "Feilding",
+        "date": "2026-10-30",
+        "time": "11:00",
+        "timezone": "Pacific/Auckland",
+        "species": "sheep",
+        "sourceId": "feilding-calendar",
+        "checkedAt": "2026-10-23T13:58:49.169396+00:00"
+      },
+      "sources": [
+        {
+          "id": "lamb-oct23",
+          "title": "AgriHQ Insight | Hawke’s Bay lamb sales set strong early benchmark",
+          "publisher": "Farmers Weekly Podcast / AgriHQ",
+          "url": "https://www.spreaker.com/episode/agrihq-insight-hawke-s-bay-lamb-sales-set-strong-early-benchmark--75929545",
+          "audioUrl": "https://api.spreaker.com/download/episode/75929545/farmers_weekly_ep161_alex_c_master_revised.mp3",
+          "publishedAt": "2026-10-22T21:40:09+00:00",
+          "scope": "Hawke’s Bay",
+          "kind": "public-podcast-description"
+        },
+        {
+          "id": "weather-oct23",
+          "title": "The Country 23/10/26: Chris Brandolino talks to Jamie Mackay",
+          "publisher": "The Country / NZME",
+          "url": "https://omny.fm/shows/the-country/the-country-23-10-26-chris-brandolino-talks-to-jamie-mackay",
+          "audioUrl": "https://pdst.fm/e/dts.podtrac.com/redirect.mp3/traffic.omny.fm/d/clips/7784f840-c291-422a-924b-ad9000bbad71/6ac3a53c-3f44-41fd-8866-ae990144f969/658a235d-2a59-4229-905b-b4ec0004556e/audio.mp3?utm_source=Podcast&in_playlist=f941f6d6-d476-4765-b06f-ae990144fa25",
+          "publishedAt": "2026-10-23T00:17:20+00:00",
+          "scope": "North Island",
+          "kind": "public-podcast-description"
+        }
+      ]
+    },
+    {
+      "id": "feilding-20261030-sheep-sheep",
+      "eventId": "feilding-20261030-sheep",
+      "species": "sheep",
+      "direction": "uncertain",
+      "confidence": "low",
+      "type": "app-assessment",
+      "summary": "There is not enough fresh local sheep-sale evidence to make a directional call. Weather commentary alone cannot establish sale prices.",
+      "drivers": [
+        "Limited recent comparable local results",
+        "North Island drying risk"
+      ],
+      "sourceIds": [
+        "weather-oct23"
+      ],
+      "issuedAt": "2026-10-23T13:58:49.169396+00:00",
+      "priceRange": null,
+      "event": {
+        "id": "feilding-20261030-sheep",
+        "title": "Feilding Store — sheep",
+        "yard": "Feilding",
+        "date": "2026-10-30",
+        "time": "11:00",
+        "timezone": "Pacific/Auckland",
+        "species": "sheep",
+        "sourceId": "feilding-calendar",
+        "checkedAt": "2026-10-23T13:58:49.169396+00:00"
+      },
+      "sources": [
+        {
+          "id": "weather-oct23",
+          "title": "The Country 23/10/26: Chris Brandolino talks to Jamie Mackay",
+          "publisher": "The Country / NZME",
+          "url": "https://omny.fm/shows/the-country/the-country-23-10-26-chris-brandolino-talks-to-jamie-mackay",
+          "audioUrl": "https://pdst.fm/e/dts.podtrac.com/redirect.mp3/traffic.omny.fm/d/clips/7784f840-c291-422a-924b-ad9000bbad71/6ac3a53c-3f44-41fd-8866-ae990144f969/658a235d-2a59-4229-905b-b4ec0004556e/audio.mp3?utm_source=Podcast&in_playlist=f941f6d6-d476-4765-b06f-ae990144fa25",
+          "publishedAt": "2026-10-23T00:17:20+00:00",
+          "scope": "North Island",
+          "kind": "public-podcast-description"
+        }
+      ]
+    },
+    {
+      "id": "feilding-20261030-cattle-cattle",
+      "eventId": "feilding-20261030-cattle",
+      "species": "cattle",
+      "direction": "uncertain",
+      "confidence": "low",
+      "type": "app-assessment",
+      "summary": "Strong beef prices are balanced by selective weaner buying and dry-weather concerns. Recent class-and-weight-matched Feilding results are missing, so the direction remains uncertain.",
+      "drivers": [
+        "Limited recent comparable local results",
+        "North Island drying risk"
+      ],
+      "sourceIds": [
+        "weaner-oct16",
+        "weather-oct23"
+      ],
+      "issuedAt": "2026-10-23T13:58:49.169396+00:00",
+      "priceRange": null,
+      "event": {
+        "id": "feilding-20261030-cattle",
+        "title": "Feilding Store — cattle",
+        "yard": "Feilding",
+        "date": "2026-10-30",
+        "time": "11:30",
+        "timezone": "Pacific/Auckland",
+        "species": "cattle",
+        "sourceId": "feilding-calendar",
+        "checkedAt": "2026-10-23T13:58:49.169396+00:00"
+      },
+      "sources": [
+        {
+          "id": "weaner-oct16",
+          "title": "AgriHQ Insight | Record beef prices meet El Niño caution in weaner market",
+          "publisher": "Farmers Weekly Podcast / AgriHQ",
+          "url": "https://www.spreaker.com/episode/agrihq-insight-record-beef-prices-meet-el-nino-caution-in-weaner-market--75813584",
+          "audioUrl": "https://api.spreaker.com/download/episode/75813584/farmers_weekly_ep160_sara_h_master.mp3",
+          "publishedAt": "2026-10-15T20:09:07+00:00",
+          "scope": "New Zealand dairy-beef weaner market",
+          "kind": "public-podcast-description"
+        },
+        {
+          "id": "weather-oct23",
+          "title": "The Country 23/10/26: Chris Brandolino talks to Jamie Mackay",
+          "publisher": "The Country / NZME",
+          "url": "https://omny.fm/shows/the-country/the-country-23-10-26-chris-brandolino-talks-to-jamie-mackay",
+          "audioUrl": "https://pdst.fm/e/dts.podtrac.com/redirect.mp3/traffic.omny.fm/d/clips/7784f840-c291-422a-924b-ad9000bbad71/6ac3a53c-3f44-41fd-8866-ae990144f969/658a235d-2a59-4229-905b-b4ec0004556e/audio.mp3?utm_source=Podcast&in_playlist=f941f6d6-d476-4765-b06f-ae990144fa25",
+          "publishedAt": "2026-10-23T00:17:20+00:00",
+          "scope": "North Island",
+          "kind": "public-podcast-description"
+        }
+      ]
+    }
+  ],
+  "savedAt": "2026-10-23T19:55:35.677Z",
+  "persisted": true
+}

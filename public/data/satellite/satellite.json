@@ -1,0 +1,476 @@
+{
+  "bounds": {
+    "xmin": 1812260,
+    "ymin": 5545800,
+    "xmax": 1814820,
+    "ymax": 5548300
+  },
+  "crs": "EPSG:2193",
+  "resolutionM": 10,
+  "width": 256,
+  "height": 250,
+  "pixelConvention": "North-up 256 × 250 image; top-left (xmin, ymax), bottom-right (xmax, ymin); 10 m grid cells.",
+  "scenes": [
+    {
+      "date": "2025-11-16",
+      "datetimeUTC": "2025-11-15T22:17:25.513000Z",
+      "dateTimezone": "Pacific/Auckland",
+      "label": "16 Nov 2025",
+      "rgb": "scene-2025-11-16-rgb.jpg",
+      "ndvi": "scene-2025-11-16-ndvi.png",
+      "validFraction": 0.9996,
+      "rgbValidFraction": 0.9996,
+      "farmValidFraction": 1.0,
+      "tileCloudCoverPercent": 0.595254,
+      "sceneId": "S2C_T60GUA_20251115T221611_L2A",
+      "platform": "sentinel-2c",
+      "collection": "sentinel-2-c1-l2a",
+      "sceneUrl": "https://earth-search.aws.element84.com/v1/collections/sentinel-2-c1-l2a/items/S2C_T60GUA_20251115T221611_L2A",
+      "ndviStatsFarm": {
+        "mean": 0.785,
+        "median": 0.879,
+        "min": 0.142,
+        "max": 0.942
+      },
+      "reflectanceCalibration": {
+        "red": {
+          "nodata": 0,
+          "data_type": "uint16",
+          "spatial_resolution": 10,
+          "scale": 0.0001,
+          "offset": -0.1
+        },
+        "nir": {
+          "nodata": 0,
+          "data_type": "uint16",
+          "spatial_resolution": 10,
+          "scale": 0.0001,
+          "offset": -0.1
+        }
+      },
+      "sourceAssets": {
+        "visual": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/60/G/UA/2025/11/S2C_T60GUA_20251115T221611_L2A/TCI.tif",
+        "red": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/60/G/UA/2025/11/S2C_T60GUA_20251115T221611_L2A/B04.tif",
+        "nir": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/60/G/UA/2025/11/S2C_T60GUA_20251115T221611_L2A/B08.tif",
+        "scl": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/60/G/UA/2025/11/S2C_T60GUA_20251115T221611_L2A/SCL.tif"
+      }
+    },
+    {
+      "date": "2025-12-11",
+      "datetimeUTC": "2025-12-10T22:17:13.702000Z",
+      "dateTimezone": "Pacific/Auckland",
+      "label": "11 Dec 2025",
+      "rgb": "scene-2025-12-11-rgb.jpg",
+      "ndvi": "scene-2025-12-11-ndvi.png",
+      "validFraction": 0.9996,
+      "rgbValidFraction": 0.9996,
+      "farmValidFraction": 1.0,
+      "tileCloudCoverPercent": 29.033858,
+      "sceneId": "S2B_T60GUA_20251210T221559_L2A",
+      "platform": "sentinel-2b",
+      "collection": "sentinel-2-c1-l2a",
+      "sceneUrl": "https://earth-search.aws.element84.com/v1/collections/sentinel-2-c1-l2a/items/S2B_T60GUA_20251210T221559_L2A",
+      "ndviStatsFarm": {
+        "mean": 0.66,
+        "median": 0.752,
+        "min": 0.093,
+        "max": 0.945
+      },
+      "reflectanceCalibration": {
+        "red": {
+          "nodata": 0,
+          "data_type": "uint16",
+          "spatial_resolution": 10,
+          "scale": 0.0001,
+          "offset": -0.1
+        },
+        "nir": {
+          "nodata": 0,
+          "data_type": "uint16",
+          "spatial_resolution": 10,
+          "scale": 0.0001,
+          "offset": -0.1
+        }
+      },
+      "sourceAssets": {
+        "visual": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/60/G/UA/2025/12/S2B_T60GUA_20251210T221559_L2A/TCI.tif",
+        "red": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/60/G/UA/2025/12/S2B_T60GUA_20251210T221559_L2A/B04.tif",
+        "nir": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/60/G/UA/2025/12/S2B_T60GUA_20251210T221559_L2A/B08.tif",
+        "scl": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/60/G/UA/2025/12/S2B_T60GUA_20251210T221559_L2A/SCL.tif"
+      }
+    },
+    {
+      "date": "2026-01-05",
+      "datetimeUTC": "2026-01-04T22:17:22.090000Z",
+      "dateTimezone": "Pacific/Auckland",
+      "label": "05 Jan 2026",
+      "rgb": "scene-2026-01-05-rgb.jpg",
+      "ndvi": "scene-2026-01-05-ndvi.png",
+      "validFraction": 0.9676,
+      "rgbValidFraction": 0.9676,
+      "farmValidFraction": 0.9986,
+      "tileCloudCoverPercent": 70.361489,
+      "sceneId": "S2C_T60GUA_20260104T221608_L2A",
+      "platform": "sentinel-2c",
+      "collection": "sentinel-2-c1-l2a",
+      "sceneUrl": "https://earth-search.aws.element84.com/v1/collections/sentinel-2-c1-l2a/items/S2C_T60GUA_20260104T221608_L2A",
+      "ndviStatsFarm": {
+        "mean": 0.702,
+        "median": 0.726,
+        "min": 0.099,
+        "max": 0.955
+      },
+      "reflectanceCalibration": {
+        "red": {
+          "nodata": 0,
+          "data_type": "uint16",
+          "spatial_resolution": 10,
+          "scale": 0.0001,
+          "offset": -0.1
+        },
+        "nir": {
+          "nodata": 0,
+          "data_type": "uint16",
+          "spatial_resolution": 10,
+          "scale": 0.0001,
+          "offset": -0.1
+        }
+      },
+      "sourceAssets": {
+        "visual": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/60/G/UA/2026/1/S2C_T60GUA_20260104T221608_L2A/TCI.tif",
+        "red": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/60/G/UA/2026/1/S2C_T60GUA_20260104T221608_L2A/B04.tif",
+        "nir": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/60/G/UA/2026/1/S2C_T60GUA_20260104T221608_L2A/B08.tif",
+        "scl": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/60/G/UA/2026/1/S2C_T60GUA_20260104T221608_L2A/SCL.tif"
+      }
+    },
+    {
+      "date": "2026-03-21",
+      "datetimeUTC": "2026-03-20T22:17:12.083000Z",
+      "dateTimezone": "Pacific/Auckland",
+      "label": "21 Mar 2026",
+      "rgb": "scene-2026-03-21-rgb.jpg",
+      "ndvi": "scene-2026-03-21-ndvi.png",
+      "validFraction": 1.0,
+      "rgbValidFraction": 1.0,
+      "farmValidFraction": 1.0,
+      "tileCloudCoverPercent": 12.982936,
+      "sceneId": "S2B_T60GUA_20260320T221557_L2A",
+      "platform": "sentinel-2b",
+      "collection": "sentinel-2-c1-l2a",
+      "sceneUrl": "https://earth-search.aws.element84.com/v1/collections/sentinel-2-c1-l2a/items/S2B_T60GUA_20260320T221557_L2A",
+      "ndviStatsFarm": {
+        "mean": 0.687,
+        "median": 0.693,
+        "min": 0.24,
+        "max": 0.937
+      },
+      "reflectanceCalibration": {
+        "red": {
+          "nodata": 0,
+          "data_type": "uint16",
+          "spatial_resolution": 10,
+          "scale": 0.0001,
+          "offset": -0.1
+        },
+        "nir": {
+          "nodata": 0,
+          "data_type": "uint16",
+          "spatial_resolution": 10,
+          "scale": 0.0001,
+          "offset": -0.1
+        }
+      },
+      "sourceAssets": {
+        "visual": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/60/G/UA/2026/3/S2B_T60GUA_20260320T221557_L2A/TCI.tif",
+        "red": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/60/G/UA/2026/3/S2B_T60GUA_20260320T221557_L2A/B04.tif",
+        "nir": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/60/G/UA/2026/3/S2B_T60GUA_20260320T221557_L2A/B08.tif",
+        "scl": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/60/G/UA/2026/3/S2B_T60GUA_20260320T221557_L2A/SCL.tif"
+      }
+    },
+    {
+      "date": "2026-04-25",
+      "datetimeUTC": "2026-04-24T22:17:16.648000Z",
+      "dateTimezone": "Pacific/Auckland",
+      "label": "25 Apr 2026",
+      "rgb": "scene-2026-04-25-rgb.jpg",
+      "ndvi": "scene-2026-04-25-ndvi.png",
+      "validFraction": 0.9972,
+      "rgbValidFraction": 1.0,
+      "farmValidFraction": 0.9992,
+      "tileCloudCoverPercent": 0.001118,
+      "sceneId": "S2C_T60GUA_20260424T221602_L2A",
+      "platform": "sentinel-2c",
+      "collection": "sentinel-2-c1-l2a",
+      "sceneUrl": "https://earth-search.aws.element84.com/v1/collections/sentinel-2-c1-l2a/items/S2C_T60GUA_20260424T221602_L2A",
+      "ndviStatsFarm": {
+        "mean": 0.675,
+        "median": 0.675,
+        "min": 0.234,
+        "max": 0.998
+      },
+      "reflectanceCalibration": {
+        "red": {
+          "nodata": 0,
+          "data_type": "uint16",
+          "spatial_resolution": 10,
+          "scale": 0.0001,
+          "offset": -0.1
+        },
+        "nir": {
+          "nodata": 0,
+          "data_type": "uint16",
+          "spatial_resolution": 10,
+          "scale": 0.0001,
+          "offset": -0.1
+        }
+      },
+      "sourceAssets": {
+        "visual": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/60/G/UA/2026/4/S2C_T60GUA_20260424T221602_L2A/TCI.tif",
+        "red": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/60/G/UA/2026/4/S2C_T60GUA_20260424T221602_L2A/B04.tif",
+        "nir": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/60/G/UA/2026/4/S2C_T60GUA_20260424T221602_L2A/B08.tif",
+        "scl": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/60/G/UA/2026/4/S2C_T60GUA_20260424T221602_L2A/SCL.tif"
+      }
+    },
+    {
+      "date": "2026-05-20",
+      "datetimeUTC": "2026-05-19T22:17:12.243000Z",
+      "dateTimezone": "Pacific/Auckland",
+      "label": "20 May 2026",
+      "rgb": "scene-2026-05-20-rgb.jpg",
+      "ndvi": "scene-2026-05-20-ndvi.png",
+      "validFraction": 0.99,
+      "rgbValidFraction": 1.0,
+      "farmValidFraction": 0.9935,
+      "tileCloudCoverPercent": 0.31768,
+      "sceneId": "S2B_T60GUA_20260519T221558_L2A",
+      "platform": "sentinel-2b",
+      "collection": "sentinel-2-c1-l2a",
+      "sceneUrl": "https://earth-search.aws.element84.com/v1/collections/sentinel-2-c1-l2a/items/S2B_T60GUA_20260519T221558_L2A",
+      "ndviStatsFarm": {
+        "mean": 0.767,
+        "median": 0.787,
+        "min": 0.195,
+        "max": 0.999
+      },
+      "reflectanceCalibration": {
+        "red": {
+          "nodata": 0,
+          "data_type": "uint16",
+          "spatial_resolution": 10,
+          "scale": 0.0001,
+          "offset": -0.1
+        },
+        "nir": {
+          "nodata": 0,
+          "data_type": "uint16",
+          "spatial_resolution": 10,
+          "scale": 0.0001,
+          "offset": -0.1
+        }
+      },
+      "sourceAssets": {
+        "visual": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/60/G/UA/2026/5/S2B_T60GUA_20260519T221558_L2A/TCI.tif",
+        "red": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/60/G/UA/2026/5/S2B_T60GUA_20260519T221558_L2A/B04.tif",
+        "nir": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/60/G/UA/2026/5/S2B_T60GUA_20260519T221558_L2A/B08.tif",
+        "scl": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/60/G/UA/2026/5/S2B_T60GUA_20260519T221558_L2A/SCL.tif"
+      }
+    },
+    {
+      "date": "2026-06-09",
+      "datetimeUTC": "2026-06-08T22:17:13.598000Z",
+      "dateTimezone": "Pacific/Auckland",
+      "label": "09 Jun 2026",
+      "rgb": "scene-2026-06-09-rgb.jpg",
+      "ndvi": "scene-2026-06-09-ndvi.png",
+      "validFraction": 1.0,
+      "rgbValidFraction": 1.0,
+      "farmValidFraction": 1.0,
+      "tileCloudCoverPercent": 12.551793,
+      "sceneId": "S2B_T60GUA_20260608T221559_L2A",
+      "platform": "sentinel-2b",
+      "collection": "sentinel-2-c1-l2a",
+      "sceneUrl": "https://earth-search.aws.element84.com/v1/collections/sentinel-2-c1-l2a/items/S2B_T60GUA_20260608T221559_L2A",
+      "ndviStatsFarm": {
+        "mean": 0.805,
+        "median": 0.816,
+        "min": 0.253,
+        "max": 0.962
+      },
+      "reflectanceCalibration": {
+        "red": {
+          "nodata": 0,
+          "data_type": "uint16",
+          "spatial_resolution": 10,
+          "scale": 0.0001,
+          "offset": -0.1
+        },
+        "nir": {
+          "nodata": 0,
+          "data_type": "uint16",
+          "spatial_resolution": 10,
+          "scale": 0.0001,
+          "offset": -0.1
+        }
+      },
+      "sourceAssets": {
+        "visual": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/60/G/UA/2026/6/S2B_T60GUA_20260608T221559_L2A/TCI.tif",
+        "red": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/60/G/UA/2026/6/S2B_T60GUA_20260608T221559_L2A/B04.tif",
+        "nir": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/60/G/UA/2026/6/S2B_T60GUA_20260608T221559_L2A/B08.tif",
+        "scl": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/60/G/UA/2026/6/S2B_T60GUA_20260608T221559_L2A/SCL.tif"
+      }
+    },
+    {
+      "date": "2026-07-29",
+      "datetimeUTC": "2026-07-28T22:17:16.653000Z",
+      "dateTimezone": "Pacific/Auckland",
+      "label": "29 Jul 2026",
+      "rgb": "scene-2026-07-29-rgb.jpg",
+      "ndvi": "scene-2026-07-29-ndvi.png",
+      "validFraction": 0.9923,
+      "rgbValidFraction": 1.0,
+      "farmValidFraction": 0.9946,
+      "tileCloudCoverPercent": 16.799055,
+      "sceneId": "S2B_T60GUA_20260728T221613_L2A",
+      "platform": "sentinel-2b",
+      "collection": "sentinel-2-c1-l2a",
+      "sceneUrl": "https://earth-search.aws.element84.com/v1/collections/sentinel-2-c1-l2a/items/S2B_T60GUA_20260728T221613_L2A",
+      "ndviStatsFarm": {
+        "mean": 0.826,
+        "median": 0.847,
+        "min": 0.198,
+        "max": 0.998
+      },
+      "reflectanceCalibration": {
+        "red": {
+          "nodata": 0,
+          "data_type": "uint16",
+          "spatial_resolution": 10,
+          "scale": 0.0001,
+          "offset": -0.1
+        },
+        "nir": {
+          "nodata": 0,
+          "data_type": "uint16",
+          "spatial_resolution": 10,
+          "scale": 0.0001,
+          "offset": -0.1
+        }
+      },
+      "sourceAssets": {
+        "visual": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/60/G/UA/2026/7/S2B_T60GUA_20260728T221613_L2A/TCI.tif",
+        "red": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/60/G/UA/2026/7/S2B_T60GUA_20260728T221613_L2A/B04.tif",
+        "nir": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/60/G/UA/2026/7/S2B_T60GUA_20260728T221613_L2A/B08.tif",
+        "scl": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/60/G/UA/2026/7/S2B_T60GUA_20260728T221613_L2A/SCL.tif"
+      }
+    },
+    {
+      "date": "2026-10-07",
+      "datetimeUTC": "2026-10-06T22:17:15.673000Z",
+      "dateTimezone": "Pacific/Auckland",
+      "label": "07 Oct 2026",
+      "rgb": "scene-2026-10-07-rgb.jpg",
+      "ndvi": "scene-2026-10-07-ndvi.png",
+      "validFraction": 0.9971,
+      "rgbValidFraction": 0.9971,
+      "farmValidFraction": 0.9947,
+      "tileCloudCoverPercent": 9.37471,
+      "sceneId": "S2B_T60GUA_20261006T221637_L2A",
+      "platform": "sentinel-2b",
+      "collection": "sentinel-2-c1-l2a",
+      "sceneUrl": "https://earth-search.aws.element84.com/v1/collections/sentinel-2-c1-l2a/items/S2B_T60GUA_20261006T221637_L2A",
+      "ndviStatsFarm": {
+        "mean": 0.828,
+        "median": 0.894,
+        "min": 0.111,
+        "max": 0.961
+      },
+      "reflectanceCalibration": {
+        "red": {
+          "nodata": 0,
+          "data_type": "uint16",
+          "spatial_resolution": 10,
+          "scale": 0.0001,
+          "offset": -0.1
+        },
+        "nir": {
+          "nodata": 0,
+          "data_type": "uint16",
+          "spatial_resolution": 10,
+          "scale": 0.0001,
+          "offset": -0.1
+        }
+      },
+      "sourceAssets": {
+        "visual": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/60/G/UA/2026/10/S2B_T60GUA_20261006T221637_L2A/TCI.tif",
+        "red": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/60/G/UA/2026/10/S2B_T60GUA_20261006T221637_L2A/B04.tif",
+        "nir": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/60/G/UA/2026/10/S2B_T60GUA_20261006T221637_L2A/B08.tif",
+        "scl": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/60/G/UA/2026/10/S2B_T60GUA_20261006T221637_L2A/SCL.tif"
+      }
+    }
+  ],
+  "source": {
+    "title": "Copernicus Sentinel-2 Level-2A, Earth Search Collection 1",
+    "attribution": "Contains modified Copernicus Sentinel data (2025–2026), processed by ESA; cloud-optimized imagery distributed by Element 84 Earth Search / AWS Open Data.",
+    "url": "https://earth-search.aws.element84.com/v1/collections/sentinel-2-c1-l2a",
+    "dateNote": "Acquisition dates are displayed in Pacific/Auckland local time. Each scene retains its exact UTC acquisition timestamp. These are selected dated snapshots, not a live feed.",
+    "license": "Copernicus Sentinel Data Legal Notice: free, full and open access subject to its terms.",
+    "licenseUrl": "https://sentinel.esa.int/documents/247904/690755/Sentinel_Data_Legal_Notice",
+    "nativeResolutionM": 10,
+    "cloudMaskResolutionM": 20,
+    "maskMethod": "SCL classes 4 (vegetation), 5 (bare ground) and 6 (water) retained; all other classes shown as unknown. Unknown areas buffered by 20 m. The 20 m classification is resampled with nearest neighbour to the 10 m output grid.",
+    "ndviMethod": "NDVI = (B08 surface reflectance − B04 surface reflectance) / (B08 surface reflectance + B04 surface reflectance). Collection 1 STAC scale and offset applied per asset; the legacy collection with ambiguous offsets is not used.",
+    "rgbMethod": "Provider true-colour TCI (B04/B03/B02), native 10 m, warped to this north-up NZTM grid. Unknown pixels are neutral gray.",
+    "limitations": [
+      "Automated cloud masks can miss cloud, haze or shadow.",
+      "NDVI is a greenness index, not direct pasture mass, crop yield, a plant-health diagnosis or feed allocation.",
+      "Season, harvest, grazing, soil, water, trees and illumination influence NDVI.",
+      "10 m imagery shows field-scale patterns; it cannot resolve individual cattle or fences.",
+      "Only selected clear farm observations are included; some months have no usable observation."
+    ],
+    "selectionNote": "Nine cloud-screened observations selected after SCL masking and visual review. February and August candidates were excluded for visible haze despite high automated valid fractions."
+  },
+  "ndviLegend": [
+    {
+      "value": -1,
+      "color": "#827d75"
+    },
+    {
+      "value": -0.1,
+      "color": "#c6c1ad"
+    },
+    {
+      "value": 0,
+      "color": "#c8b16a"
+    },
+    {
+      "value": 0.2,
+      "color": "#bfa15d"
+    },
+    {
+      "value": 0.4,
+      "color": "#a1bd61"
+    },
+    {
+      "value": 0.6,
+      "color": "#4d9943"
+    },
+    {
+      "value": 0.8,
+      "color": "#176c3d"
+    },
+    {
+      "value": 1,
+      "color": "#124733"
+    }
+  ],
+  "unknownColor": "#9ca3a3",
+  "unknownLabel": "Cloud, shadow, snow, unclassified or no data",
+  "ndviRange": [
+    -1,
+    1
+  ],
+  "viewRange": [
+    -0.1,
+    1
+  ]
+}
