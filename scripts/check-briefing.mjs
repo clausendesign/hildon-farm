@@ -30,7 +30,7 @@ assert.equal(upcomingEvents(brief, 'all', Date.parse('2027-01-01')).length, 0);
 const timed = { events: [{ date: '2026-10-24', time: '08:00', species: 'cattle' }, { date: '2026-10-24', time: '11:00', species: 'cattle' }] };
 assert.equal(upcomingEvents(timed, 'cattle', Date.parse('2026-10-23T20:00:00Z')).length, 1);
 assert.match(briefingScript(brief, 'Big Dog Wok', now), /Big Dog Wok/);
-for (const [speech, name] of [['call me Wozza', 'Wozza'], ['Wok', 'Wok'], ['Big Dog Walk', 'Big Dog Wok'], ['Warwick please', 'Warwick']]) assert.equal(nameFromSpeech(speech), name);
+for (const [speech, name] of [['call me Wozza', 'Wozza'], ['Wok', 'Wok'], ['Big Dog Walk', 'Big Dog Wok'], ['Warwick please', 'Warwick'], ['It’s Kaye', 'Kaye'], ['okay', null]]) assert.equal(nameFromSpeech(speech), name);
 assert.equal(nameFromSpeech('banana'), null);
 for (const q of ['When is the next sale?', 'What are cattle prices?', 'What is the outlook?', 'What about the weather?']) {
   const a = answer(q);

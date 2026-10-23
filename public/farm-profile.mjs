@@ -1,4 +1,6 @@
-export const NAMES = ['Wozza', 'Wok', 'Big Dog Wok', 'Warwick'];
+// Kaye and Warwick share the app; Warwick's nicknames are still recognised and remembered.
+export const PEOPLE = ['Kaye', 'Warwick'];
+export const NAMES = ['Kaye', 'Warwick', 'Wozza', 'Wok', 'Big Dog Wok'];
 const KEY = 'hildon-farm-profile-v1';
 let sessionProfile;
 
@@ -20,6 +22,7 @@ export function saveProfile(patch) {
 
 export function nameFromSpeech(text) {
   const words = String(text).toLowerCase().replace(/[^a-z\s]/g, ' ').replace(/\s+/g, ' ').trim();
+  if (/\b(?:kaye|kay|kae|cay)\b/.test(words)) return 'Kaye';
   if (/\bbig (?:dog|dogg)\b/.test(words)) return 'Big Dog Wok';
   if (/\b(?:wozza|woza|wazza|waza|wossa|wosa)\b/.test(words)) return 'Wozza';
   if (/\b(?:wok|wock|walk|woks)\b/.test(words)) return 'Wok';

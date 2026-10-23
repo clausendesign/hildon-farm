@@ -1,4 +1,4 @@
-import { NAMES, readProfile, saveProfile, nameFromSpeech } from './farm-profile.mjs';
+import { PEOPLE, readProfile, saveProfile, nameFromSpeech } from './farm-profile.mjs';
 import { voice } from './farm-voice.mjs';
 import { createParticleOrb } from './particle-orb.mjs';
 
@@ -6,18 +6,21 @@ export function mountProfile({ auto = true } = {}) {
   const dialog = document.createElement('dialog');
   dialog.className = 'profile-dialog';
   dialog.setAttribute('aria-labelledby', 'profile-title');
-  dialog.innerHTML = `<button id="setup-speak" class="voice-orb" aria-describedby="setup-hint"><canvas aria-hidden="true"></canvas><span class="visually-hidden">Talk to Hildon Farm</span></button><h2 id="profile-title">What should I call you?</h2><p id="setup-hint" class="setup-hint" role="status" aria-live="polite"></p><div class="name-options">${NAMES.map(name => `<button type="button" data-name="${name}">${name}</button>`).join('')}</div>`;
+  dialog.innerHTML = `<button id="setup-speak" class="voice-orb" aria-describedby="setup-hint"><canvas aria-hidden="true"></canvas><span class="visually-hidden">Talk to Hildon Farm</span></button><h2 id="profile-title">Who’s this?</h2><p id="setup-hint" class="setup-hint" role="status" aria-live="polite"></p><div class="name-options">${PEOPLE.map(name => `<button type="button" data-name="${name}">${name}</button>`).join('')}</div>`;
   document.body.append(dialog);
   const orb = dialog.querySelector('#setup-speak'), hint = dialog.querySelector('#setup-hint');
   const say = text => { hint.textContent = text; };
   let session = 0, priorFocus, promptHeard = false;
   const particles = createParticleOrb(orb.querySelector('canvas'), () => ({ mode: voice.listening ? 'listening' : voice.speaking ? 'speaking' : voice.loading ? 'connecting' : 'idle', level: voice.level() }));
   dialog.addEventListener('close', () => particles.stop());
-  const prompt = 'Welcome to Hildon Farm. What would you like me to call you? Wozza, Wok, Big Dog Wok, or Warwick?';
+  const prompt = 'Welcome to Hildon Farm. Who’s this? Kaye or Warwick?';
+  const WHO_KEY = 'hildon-farm-who';
+  const knownThisVisit = () => { try { return sessionStorage.getItem(WHO_KEY) === '1'; } catch { return false; } };
   function close() { session++; voice.stop(); dialog.close(); priorFocus?.focus(); }
   function choose(name) {
     session++; voice.stop(); saveProfile({ name, onboarded: true }); dialog.close(); priorFocus?.focus();
-    voice.speak(`Righto, ${name}. You’re all set. Open your daily briefing to catch up and ask a question.`);
+    try { sessionStorage.setItem(WHO_KEY, '1'); } catch { /* Asked again next page instead. */ }
+    voice.speak(`Hi ${name}. Open your daily briefing to catch up and ask a question.`);
   }
   function listen() {
     if (!dialog.open) return;
@@ -28,7 +31,7 @@ export function mountProfile({ auto = true } = {}) {
       onResult: text => {
         const name = nameFromSpeech(text);
         if (name) choose(name);
-        else { say(`I heard “${text}”. Try again, or tap a name.`); const current = session; voice.speak('I didn’t catch one of those names. Please try again, or choose a name on screen.').then(result => { if (result === 'finished' && dialog.open && current === session) listen(); }); }
+        else { say(`I heard “${text}”. Try again, or tap a name.`); const current = session; voice.speak('Sorry, I didn’t catch that. Is it Kaye or Warwick?').then(result => { if (result === 'finished' && dialog.open && current === session) listen(); }); }
       }
     });
   }
@@ -47,7 +50,8 @@ export function mountProfile({ auto = true } = {}) {
     particles.start();
     const current = ++session;
     say('Tap the orb to talk');
-    dialog.querySelectorAll('[data-name]').forEach(b => b.classList.toggle('selected', b.dataset.name === readProfile().name));
+    const who = readProfile().name;
+    dialog.querySelectorAll('[data-name]').forEach(b => b.classList.toggle('selected', b.dataset.name === (who === 'Kaye' ? 'Kaye' : who && 'Warwick')));
     promptHeard = false;
     if (!voice.enabled) return;
     // Ask straight away and then listen; browsers that block sound until a tap leave the orb waiting.
@@ -62,7 +66,7 @@ export function mountProfile({ auto = true } = {}) {
   dialog.querySelectorAll('[data-name]').forEach(b => b.addEventListener('click', () => choose(b.dataset.name)));
     dialog.addEventListener('cancel', () => { session++; voice.stop(); });
   voice.addEventListener('state', event => { orb.classList.toggle('listening', event.detail.listening && dialog.open); orb.classList.toggle('speaking', event.detail.speaking && dialog.open); });
-  // ?welcome replays the launch screen for someone already set up.
-  if (auto && (!readProfile().onboarded || new URLSearchParams(location.search).has('welcome'))) open();
+  // Each visit starts by checking who is here; ?welcome replays it on demand.
+  if (auto && (!knownThisVisit() || new URLSearchParams(location.search).has('welcome'))) open();
   return { open, close, dialog };
 }
