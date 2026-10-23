@@ -1,5 +1,5 @@
 import { readProfile } from './farm-profile.mjs';
-import { bindVoiceToggle } from './farm-voice.mjs';
+import { bindVoiceToggle, voice } from './farm-voice.mjs';
 import { mountProfile } from './profile-ui.mjs';
 
 const $ = selector => document.querySelector(selector);
@@ -17,3 +17,21 @@ greet();
 const setup = mountProfile();
 $('#change-name').addEventListener('click', () => setup.open());
 window.addEventListener('farm-profile', greet);
+
+// A little surprise: a fresh rap about Todd, read out by the farm voice.
+const rapDialog = $('#rap-dialog');
+async function playRap() {
+  $('#rap-text').textContent = 'Warming up the mic…';
+  if (!rapDialog.open) rapDialog.showModal();
+  voice.stop();
+  try {
+    const { text } = await fetch('/api/rap', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ listener: readProfile().name === 'Kaye' ? 'Kaye' : 'Warwick' }) }).then(r => r.json());
+    if (!rapDialog.open) return;
+    $('#rap-text').textContent = text;
+    voice.setEnabled(true);
+    voice.speak(text);
+  } catch { $('#rap-text').textContent = 'The mic’s gone quiet. Give it another go in a moment.'; }
+}
+$('#rap').addEventListener('click', playRap);
+$('#rap-again').addEventListener('click', playRap);
+rapDialog.addEventListener('close', () => voice.stop());
