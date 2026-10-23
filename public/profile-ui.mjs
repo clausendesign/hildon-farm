@@ -5,9 +5,9 @@ export function mountProfile({ auto = true } = {}) {
   const dialog = document.createElement('dialog');
   dialog.className = 'profile-dialog';
   dialog.setAttribute('aria-labelledby', 'profile-title');
-  dialog.innerHTML = `<div id="profile-orb" class="voice-orb" aria-hidden="true"><svg viewBox="0 0 32 32"><rect x="11" y="4" width="10" height="17" rx="5"/><path d="M7 15v2a9 9 0 0 0 18 0v-2M16 26v4M11 30h10"/></svg></div><div class="eyebrow">LET’S MAKE THIS YOURS</div><h2 id="profile-title">What should I call you?</h2><p>Wozza, Wok, Big Dog Wok or Warwick?<br>Tell me out loud, or choose below.</p><button id="setup-speak" class="setup-primary">Start voice setup</button><p id="setup-status" class="setup-status" role="status" aria-live="polite">Voice is on. Tap to begin, then allow the microphone.</p><div class="name-options">${NAMES.map(name => `<button type="button" data-name="${name}">${name}</button>`).join('')}</div><button id="setup-skip" class="setup-secondary">Use Warwick for now</button><p class="setup-fineprint">Your name and voice preference are remembered on this device. Your browser may use its speech service to transcribe your voice.</p>`;
+  dialog.innerHTML = `<div class="orb-stage"><button id="setup-speak" class="voice-orb" aria-describedby="orb-caption"><span class="orb-ring" aria-hidden="true"></span><span class="orb-ring" aria-hidden="true"></span><span class="orb-core" aria-hidden="true"></span><span class="visually-hidden">Talk to Hildon Farm</span></button><p id="orb-caption" class="orb-caption">Getting ready…</p></div><div class="eyebrow">LET’S MAKE THIS YOURS</div><h2 id="profile-title">What should I call you?</h2><p class="setup-lead">Say Wozza, Wok, Big Dog Wok or Warwick.<br>Or tap a name below.</p><p id="setup-status" class="setup-status" role="status" aria-live="polite"></p><div class="name-options">${NAMES.map(name => `<button type="button" data-name="${name}">${name}</button>`).join('')}</div><button id="setup-skip" class="setup-secondary">Use Warwick for now</button><p class="setup-fineprint">Your name and voice preference are remembered on this device. Your browser may use its speech service to transcribe your voice.</p>`;
   document.body.append(dialog);
-  const button = dialog.querySelector('#setup-speak'), status = dialog.querySelector('#setup-status'), orb = dialog.querySelector('#profile-orb');
+  const orb = dialog.querySelector('#setup-speak'), status = dialog.querySelector('#setup-status'), caption = dialog.querySelector('#orb-caption');
   let session = 0, priorFocus, promptHeard = false;
   const prompt = 'Welcome to Hildon Farm. What would you like me to call you? Wozza, Wok, Big Dog Wok, or Warwick?';
   function close() { session++; voice.stop(); dialog.close(); priorFocus?.focus(); }
@@ -17,38 +17,45 @@ export function mountProfile({ auto = true } = {}) {
   }
   function listen() {
     if (!dialog.open) return;
-    button.textContent = 'Tap to stop listening';
+    caption.textContent = 'Listening… say your name';
     voice.listen({
-      onStatus: text => { status.textContent = text; if (!voice.listening) button.textContent = 'Tell me your name'; },
+      onStatus: text => { status.textContent = text; if (!voice.listening) caption.textContent = 'Tap the orb and say your name'; },
       onPartial: text => { status.textContent = `Hearing: ${text}`; },
       onResult: text => {
         const name = nameFromSpeech(text);
         if (name) choose(name);
-        else { status.textContent = `I heard “${text}”. Say Wozza, Wok, Big Dog Wok or Warwick, or choose below.`; button.textContent = 'Try saying your name again'; voice.speak('I didn’t catch one of those names. Please try again, or choose a name on screen.'); }
+        else { status.textContent = `I heard “${text}”. Say Wozza, Wok, Big Dog Wok or Warwick, or choose below.`; caption.textContent = 'Tap the orb and try again'; const current = session; voice.speak('I didn’t catch one of those names. Please try again, or choose a name on screen.').then(result => { if (result === 'finished' && dialog.open && current === session) listen(); }); }
       }
     });
   }
   function start() {
-    if (voice.listening) { voice.stopListening(); button.textContent = 'Tell me your name'; status.textContent = 'Microphone stopped.'; return; }
+    if (voice.listening) { voice.stopListening(); caption.textContent = 'Tap the orb and say your name'; status.textContent = 'Microphone stopped.'; return; }
     if (voice.speaking) { voice.stopSpeaking(); listen(); return; }
     voice.setEnabled(true);
     if (promptHeard) { listen(); return; }
     const current = session;
     status.textContent = 'I’ll ask the question, then listen for your answer.';
-    button.textContent = 'Asking your name…';
+    caption.textContent = 'Asking your name…';
     voice.speak(prompt).then(result => { if (!dialog.open || current !== session) return; promptHeard = result === 'finished'; listen(); });
   }
   function open() {
     priorFocus = document.activeElement; voice.stop();
     if (!dialog.open) dialog.showModal();
     const current = ++session;
-    status.textContent = 'Voice is on. Tap Start voice setup, then say your choice.';
-    button.textContent = 'Start voice setup';
+    status.textContent = '';
+    caption.textContent = 'Tap the orb to talk';
     dialog.querySelectorAll('[data-name]').forEach(b => b.classList.toggle('selected', b.dataset.name === readProfile().name));
     promptHeard = false;
-    if (voice.enabled) voice.speak(prompt).then(result => { if (dialog.open && current === session && result === 'finished') { promptHeard = true; button.textContent = 'Tell me your name'; status.textContent = 'Tap the microphone button and say your choice.'; } });
+    if (!voice.enabled) return;
+    // Ask straight away and then listen; browsers that block sound until a tap leave the orb waiting.
+    caption.textContent = 'Asking your name…';
+    voice.speak(prompt).then(result => {
+      if (!dialog.open || current !== session) return;
+      if (result === 'finished') { promptHeard = true; listen(); }
+      else { caption.textContent = 'Tap the orb to talk'; status.textContent = ''; }
+    });
   }
-  button.addEventListener('click', start);
+  orb.addEventListener('click', start);
   dialog.querySelectorAll('[data-name]').forEach(b => b.addEventListener('click', () => choose(b.dataset.name)));
   dialog.querySelector('#setup-skip').addEventListener('click', () => choose('Warwick'));
   dialog.addEventListener('cancel', () => { session++; voice.stop(); });
