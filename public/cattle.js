@@ -3,7 +3,7 @@ import { readProfile } from './farm-profile.mjs';
 
 const $ = selector => document.querySelector(selector);
 const PIN_KEY = 'hildon-farm-cattle-pin';
-let pin = '', records = [];
+let pin = '', records = [], nait = null;
 
 const storage = {
   get() { try { return localStorage.getItem(PIN_KEY) || ''; } catch { return ''; } },
@@ -26,8 +26,10 @@ async function api(method, body, query = '') {
 async function unlock(value) {
   pin = value;
   try {
-    records = (await api('GET')).records;
+    ({ records, nait } = await api('GET'));
     storage.set(pin);
+    $('#farm-nait').textContent = nait ? `NAIT location ${nait}` : '';
+    $('#farm-nait').hidden = !nait;
     $('#gate').hidden = true; $('#herd').hidden = false;
     render();
   } catch (error) {
@@ -112,6 +114,13 @@ $('#manual').addEventListener('submit', event => {
   $('#m-weight').value = ''; $('#m-tag').focus();
 });
 $('#search').addEventListener('input', render);
+// Every weight on file, ready for NAIT, an agent or the vet.
+$('#download').addEventListener('click', () => {
+  const cell = value => /[",\n]/.test(String(value)) ? `"${String(value).replace(/"/g, '""')}"` : String(value);
+  const rows = [['NAIT location', 'EID', 'VID', 'Date', 'Weight (kg)'], ...records.slice().sort((a, b) => a.date.localeCompare(b.date)).map(r => [nait || '', r.eid, r.vid, r.date, r.weight])];
+  const link = Object.assign(document.createElement('a'), { href: URL.createObjectURL(new Blob([rows.map(row => row.map(cell).join(',')).join('\n')], { type: 'text/csv' })), download: `hildon-cattle-weights-${today()}.csv` });
+  link.click(); URL.revokeObjectURL(link.href);
+});
 $('#rows').addEventListener('click', event => { const row = event.target.closest('tr'); if (row) showAnimal(row.dataset.key); });
 $('#rows').addEventListener('keydown', event => { const row = event.target.closest('tr'); if (row && event.key === 'Enter') showAnimal(row.dataset.key); });
 $('#animal').addEventListener('click', async event => {

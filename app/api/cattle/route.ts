@@ -34,7 +34,8 @@ function validate(input: any): WeighRecord | null {
 
 export async function GET(request: Request) {
   const denied = unauthorised(request); if (denied) return denied;
-  return Response.json({ records: (await load()).records }, { headers: { 'Cache-Control': 'no-store' } });
+  // The farm's NAIT location number is kept as a secret too, so it only shows behind the passcode.
+  return Response.json({ records: (await load()).records, nait: (env as any).FARM_NAIT || null }, { headers: { 'Cache-Control': 'no-store' } });
 }
 
 // Adds records; the same animal, date and weight is only stored once, so re-importing a file is harmless.
