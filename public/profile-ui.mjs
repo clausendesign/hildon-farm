@@ -1,14 +1,17 @@
 import { NAMES, readProfile, saveProfile, nameFromSpeech } from './farm-profile.mjs';
 import { voice } from './farm-voice.mjs';
+import { createParticleOrb } from './particle-orb.mjs';
 
 export function mountProfile({ auto = true } = {}) {
   const dialog = document.createElement('dialog');
   dialog.className = 'profile-dialog';
   dialog.setAttribute('aria-labelledby', 'profile-title');
-  dialog.innerHTML = `<div class="orb-stage"><button id="setup-speak" class="voice-orb" aria-describedby="orb-caption"><span class="orb-ring" aria-hidden="true"></span><span class="orb-ring" aria-hidden="true"></span><span class="orb-core" aria-hidden="true"></span><span class="visually-hidden">Talk to Hildon Farm</span></button><p id="orb-caption" class="orb-caption">Getting ready…</p></div><div class="eyebrow">LET’S MAKE THIS YOURS</div><h2 id="profile-title">What should I call you?</h2><p class="setup-lead">Say Wozza, Wok, Big Dog Wok or Warwick.<br>Or tap a name below.</p><p id="setup-status" class="setup-status" role="status" aria-live="polite"></p><div class="name-options">${NAMES.map(name => `<button type="button" data-name="${name}">${name}</button>`).join('')}</div><button id="setup-skip" class="setup-secondary">Use Warwick for now</button><p class="setup-fineprint">Your name and voice preference are remembered on this device. Your browser may use its speech service to transcribe your voice.</p>`;
+  dialog.innerHTML = `<div class="orb-stage"><button id="setup-speak" class="voice-orb" aria-describedby="orb-caption"><canvas aria-hidden="true"></canvas><span class="visually-hidden">Talk to Hildon Farm</span></button><p id="orb-caption" class="orb-caption">Getting ready…</p></div><div class="eyebrow">LET’S MAKE THIS YOURS</div><h2 id="profile-title">What should I call you?</h2><p class="setup-lead">Say Wozza, Wok, Big Dog Wok or Warwick.<br>Or tap a name below.</p><p id="setup-status" class="setup-status" role="status" aria-live="polite"></p><div class="name-options">${NAMES.map(name => `<button type="button" data-name="${name}">${name}</button>`).join('')}</div><button id="setup-skip" class="setup-secondary">Use Warwick for now</button><p class="setup-fineprint">Your name and voice preference are remembered on this device. Your browser may use its speech service to transcribe your voice.</p>`;
   document.body.append(dialog);
   const orb = dialog.querySelector('#setup-speak'), status = dialog.querySelector('#setup-status'), caption = dialog.querySelector('#orb-caption');
   let session = 0, priorFocus, promptHeard = false;
+  const particles = createParticleOrb(orb.querySelector('canvas'), () => ({ mode: voice.listening ? 'listening' : voice.speaking ? 'speaking' : voice.loading ? 'connecting' : 'idle', level: voice.level() }));
+  dialog.addEventListener('close', () => particles.stop());
   const prompt = 'Welcome to Hildon Farm. What would you like me to call you? Wozza, Wok, Big Dog Wok, or Warwick?';
   function close() { session++; voice.stop(); dialog.close(); priorFocus?.focus(); }
   function choose(name) {
@@ -41,6 +44,7 @@ export function mountProfile({ auto = true } = {}) {
   function open() {
     priorFocus = document.activeElement; voice.stop();
     if (!dialog.open) dialog.showModal();
+    particles.start();
     const current = ++session;
     status.textContent = '';
     caption.textContent = 'Tap the orb to talk';

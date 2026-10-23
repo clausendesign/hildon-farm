@@ -14,6 +14,20 @@ export function splitNaturalText(text, limit = 1200) {
   return chunks;
 }
 
+const ENVELOPE_RATE = 30;
+// Measure loudness from the clip itself, so the speaker's output never has to pass through Web Audio.
+async function loudness(blob) {
+  const decoded = await new OfflineAudioContext(1, 1, 44100).decodeAudioData(await blob.arrayBuffer());
+  const samples = decoded.getChannelData(0), step = Math.floor(decoded.sampleRate / ENVELOPE_RATE), envelope = [];
+  for (let start = 0; start < samples.length; start += step) {
+    let sum = 0;
+    for (let i = start; i < Math.min(start + step, samples.length); i++) sum += samples[i] * samples[i];
+    envelope.push(Math.sqrt(sum / step));
+  }
+  const peak = Math.max(...envelope, 0.01);
+  return envelope.map(value => Math.min(1, value / peak));
+}
+
 function silentClip() {
   const header = new DataView(new ArrayBuffer(44));
   const write = (offset, text) => [...text].forEach((c, i) => header.setUint8(offset + i, c.charCodeAt(0)));
@@ -63,6 +77,13 @@ class FarmVoice extends EventTarget {
     this.update();
   }
   stop() { this.stopListening(); this.stopSpeaking(); }
+  // How loud the voice is right now, from 0 to 1, for animating the orb.
+  level() {
+    if (!this.speaking) return 0;
+    const now = performance.now() / 1000;
+    if (!this.envelope) return 0.35 + 0.25 * Math.sin(now * 9) * Math.sin(now * 2.3);
+    return this.envelope[Math.floor(this.audio.currentTime * ENVELOPE_RATE)] || 0;
+  }
   setEnabled(value) {
     this.enabled = value;
     saveProfile({ voice: value });
@@ -83,9 +104,10 @@ class FarmVoice extends EventTarget {
     const audio = this.audio;
     return new Promise(resolve => {
       let ended = false;
-      const finish = result => { if (ended) return; ended = true; this.finishSpeech = null; this.speaking = false; audio.onended = audio.onerror = null; this.update(result === 'blocked' ? 'Tap Play or Start voice setup to hear the voice.' : result === 'unavailable' ? 'The voice stopped part-way. You can still read everything on screen.' : ''); resolve(result); };
+      const finish = result => { if (ended) return; ended = true; this.finishSpeech = null; this.speaking = this.loading = false; this.envelope = null; audio.onended = audio.onerror = null; this.update(result === 'blocked' ? 'Tap Play or Start voice setup to hear the voice.' : result === 'unavailable' ? 'The voice stopped part-way. You can still read everything on screen.' : ''); resolve(result); };
       this.finishSpeech = finish;
       if (!chunks.length) { finish('finished'); return; }
+      this.loading = true; this.update();
       const load = index => fetch('/api/speech', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text: chunks[index] }) }).then(response => { if (!response.ok) throw new Error('speech'); return response.blob(); });
       let pending = load(0);
       const play = async index => {
@@ -96,9 +118,11 @@ class FarmVoice extends EventTarget {
         if (index + 1 < chunks.length) pending = load(index + 1);
         const url = URL.createObjectURL(blob);
         audio.src = url;
+        this.envelope = null;
+        loudness(blob).then(envelope => { if (audio.src === url) this.envelope = envelope; }, () => {});
         audio.onended = () => { URL.revokeObjectURL(url); if (ended || sequence !== this.sequence) return; if (index + 1 < chunks.length) play(index + 1); else finish('finished'); };
         audio.onerror = () => { URL.revokeObjectURL(url); finish('unavailable'); };
-        try { await audio.play(); if (!ended && sequence === this.sequence) { this.speaking = true; this.update(); } }
+        try { await audio.play(); if (!ended && sequence === this.sequence) { this.speaking = true; this.loading = false; this.update(); } }
         catch (error) { finish(error?.name === 'NotAllowedError' ? 'blocked' : 'unavailable'); }
       };
       play(0);
