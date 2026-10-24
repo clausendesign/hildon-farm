@@ -20,8 +20,8 @@ async function sha256(text: string) {
   return [...new Uint8Array(digest)].map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
-const audioResponse = (body: BodyInit, type = 'audio/mpeg') =>
-  new Response(body, { headers: { 'Content-Type': type, 'Cache-Control': 'public, max-age=31536000, immutable' } });
+const audioResponse = (body: BodyInit, type = 'audio/mpeg', voice = '') =>
+  new Response(body, { headers: { 'Content-Type': type, 'X-Voice': voice, 'X-Voice-Note': geminiNote.replace(/[^\x20-\x7e]/g, ''), 'Cache-Control': 'public, max-age=31536000, immutable' } });
 
 const xml = (text: string) => text.replace(/[<>&'"]/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', "'": '&apos;', '"': '&quot;' })[c]!);
 
@@ -36,6 +36,9 @@ function wav(pcm: Uint8Array, rate = 24000) {
   return out.buffer;
 }
 
+// Why Gemini last declined, reported in a response header to help explain a change of voice.
+let geminiNote = '';
+
 async function gemini(text: string, voice: string, style: string): Promise<ArrayBuffer | null> {
   const key = (env as any).GEMINI_API_KEY as string | undefined;
   if (!key) return null;
@@ -48,7 +51,7 @@ async function gemini(text: string, voice: string, style: string): Promise<Array
     }),
   }).catch(() => null);
   // A used-up free allowance answers 429; fall through to the next voice.
-  if (!response?.ok) return null;
+  if (!response?.ok) { geminiNote = `${response?.status ?? 'no response'} ${(await response?.text().catch(() => ''))?.slice(0, 160).replace(/\s+/g, ' ')}`; console.warn('Gemini voice unavailable', geminiNote); return null; }
   const data = await response.json().catch(() => null) as any;
   const audio = data?.candidates?.[0]?.content?.parts?.find((p: any) => p.inlineData)?.inlineData?.data;
   if (!audio) return null;
@@ -80,6 +83,7 @@ export async function POST(request: Request) {
   if (typeof text !== 'string' || !text.trim() || text.length > MAX_CHARS) {
     return Response.json({ error: 'Text must be 1 to 1500 characters.' }, { status: 400 });
   }
+  geminiNote = '';
   const style = wanted && STYLES[wanted] ? wanted : 'talk';
   // A voice can be picked from the short list (used to compare samples); otherwise the site's chosen one.
   const geminiVoice = picked && GEMINI_VOICES.includes(picked) ? picked : (env as any).GEMINI_VOICE || DEFAULT_GEMINI_VOICE;
@@ -94,11 +98,11 @@ export async function POST(request: Request) {
     if (!available) continue;
     const type = ext === 'wav' ? 'audio/wav' : 'audio/mpeg';
     const cached = await env.BUCKET?.get(`speech/${name}/${key}.${ext}`);
-    if (cached) return audioResponse(cached.body, type);
+    if (cached) return audioResponse(cached.body, type, name);
     const audio = await make(line);
     if (!audio?.byteLength) continue;
     await env.BUCKET?.put(`speech/${name}/${key}.${ext}`, audio, { httpMetadata: { contentType: type } });
-    return audioResponse(audio, type);
+    return audioResponse(audio, type, name);
   }
   // The page falls back to the browser's own voice.
   return Response.json({ error: 'Natural voice is unavailable.' }, { status: 503 });
