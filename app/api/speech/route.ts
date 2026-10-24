@@ -1,22 +1,16 @@
 import { env } from 'cloudflare:workers';
 
-// Natural voice. Gemini performs the lines first (the Aussie character comes from it), with
-// Google's Chirp 3 HD reading them if Gemini is capped or slow, then Azure's Kiwi voice,
-// then Cloudflare's Australian voice. Each clip is cached in R2, so a repeated line
-// (the briefing, greetings) is generated once and replayed for free.
+// The site's voice: Gemini's Umbriel, performing each line with a relaxed Aussie character.
+// Each clip is cached in R2, so a repeated line (the briefing, greetings) is generated once
+// and replayed for free. If Gemini can't answer, the page falls back to the browser's voice.
 const GEMINI_MODEL = 'gemini-2.5-flash-preview-tts';
-const GEMINI_VOICES = ['Achird', 'Umbriel', 'Algenib', 'Charon', 'Sadachbia', 'Sulafat'];
-const DEFAULT_GEMINI_VOICE = 'Umbriel';
+const GEMINI_VOICE = 'Umbriel';
 const STYLES: Record<string, string> = {
   talk: 'Say this in a relaxed, warm, friendly Australian accent, like a neighbour catching up over the fence, at an easy pace',
   rap: 'Perform this as a fun, upbeat, rhythmic rap with swagger and a cheeky Australian accent, hitting the rhymes',
 };
-const CHIRP_VOICE = 'en-AU-Chirp3-HD-Umbriel';
-const AZURE_VOICE = 'en-NZ-MitchellNeural';
-const MODEL = '@cf/deepgram/aura-2-en';
-const SPEAKER = 'hyperion';
 const MAX_CHARS = 1500;
-// Hard monthly cap on paid Gemini speech: 60 minutes is about US$1. Past it, Chirp reads instead.
+// Hard monthly cap on paid Gemini speech: 60 minutes is about US$1.
 const GEMINI_MONTHLY_SECONDS = 60 * 60;
 const usageKey = () => `usage/gemini-${new Date().toISOString().slice(0, 7)}.json`;
 
@@ -35,11 +29,6 @@ async function sha256(text: string) {
   return [...new Uint8Array(digest)].map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
-const audioResponse = (body: BodyInit, type = 'audio/mpeg', voice = '') =>
-  new Response(body, { headers: { 'Content-Type': type, 'X-Voice': voice, 'X-Voice-Note': geminiNote.replace(/[^\x20-\x7e]/g, ''), 'Cache-Control': 'public, max-age=31536000, immutable' } });
-
-const xml = (text: string) => text.replace(/[<>&'"]/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', "'": '&apos;', '"': '&quot;' })[c]!);
-
 // Gemini returns raw 24 kHz 16-bit mono PCM; wrap it in a WAV header so browsers can play it.
 function wav(pcm: Uint8Array, rate = 24000) {
   const out = new Uint8Array(44 + pcm.length), view = new DataView(out.buffer);
@@ -51,95 +40,43 @@ function wav(pcm: Uint8Array, rate = 24000) {
   return out.buffer;
 }
 
-// Why Gemini last declined, reported in a response header to help explain a change of voice.
-let geminiNote = '';
+const audioResponse = (body: BodyInit) =>
+  new Response(body, { headers: { 'Content-Type': 'audio/wav', 'Cache-Control': 'public, max-age=31536000, immutable' } });
 
-async function gemini(text: string, voice: string, style: string): Promise<ArrayBuffer | null> {
+// Why the voice is unavailable, as a header, so a change to the browser voice can be explained.
+const unavailable = (reason: string) =>
+  Response.json({ error: 'Natural voice is unavailable.' }, { status: 503, headers: { 'X-Voice-Note': reason.replace(/[^\x20-\x7e]/g, '').slice(0, 200) } });
+
+export async function POST(request: Request) {
+  const { text, style: wanted } = await request.json().catch(() => ({})) as { text?: unknown; style?: string };
+  if (typeof text !== 'string' || !text.trim() || text.length > MAX_CHARS) {
+    return Response.json({ error: 'Text must be 1 to 1500 characters.' }, { status: 400 });
+  }
+  const style = wanted && STYLES[wanted] ? wanted : 'talk';
+  const line = text.trim(), path = `speech/gemini-${GEMINI_VOICE}/${await sha256(`${style}|${line}`)}.wav`;
+  const cached = await env.BUCKET?.get(path);
+  if (cached) return audioResponse(cached.body);
+
   const key = (env as any).GEMINI_API_KEY as string | undefined;
-  if (!key) return null;
-  if (await geminiSecondsUsed() >= GEMINI_MONTHLY_SECONDS) { geminiNote = 'monthly cap reached'; return null; }
+  if (!key) return unavailable('no key');
+  if (await geminiSecondsUsed() >= GEMINI_MONTHLY_SECONDS) return unavailable('monthly cap reached');
   const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
     body: JSON.stringify({
-      contents: [{ parts: [{ text: `${STYLES[style]}:\n\n${text}` }] }],
-      generationConfig: { responseModalities: ['AUDIO'], speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: voice } } } },
+      contents: [{ parts: [{ text: `${STYLES[style]}:\n\n${line}` }] }],
+      generationConfig: { responseModalities: ['AUDIO'], speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: GEMINI_VOICE } } } },
     }),
-    // A long wait is worse than the backup voice; raps get longer as they are slower to perform.
-    signal: AbortSignal.timeout(style === 'rap' ? 25000 : 9000),
+    // Raps take longer to perform than a spoken line.
+    signal: AbortSignal.timeout(style === 'rap' ? 30000 : 20000),
   }).catch(() => null);
-  // A used-up free allowance answers 429; fall through to the next voice.
-  if (!response?.ok) { geminiNote = `${response?.status ?? 'no response'} ${(await response?.text().catch(() => ''))?.slice(0, 160).replace(/\s+/g, ' ')}`; console.warn('Gemini voice unavailable', geminiNote); return null; }
+  if (!response?.ok) return unavailable(`${response?.status ?? 'timed out'} ${(await response?.text().catch(() => '')) ?? ''}`);
   const data = await response.json().catch(() => null) as any;
   const audio = data?.candidates?.[0]?.content?.parts?.find((p: any) => p.inlineData)?.inlineData?.data;
-  if (!audio) return null;
+  if (!audio) return unavailable('no audio returned');
   const pcm = Uint8Array.from(atob(audio), c => c.charCodeAt(0));
   await addGeminiSeconds(pcm.length / (24000 * 2));
-  return wav(pcm);
-}
-
-async function chirp(text: string): Promise<ArrayBuffer | null> {
-  const key = (env as any).GOOGLE_TTS_KEY as string | undefined;
-  if (!key) return null;
-  const response = await fetch('https://texttospeech.googleapis.com/v1/text:synthesize', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
-    body: JSON.stringify({ input: { text }, voice: { languageCode: 'en-AU', name: CHIRP_VOICE }, audioConfig: { audioEncoding: 'MP3' } }),
-  }).catch(() => null);
-  if (!response?.ok) return null;
-  const audio = (await response.json().catch(() => null) as any)?.audioContent;
-  return audio ? Uint8Array.from(atob(audio), c => c.charCodeAt(0)).buffer : null;
-}
-
-async function azure(text: string): Promise<ArrayBuffer | null> {
-  const key = (env as any).AZURE_SPEECH_KEY as string | undefined;
-  if (!key) return null;
-  const region = (env as any).AZURE_SPEECH_REGION || 'australiaeast';
-  const response = await fetch(`https://${region}.tts.speech.microsoft.com/cognitiveservices/v1`, {
-    method: 'POST',
-    headers: { 'Ocp-Apim-Subscription-Key': key, 'Content-Type': 'application/ssml+xml', 'X-Microsoft-OutputFormat': 'audio-24khz-48kbitrate-mono-mp3', 'User-Agent': 'hildon-farm' },
-    body: `<speak version="1.0" xml:lang="en-NZ"><voice name="${AZURE_VOICE}">${xml(text)}</voice></speak>`,
-  }).catch(() => null);
-  // A used-up free tier answers 429; fall through to the backup voice.
-  return response?.ok ? response.arrayBuffer() : null;
-}
-
-async function cloudflare(text: string): Promise<ArrayBuffer | null> {
-  const ai = (env as any).AI;
-  if (!ai) return null;
-  try { return await new Response(await ai.run(MODEL, { text, speaker: SPEAKER, encoding: 'mp3' })).arrayBuffer(); }
-  catch { return null; } // Includes the free daily allowance running out.
-}
-
-export async function POST(request: Request) {
-  const { text, style: wanted, voice: picked } = await request.json().catch(() => ({})) as { text?: unknown; style?: string; voice?: string };
-  if (typeof text !== 'string' || !text.trim() || text.length > MAX_CHARS) {
-    return Response.json({ error: 'Text must be 1 to 1500 characters.' }, { status: 400 });
-  }
-  geminiNote = '';
-  const style = wanted && STYLES[wanted] ? wanted : 'talk';
-  // A voice can be picked from the short list (used to compare samples); otherwise the site's chosen one.
-  const geminiVoice = picked && GEMINI_VOICES.includes(picked) ? picked : (env as any).GEMINI_VOICE || DEFAULT_GEMINI_VOICE;
-  const line = text.trim(), hash = await sha256(`${style}|${line}`), plainHash = await sha256(line);
-  const performer: [string, string, string, (t: string) => Promise<ArrayBuffer | null>, boolean] =
-    [`gemini-${geminiVoice}`, hash, 'wav', t => gemini(t, geminiVoice, style), !!(env as any).GEMINI_API_KEY];
-  const reader: typeof performer = [CHIRP_VOICE, plainHash, 'mp3', chirp, !!(env as any).GOOGLE_TTS_KEY];
-  const voices: (typeof performer)[] = [
-    performer, reader,
-    [AZURE_VOICE, plainHash, 'mp3', azure, !!(env as any).AZURE_SPEECH_KEY],
-    [SPEAKER, plainHash, 'mp3', cloudflare, true],
-  ];
-  // Try each voice in turn, its saved clip first; a backup only speaks when the one before it can't.
-  for (const [name, key, ext, make, available] of voices) {
-    if (!available) continue;
-    const type = ext === 'wav' ? 'audio/wav' : 'audio/mpeg';
-    const cached = await env.BUCKET?.get(`speech/${name}/${key}.${ext}`);
-    if (cached) return audioResponse(cached.body, type, name);
-    const audio = await make(line);
-    if (!audio?.byteLength) continue;
-    await env.BUCKET?.put(`speech/${name}/${key}.${ext}`, audio, { httpMetadata: { contentType: type } });
-    return audioResponse(audio, type, name);
-  }
-  // The page falls back to the browser's own voice.
-  return Response.json({ error: 'Natural voice is unavailable.' }, { status: 503 });
+  const clip = wav(pcm);
+  await env.BUCKET?.put(path, clip, { httpMetadata: { contentType: 'audio/wav' } });
+  return audioResponse(clip);
 }
