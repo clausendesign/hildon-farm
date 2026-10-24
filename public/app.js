@@ -56,9 +56,9 @@ async function main(){
     project(x,y){const p=world(x,y,heightAt(x,y),2).project(camera);return{x:(p.x*.5+.5)*innerWidth,y:(-p.y*.5+.5)*innerHeight,hidden:p.z>1||p.z< -1};},
     overhead(){document.querySelector('#top-down').click();},
     interaction(active){controls.mouseButtons.LEFT=active?THREE.MOUSE.PAN:THREE.MOUSE.ROTATE;controls.touches.ONE=active?THREE.TOUCH.PAN:THREE.TOUCH.ROTATE;if(active){selectedPoint=null;document.querySelector('#point-label').hidden=true;if(marker)marker.visible=false;}},
-    setAerialImage(img){if(sameSize(aerialTexture.image,img)){aerialTexture.image=img;aerialTexture.needsUpdate=true;return;}const old=aerialTexture;aerialTexture=new THREE.Texture(img);aerialTexture.colorSpace=old.colorSpace;aerialTexture.anisotropy=old.anisotropy;aerialTexture.needsUpdate=true;if(terrainMaterial.map===old){terrainMaterial.map=aerialTexture;terrainMaterial.needsUpdate=true;}old.dispose();}
+    setAerialImage(img){if(sameSize(aerialTexture.image,img)){aerialTexture.image=img;aerialTexture.needsUpdate=true;return;}const old=aerialTexture;aerialTexture=new THREE.Texture(img);aerialTexture.colorSpace=old.colorSpace;aerialTexture.anisotropy=old.anisotropy;aerialTexture.needsUpdate=true;for(const m of [terrainMaterial,dataMaterial])if(m&&m.map===old){m.map=aerialTexture;m.needsUpdate=true;}old.dispose();}
   });
-  dataLayers=initDataLayers({bounds:dataset.bounds,aerialImage:aerialTexture.image,getView:()=>currentView,clearPick(){selectedPoint=null;$('#point-label').hidden=true;if(marker)marker.visible=false;},setLayerImage(img){if(sameSize(dataTexture.image,img)){dataTexture.image=img;dataTexture.needsUpdate=true;return;}const old=dataTexture;dataTexture=new THREE.Texture(img);dataTexture.colorSpace=THREE.SRGBColorSpace;dataTexture.anisotropy=old.anisotropy;dataTexture.needsUpdate=true;if(terrainMaterial.map===old){terrainMaterial.map=dataTexture;terrainMaterial.needsUpdate=true;}old.dispose();},overhead(){document.querySelector('#top-down').click();}});
+  dataLayers=initDataLayers({bounds:dataset.bounds,aerialImage:aerialTexture.image,getView:()=>currentView,clearPick(){selectedPoint=null;$('#point-label').hidden=true;if(marker)marker.visible=false;},setLayerImage(img){if(sameSize(dataTexture.image,img)){dataTexture.image=img;dataTexture.needsUpdate=true;return;}const old=dataTexture;dataTexture=new THREE.Texture(img);dataTexture.colorSpace=THREE.SRGBColorSpace;dataTexture.anisotropy=old.anisotropy;dataTexture.needsUpdate=true;for(const m of [terrainMaterial,dataMaterial])if(m&&m.map===old){m.map=dataTexture;m.needsUpdate=true;}old.dispose();},overhead(){document.querySelector('#top-down').click();}});
   const source=dataset.sourceDescription||'Horizons Regional Council / LINZ, Manawatū–Whanganui LiDAR 2015–2016. The mesh is sampled from the measured ground surface.';
   $('#terrain-source').textContent=source;
   if(dataset.aerialDescription)$('#aerial-source').textContent=dataset.aerialDescription;
@@ -209,7 +209,9 @@ function showElevation(x,y){
   if(!marker){marker=new THREE.Mesh(new THREE.SphereGeometry(8,16,12),new THREE.MeshBasicMaterial({color:'#fff9d7'}));root.add(marker);}
   marker.visible=true;marker.position.copy(world(x,y,h,8));$('#point-label').hidden=false;
 }
-function animate(time=0){
+// Fill each slider's track up to its thumb; buttons and playback move them without an input event.
+function paintRanges(){document.querySelectorAll('input[type=range]').forEach(r=>{const min=+r.min||0,max=+r.max||100,pct=max>min?((+r.value-min)/(max-min))*100:0,bg=`linear-gradient(to right,#638653 ${pct}%,#1d2b24 ${pct}%)`;if(r.dataset.fill!==bg){r.dataset.fill=bg;r.style.background=bg;}});}
+function animate(time=0){paintRanges();
   requestAnimationFrame(animate);frame++;
   if(cameraGoal){camera.position.lerp(cameraGoal,.075);controls.target.lerp(targetGoal,.075);if(camera.position.distanceTo(cameraGoal)<1){camera.position.copy(cameraGoal);controls.target.copy(targetGoal);cameraGoal=null;targetGoal=null;}}
   controls.update();$('#north svg').style.transform=`rotate(${-controls.getAzimuthalAngle()}rad)`;
