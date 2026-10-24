@@ -1,7 +1,7 @@
 import { env } from 'cloudflare:workers';
 
-// Natural voice. Gemini's voice comes first when its key is set, then Azure's Kiwi voice,
-// then Cloudflare's Australian voice. Each clip is cached in R2, so a repeated line
+// Natural voice. Google's Chirp 3 HD voice comes first (raps try Gemini first, as it can
+// perform them), then Azure's Kiwi voice, then Cloudflare's Australian voice. Each clip is cached in R2, so a repeated line
 // (the briefing, greetings) is generated once and replayed for free.
 const GEMINI_MODEL = 'gemini-2.5-flash-preview-tts';
 const GEMINI_VOICES = ['Achird', 'Umbriel', 'Algenib', 'Charon', 'Sadachbia', 'Sulafat'];
@@ -10,6 +10,7 @@ const STYLES: Record<string, string> = {
   talk: 'Say this in a relaxed, warm, friendly Australian accent, like a neighbour catching up over the fence, at an easy pace',
   rap: 'Perform this as a fun, upbeat, rhythmic rap with swagger and a cheeky Australian accent, hitting the rhymes',
 };
+const CHIRP_VOICE = 'en-AU-Chirp3-HD-Umbriel';
 const AZURE_VOICE = 'en-NZ-MitchellNeural';
 const MODEL = '@cf/deepgram/aura-2-en';
 const SPEAKER = 'hyperion';
@@ -58,6 +59,19 @@ async function gemini(text: string, voice: string, style: string): Promise<Array
   return wav(Uint8Array.from(atob(audio), c => c.charCodeAt(0)));
 }
 
+async function chirp(text: string): Promise<ArrayBuffer | null> {
+  const key = (env as any).GOOGLE_TTS_KEY as string | undefined;
+  if (!key) return null;
+  const response = await fetch('https://texttospeech.googleapis.com/v1/text:synthesize', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
+    body: JSON.stringify({ input: { text }, voice: { languageCode: 'en-AU', name: CHIRP_VOICE }, audioConfig: { audioEncoding: 'MP3' } }),
+  }).catch(() => null);
+  if (!response?.ok) return null;
+  const audio = (await response.json().catch(() => null) as any)?.audioContent;
+  return audio ? Uint8Array.from(atob(audio), c => c.charCodeAt(0)).buffer : null;
+}
+
 async function azure(text: string): Promise<ArrayBuffer | null> {
   const key = (env as any).AZURE_SPEECH_KEY as string | undefined;
   if (!key) return null;
@@ -88,8 +102,11 @@ export async function POST(request: Request) {
   // A voice can be picked from the short list (used to compare samples); otherwise the site's chosen one.
   const geminiVoice = picked && GEMINI_VOICES.includes(picked) ? picked : (env as any).GEMINI_VOICE || DEFAULT_GEMINI_VOICE;
   const line = text.trim(), hash = await sha256(`${style}|${line}`), plainHash = await sha256(line);
-  const voices: [string, string, string, (t: string) => Promise<ArrayBuffer | null>, boolean][] = [
-    [`gemini-${geminiVoice}`, hash, 'wav', t => gemini(t, geminiVoice, style), !!(env as any).GEMINI_API_KEY],
+  const performer: [string, string, string, (t: string) => Promise<ArrayBuffer | null>, boolean] =
+    [`gemini-${geminiVoice}`, hash, 'wav', t => gemini(t, geminiVoice, style), !!(env as any).GEMINI_API_KEY];
+  const reader: typeof performer = [CHIRP_VOICE, plainHash, 'mp3', chirp, !!(env as any).GOOGLE_TTS_KEY];
+  const voices: (typeof performer)[] = [
+    ...(style === 'rap' || !(env as any).GOOGLE_TTS_KEY ? [performer, reader] : [reader]),
     [AZURE_VOICE, plainHash, 'mp3', azure, !!(env as any).AZURE_SPEECH_KEY],
     [SPEAKER, plainHash, 'mp3', cloudflare, true],
   ];
