@@ -22,3 +22,6 @@
 .hub-tabs button[aria-pressed=true]{color:#0d1913}
 .hub-price{white-space:nowrap}.hub-before{display:none!important}
 @media(max-width:760px){.hub-before{display:block!important;text-transform:uppercase;letter-spacing:1px;font-size:12px!important;margin-bottom:2px}}
+.hub-svg .avg-band{fill:#8d9a92;opacity:.14;stroke:none}.hub-svg .avg-line{fill:none;stroke:#8d9a92;stroke-width:1.5}
+.swatch.avg{border-top:2px solid #8d9a92;box-shadow:0 -5px 0 2px rgba(141,154,146,.18)}.hub-tip{width:210px}
+.hub-insight{font-size:15px;line-height:1.65;color:#cfe2db;margin:10px 4px 8px}.hub-insight:empty{display:none}

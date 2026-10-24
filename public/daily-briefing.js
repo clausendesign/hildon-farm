@@ -112,18 +112,18 @@ export function initBriefing({ getBrief }) {
   function render(brief) {
     if (voice.enabled) voice.preload(briefingScript(brief, readProfile().name));
     preloadAnswers([...document.querySelectorAll('[data-question]')].map(b => b.dataset.question), {});
-    preloadAnswers(['cattle', 'lambs', 'sheep'].map(stock => `What are ${stock} doing?`), {});
+    preloadAnswers(['cattle', 'lambs'].map(stock => `What are ${stock} doing?`), {});
     $('#listen').disabled = false; input.disabled = false; $('#send-question').disabled = false; $('#ask-voice').disabled = false;
     const summary = $('#daily-summary'); summary.replaceChildren();
-    ['cattle', 'lambs', 'sheep'].forEach((stock, index) => {
+    ['cattle', 'lambs'].forEach((stock, index) => {
       const item = brief.briefs.filter(b => b.species === stock).sort((a, b) => String(b.evidenceDate).localeCompare(String(a.evidenceDate)))[0];
       const row = document.createElement('article'); row.className = 'summary-item';
       const number = document.createElement('span'); number.className = 'summary-index'; number.textContent = `0${index + 1}`;
       const content = document.createElement('div'), title = document.createElement('h3'), text = document.createElement('p'), meta = document.createElement('small');
       title.textContent = speciesName(stock);
-      text.textContent = item?.summary || 'No fresh commentary is saved for sheep yet. Ask about the next sale or outlook.';
+      text.textContent = item?.summary || `No fresh commentary is saved for ${speciesName(stock).toLowerCase()} yet. Ask about the next sale or outlook.`;
       meta.textContent = item ? `${item.scope || item.yard} · ${item.historicalContext || isOld(item.evidenceDate) ? 'Historical context · ' : ''}Published ${nzDate(item.evidenceDate)}` : 'Evidence still building';
-      const button = document.createElement('button'); button.type = 'button'; button.textContent = `Ask about ${stock}`; button.addEventListener('click', () => { context = {}; ask(`What are ${stock} doing?`); $('#ask-panel').scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+      const button = document.createElement('button'); button.type = 'button'; button.textContent = `Ask about ${speciesName(stock).toLowerCase()}`; button.addEventListener('click', () => { context = {}; ask(`What are ${stock} doing?`); $('#ask-panel').scrollIntoView({ behavior: 'smooth', block: 'start' }); });
       content.append(title, text, meta, button); row.append(number, content); summary.append(row);
     });
     const next = upcomingEvents(brief)[0], sale = $('#next-sale'); sale.hidden = !next; sale.replaceChildren();

@@ -2,7 +2,7 @@ import {check,validateBrief,retainForecasts} from './market-schema';
 import { env } from 'cloudflare:workers';
 import seed from './market-seed.json';
 import instructions from './market-instructions.json';
-import {mergeHistory} from './market-history';
+import {mergeHistory,mergeChartHistory} from './market-history';
 const HISTORY_KEY='markets/history.json';
 const KEY='markets/current.json';
 export const updateInstructions=instructions;
@@ -21,3 +21,4 @@ export async function writeBrief(d:any,expectedRevision:number){
  return {revision:next.revision,checkedAt:next.checkedAt,persisted:true,forecastsRecorded:next.forecastHistory.length};
 }
 export async function readHistory(){const h=env.BUCKET&&await env.BUCKET.get(HISTORY_KEY);return h?await h.json():mergeHistory(null,(await readBrief()));}
+export async function writeChartHistory(seriesId:string,points:any[],sourceUrl:string){check(env.BUCKET,'Persistent storage is unavailable.');const h=await env.BUCKET.get(HISTORY_KEY);const next=mergeChartHistory(h?await h.json():null,seriesId,points,sourceUrl);await env.BUCKET.put(HISTORY_KEY,JSON.stringify(next),{httpMetadata:{contentType:'application/json'}});const c=next.charts[seriesId];return {seriesId,weeks:c.points.length,first:c.points[0].weekOf,latest:c.points.at(-1).weekOf};}

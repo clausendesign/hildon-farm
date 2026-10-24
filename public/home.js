@@ -2,6 +2,7 @@ import { readProfile } from './farm-profile.mjs';
 import { bindVoiceToggle, voice } from './farm-voice.mjs';
 import { mountProfile } from './profile-ui.mjs';
 import { createParticleOrb } from './particle-orb.mjs';
+import { loadWelcome, renderWelcome, welcomeSpeech } from './welcome.mjs';
 
 const $ = selector => document.querySelector(selector);
 bindVoiceToggle($('#voice-toggle'), $('#voice-status'));
@@ -15,25 +16,21 @@ function greet() {
   $('#home-date').textContent = new Intl.DateTimeFormat('en-NZ', { timeZone: 'Pacific/Auckland', weekday: 'long', day: 'numeric', month: 'long' }).format(new Date()) + ' · NZ';
 }
 greet();
-// After saying who's here, the voice walks through the three options, lighting up each card in turn.
-const tourSteps = name => [
-    [null, `G’day ${name}. There are three things you can do here.`],
-    ['briefing', 'Daily briefing. The latest on cattle, lambs and sheep, and you can ask it questions.'],
-    ['map', 'Explore the farm. The map, paddocks, soil and satellite views.'],
-    ['cattle', 'Cattle weights. Every weigh day, and how each animal is gaining.'],
-];
-// Every line of the tour is ready before anyone is asked who they are, so it plays without pauses.
-['Kaye', 'Warwick'].forEach(name => tourSteps(name).forEach(([, line]) => voice.preload(line)));
-async function tour(name) {
-  const steps = tourSteps(name);
-  const light = card => document.querySelectorAll('[data-tour]').forEach(c => c.classList.toggle('spotlight', c.dataset.tour === card));
-  for (const [card, line] of steps) {
-    light(card);
-    if (await voice.speak(line) !== 'finished') break;
-  }
-  light(null);
+// Each visit opens with a warm welcome: the farm's weather today, the days ahead and a joke, all fresh each day.
+let welcome = null;
+const welcomeReady = loadWelcome().then(w => {
+  welcome = w;
+  if (!w) return;
+  renderWelcome($('#welcome'), w);
+  // Both welcomes are ready before anyone says who they are, so it plays without a pause.
+  [...new Set(['Kaye', 'Warwick', readProfile().name].filter(Boolean))].forEach(name => voice.preload(welcomeSpeech(w, name)));
+  $('#welcome .welcome-play').addEventListener('click', () => { voice.setEnabled(true); voice.speak(welcomeSpeech(w, readProfile().name)); });
+});
+async function sayWelcome(name) {
+  await welcomeReady;
+  voice.speak(welcome ? welcomeSpeech(welcome, name) : `G’day ${name}. Good to see you.`);
 }
-const setup = mountProfile({ greet: tour });
+const setup = mountProfile({ greet: sayWelcome });
 $('#change-name').addEventListener('click', () => setup.open());
 window.addEventListener('farm-profile', greet);
 

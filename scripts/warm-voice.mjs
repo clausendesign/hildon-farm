@@ -4,6 +4,7 @@
 import { readFileSync } from 'node:fs';
 import { answerQuestion, briefingScript, focusOnStoreBeef } from '../public/briefing-answers.mjs';
 import { splitNaturalText } from '../public/briefing-audio.mjs';
+import { welcomeSpeech } from '../public/welcome.mjs';
 
 const HARD_OF_HEARING = 'Sorry, I’m a bit hard of hearing in me old age. Some may say I’m worse than Kaye, but I wouldn’t go that far. If it’s easier, you can just tap one of the buttons.';
 
@@ -15,17 +16,16 @@ const talk = new Set([
   'Welcome to Hildon Farm. Who’s this? Kaye or Warwick?',
   'Voice is on.',
   HARD_OF_HEARING,
-  'Daily briefing. The latest on cattle, lambs and sheep, and you can ask it questions.',
-  'Explore the farm. The map, paddocks, soil and satellite views.',
-  'Cattle weights. Every weigh day, and how each animal is gaining.',
 ]);
-for (const name of ['Kaye', 'Warwick', 'Wozza', 'Wok', 'Big Dog Wok']) {
-  talk.add(`G’day ${name}. There are three things you can do here.`);
+// Today's welcome (weather and joke) changes each NZ day, so it is made fresh every morning.
+const welcome = await fetch(`${site}/api/welcome`).then(r => r.ok ? r.json() : null).catch(() => null);
+for (const name of ['Kaye', 'Warwick']) {
+  if (welcome) talk.add(welcomeSpeech(welcome, name));
   talk.add(briefingScript(brief, name));
 }
 talk.add(briefingScript(brief, null));
 const questions = ['When is the next sale?', 'What are lambs doing?', 'What prices have been reported?', 'What is the outlook?', 'Are prices trending up?',
-  'What are cattle doing?', 'What are sheep doing?'];
+  'What are cattle doing?', 'How does the lamb schedule compare to last year?'];
 for (const question of questions) {
   const answer = answerQuestion(brief, question, {});
   talk.add(answer.text);

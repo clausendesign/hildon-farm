@@ -5,7 +5,7 @@ const DAY = 86400000;
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const nz = (v, opts = {}) => new Intl.DateTimeFormat('en-NZ', { timeZone: 'Pacific/Auckland', day: 'numeric', month: 'short', ...opts }).format(new Date(v + 'T12:00:00+13:00'));
 const safeUrl = v => { try { const u = new URL(v); return u.protocol === 'https:' ? esc(u.href) : '#'; } catch { return '#'; } };
-const TABS = { lambs: { label: 'Lamb', species: ['lambs', 'sheep'] }, cattle: { label: 'Beef', species: ['cattle'] } };
+const TABS = { cattle: { label: 'Beef', species: ['cattle'] }, lambs: { label: 'Lamb', species: ['lambs'] } };
 const MONTHS = ['Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'];
 
 // The NZ meat season runs 1 October to 30 September.
@@ -45,46 +45,96 @@ function tile(s, meta) {
   </article>`;
 }
 
-function seasonChart(holder, points, meta) {
+// Weekly averages across the five seasons before this one, so this season can be read against what is normal.
+function seasonAverage(points, thisStart) {
+  const weeks = new Map();
+  for (let k = 1; k <= 5; k++) {
+    const start = Date.UTC(new Date(thisStart).getUTCFullYear() - k, 9, 1), seen = new Map();
+    for (const p of points) { const t = Date.parse(p.weekOf + 'T00:00:00Z'); if (t >= start && t < start + 366 * DAY) seen.set(Math.min(52, Math.floor((t - start) / DAY / 7)), p.value); }
+    for (const [w, v] of seen) (weeks.get(w) || weeks.set(w, []).get(w)).push(v);
+  }
+  return [...weeks].filter(([, vs]) => vs.length >= 3).sort((a, b) => a[0] - b[0])
+    .map(([w, vs]) => ({ x: w * 7 + 3, value: vs.reduce((a, b) => a + b, 0) / vs.length, min: Math.min(...vs), max: Math.max(...vs), seasons: vs.length }));
+}
+// The usual shape of a season, by month: each season's weeks as a share of that season's own average, averaged
+// over the last ten full seasons. Working within each season keeps a run of rising prices from posing as a pattern.
+function seasonShape(points, thisStart) {
+  const months = MONTHS.map(() => []);
+  for (let k = 1; k <= 10; k++) {
+    const start = Date.UTC(new Date(thisStart).getUTCFullYear() - k, 9, 1), seen = [];
+    for (const p of points) { const t = Date.parse(p.weekOf + 'T00:00:00Z'); if (t >= start && t < start + 366 * DAY) seen.push([Math.min(11, Math.floor((t - start) / DAY / 30.44)), p.value]); }
+    if (seen.length < 40) continue;
+    const mean = seen.reduce((a, [, v]) => a + v, 0) / seen.length;
+    for (const [m, v] of seen) months[m].push(v / mean);
+  }
+  return months.every(vs => vs.length >= 15) ? months.map((vs, m) => ({ month: MONTHS[m], value: vs.reduce((a, b) => a + b, 0) / vs.length })) : null;
+}
+const monthOf = x => MONTHS[Math.min(11, Math.floor(x / 30.44))];
+
+function seriesChart(holder, points, meta, note) {
   const latest = points.filter(p => !p.derived).at(-1) || points.at(-1);
   if (!latest) { holder.innerHTML = `<div class="empty">No readings recorded for ${esc(meta.label)} yet.</div>`; return; }
   const thisStart = seasonStart(latest.weekOf), lastStart = Date.UTC(new Date(thisStart).getUTCFullYear() - 1, 9, 1);
   const seasons = [
-    { key: 'this', name: `This season (${seasonName(thisStart)})`, start: thisStart, pts: [] },
-    { key: 'last', name: `Last season (${seasonName(lastStart)})`, start: lastStart, pts: [] },
+    { key: 'this', label: 'This season', start: thisStart, pts: [] },
+    { key: 'last', label: 'Last season', start: lastStart, pts: [] },
   ];
   for (const p of points) { const t = Date.parse(p.weekOf + 'T00:00:00Z'); for (const s of seasons) if (t >= s.start && t < s.start + 366 * DAY) s.pts.push({ ...p, x: (t - s.start) / DAY }); }
-  const all = seasons.flatMap(s => s.pts);
-  const lo = Math.min(...all.map(p => p.value)), hi = Math.max(...all.map(p => p.value));
-  const pad = Math.max((hi - lo) * 0.15, hi * 0.03), step = niceStep((hi - lo + pad * 2) / 4);
+  const avg = seasonAverage(points, thisStart), dense = points.length > 30;
+  const values = [...seasons.flatMap(s => s.pts.map(p => p.value)), ...avg.flatMap(a => [a.min, a.max])];
+  const lo = Math.min(...values), hi = Math.max(...values);
+  const pad = Math.max((hi - lo) * 0.08, hi * 0.02), step = niceStep((hi - lo + pad * 2) / 4);
   const yMin = Math.floor((lo - pad) / step) * step, yMax = Math.ceil((hi + pad) / step) * step;
-  const W = Math.max(300, holder.clientWidth || 600), H = W < 520 ? 210 : 240, L = 52, R = 14, T = 14, B = 30;
+  const W = Math.max(300, holder.clientWidth || 600), H = W < 520 ? 220 : 260, L = 52, R = 14, T = 14, B = 30;
   const x = d => L + d / 365 * (W - L - R), y = v => T + (1 - (v - yMin) / (yMax - yMin)) * (H - T - B);
   const ticks = []; for (let v = yMin; v <= yMax + 1e-9; v += step) ticks.push(v);
   const monthX = MONTHS.map((m, i) => ({ m, d: (Date.UTC(2026 + (i >= 3 ? 1 : 0), (9 + i) % 12, 1) - Date.UTC(2026, 9, 1)) / DAY }));
   // Readings more than five weeks apart are not joined, so the line never suggests prices nobody recorded.
   const path = pts => pts.map((p, i) => `${i && p.x - pts[i - 1].x <= 35 ? 'L' : 'M'}${x(p.x).toFixed(1)},${y(p.value).toFixed(1)}`).join('');
-  const marks = s => s.pts.map(p => `<circle cx="${x(p.x).toFixed(1)}" cy="${y(p.value).toFixed(1)}" r="4" class="${p.derived ? 'derived' : ''}"/>`).join('');
-  holder.innerHTML = `<svg class="hub-svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(meta.label)}: this season against last season">
+  // A weekly series is drawn as a line with its latest week marked; sparse readings show every point.
+  const marks = s => (dense ? s.pts.slice(-1) : s.pts).map(p => `<circle cx="${x(p.x).toFixed(1)}" cy="${y(p.value).toFixed(1)}" r="4.5" class="${p.derived ? 'derived' : ''}"/>`).join('');
+  const band = avg.length ? `<path class="avg-band" d="${avg.map((a, i) => `${i ? 'L' : 'M'}${x(a.x).toFixed(1)},${y(a.max).toFixed(1)}`).join('')}${avg.slice().reverse().map(a => `L${x(a.x).toFixed(1)},${y(a.min).toFixed(1)}`).join('')}Z"/><path class="avg-line" d="${path(avg)}"/>` : '';
+  holder.innerHTML = `<svg class="hub-svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(meta.label)}: this season against last season${avg.length ? ' and the five-season average' : ''}">
     ${ticks.map(v => `<line class="grid" x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}"/><text class="axis" x="${L - 8}" y="${y(v) + 4}" text-anchor="end">${money(v, meta.unit)}</text>`).join('')}
     ${monthX.map(({ m, d }, i) => (W < 520 && i % 2) ? '' : `<text class="axis" x="${x(d)}" y="${H - 8}" text-anchor="start">${m}</text>`).join('')}
-    ${seasons.map(s => `<g class="series ${s.key}"><path d="${path(s.pts)}"/>${marks(s)}</g>`).join('')}
+    ${band}
+    ${seasons.slice().reverse().map(s => `<g class="series ${s.key}"><path d="${path(s.pts)}"/>${marks(s)}</g>`).join('')}
     <line class="crosshair" y1="${T}" y2="${H - B}" visibility="hidden"/>
     <rect class="hit" x="${L}" y="${T}" width="${W - L - R}" height="${H - T - B}" fill="transparent"/>
   </svg><div class="hub-tip" hidden></div>`;
   const svg = holder.querySelector('svg'), tip = holder.querySelector('.hub-tip'), cross = svg.querySelector('.crosshair');
+  const nearest = (list, d, within) => { const p = list.reduce((a, p) => !a || Math.abs(p.x - d) < Math.abs(a.x - d) ? p : a, null); return p && Math.abs(p.x - d) < within ? p : null; };
   const show = clientX => {
     const box = svg.getBoundingClientRect(), d = (clientX - box.left - L) / (W - L - R) * 365;
-    const near = seasons.map(s => ({ s, p: s.pts.reduce((a, p) => !a || Math.abs(p.x - d) < Math.abs(a.x - d) ? p : a, null) })).filter(n => n.p && Math.abs(n.p.x - d) < 21);
-    if (!near.length) { hide(); return; }
-    const at = near[0].p.x; cross.setAttribute('x1', x(at)); cross.setAttribute('x2', x(at)); cross.setAttribute('visibility', 'visible');
-    tip.innerHTML = near.map(({ s, p }) => `<div><span class="swatch ${s.key}"></span>${esc(s.key === 'this' ? 'This season' : 'Last season')} · ${nz(p.weekOf, { year: 'numeric' })}<strong>${money(p.value, meta.unit)}${unitShort(meta.unit)}</strong>${p.derived ? '<small>From the published comparison column, approximate week</small>' : ''}</div>`).join('');
-    tip.hidden = false; tip.style.left = `${Math.min(Math.max(x(at) - 90, 0), W - 190)}px`;
+    const rows = seasons.map(s => ({ s, p: nearest(s.pts, d, dense ? 6 : 21) })).filter(n => n.p), a = nearest(avg, d, 6);
+    if (!rows.length && !a) { hide(); return; }
+    const at = rows[0]?.p.x ?? a.x; cross.setAttribute('x1', x(at)); cross.setAttribute('x2', x(at)); cross.setAttribute('visibility', 'visible');
+    tip.innerHTML = rows.map(({ s, p }) => `<div><span class="swatch ${s.key}"></span>${s.label} · ${nz(p.weekOf, { year: 'numeric' })}<strong>${money(p.value, meta.unit)}${unitShort(meta.unit)}</strong>${p.derived ? '<small>From the published comparison column, approximate week</small>' : ''}</div>`).join('')
+      + (a ? `<div><span class="swatch avg"></span>5-season average, ${monthOf(a.x)}<strong>${money(a.value, meta.unit)}${unitShort(meta.unit)}</strong><small>Range ${money(a.min, meta.unit)} to ${money(a.max, meta.unit)}</small></div>` : '');
+    tip.hidden = false; tip.style.left = `${Math.min(Math.max(x(at) - 100, 0), W - 210)}px`;
   };
   const hide = () => { tip.hidden = true; cross.setAttribute('visibility', 'hidden'); };
   const hit = svg.querySelector('.hit');
   hit.addEventListener('pointermove', e => show(e.clientX)); hit.addEventListener('pointerdown', e => show(e.clientX)); hit.addEventListener('pointerleave', hide);
-  return seasons;
+  if (note) note.textContent = insight(seasons, avg, meta, seasonShape(points, thisStart));
+}
+
+// The plain-language read of the chart: where this week sits against normal, last season, and the usual shape of a season.
+function insight(seasons, avg, meta, shape) {
+  const now = seasons[0].pts.filter(p => !p.derived).at(-1);
+  if (!now) return '';
+  const parts = [], fmt = v => `${money(v, meta.unit)}${unitShort(meta.unit)}`;
+  const gap = (a, b) => { const d = Math.abs(Math.round(a - b)); return meta.unit !== 'c/kg CW' ? `$${d}` : d >= 100 ? `$${(d / 100).toFixed(2)}/kg` : `${d}c/kg`; };
+  const a = avg.reduce((best, p) => !best || Math.abs(p.x - now.x) < Math.abs(best.x - now.x) ? p : best, null);
+  if (a && Math.abs(a.x - now.x) < 8) parts.push(`At ${fmt(now.value)}, it is ${Math.abs(now.value - a.value) < 1 ? 'right on' : `${gap(now.value, a.value)} ${now.value > a.value ? 'above' : 'below'}`} the average for this time of year over the last five seasons (${fmt(a.value)}; range ${fmt(a.min)} to ${fmt(a.max)}).`);
+  const last = seasons[1].pts.reduce((best, p) => !best || Math.abs(p.x - now.x) < Math.abs(best.x - now.x) ? p : best, null);
+  if (last && Math.abs(last.x - now.x) < 10) parts.push(`This week last season it was ${fmt(last.value)}.`);
+  if (shape) {
+    const top = shape.reduce((m, p) => p.value > m.value ? p : m), bottom = shape.reduce((m, p) => p.value < m.value ? p : m);
+    const full = { Oct: 'October', Nov: 'November', Dec: 'December', Jan: 'January', Feb: 'February', Mar: 'March', Apr: 'April', May: 'May', Jun: 'June', Jul: 'July', Aug: 'August', Sep: 'September' };
+    parts.push(`Over the last ten seasons it has usually been strongest in ${full[top.month]} and weakest in ${full[bottom.month]}, about ${Math.round((top.value / bottom.value - 1) * 100)}% apart.`);
+  }
+  return parts.join(' ');
 }
 
 function niceStep(raw) { const p = 10 ** Math.floor(Math.log10(raw)), f = raw / p; return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 2.5 ? 2.5 : f <= 5 ? 5 : 10) * p; }
@@ -110,20 +160,28 @@ export function mountHub(root) {
   function draw() {
     width = root.clientWidth;
     const body = root.querySelector('.hub-body'), species = TABS[tab].species;
-    const seriesIds = Object.keys(data.series).filter(id => species.includes(data.series[id].species));
+    const seriesIds = Object.keys(data.series).filter(id => species.includes(data.series[id].species) && !data.series[id].hidden);
     const latest = (brief.schedules || []).filter(s => seriesIds.includes(s.seriesId));
-    const firstReal = data.schedules.find(p => !p.derived);
+    // A full published weekly history is used where there is one; otherwise the readings saved with each briefing.
+    const weekly = id => (data.charts?.[id]?.points?.length >= 10 ? data.charts[id].points : null);
+    const pointsFor = id => weekly(id) || data.schedules.filter(p => p.seriesId === id);
+    const anyWeekly = seriesIds.some(weekly), anyDerived = seriesIds.some(id => !weekly(id) && pointsFor(id).some(p => p.derived));
+    const firstReal = id => data.schedules.find(p => p.seriesId === id && !p.derived);
+    const notes = seriesIds.map(id => weekly(id)
+      ? `${data.series[id].label}: the weekly North Island schedule average published by interest.co.nz, ${nz(weekly(id)[0].weekOf, { year: 'numeric' })} to ${nz(weekly(id).at(-1).weekOf, { year: 'numeric' })}.`
+      : `${data.series[id].label}: weekly readings recorded here from ${firstReal(id) ? nz(firstReal(id).weekOf, { year: 'numeric' }) : 'the next refresh'}; hollow points come from the comparison columns published with each reading, so the line fills in week by week.`).join(' ');
+    const seasonRows = id => pointsFor(id).filter(p => Date.parse(p.weekOf) >= Date.now() - 400 * DAY).slice().reverse();
     body.innerHTML = `
-      <h3 class="hub-subhead">Latest schedules<span>What processors are paying, averaged across their published schedules</span></h3>
+      <h3 class="hub-subhead">Latest schedule${latest.length > 1 ? 's' : ''}<span>What processors are paying, averaged across their published schedules</span></h3>
       <div class="hub-tiles">${latest.length ? latest.map(s => tile(s, data.series[s.seriesId])).join('') : '<div class="empty">No schedule reading saved yet. The next daily refresh adds one.</div>'}</div>
-      <h3 class="hub-subhead">The season so far<span>1 October to 30 September · this season against last</span></h3>
-      <div class="hub-legend"><span><i class="swatch this"></i>This season</span><span><i class="swatch last"></i>Last season</span><span><i class="swatch derived"></i>Approximate week, from the published comparison</span></div>
-      <div class="hub-charts">${seriesIds.map(id => `<figure class="hub-chart"><figcaption>${esc(data.series[id].label)} <small>${esc(data.series[id].island)} · ${esc(data.series[id].published)}</small></figcaption><div class="hub-plot" data-series="${id}"></div></figure>`).join('')}</div>
-      <p class="meta hub-note">${firstReal ? `Weekly readings recorded from ${nz(firstReal.weekOf, { year: 'numeric' })}; the line joins up as each week is added.` : ''} Earlier points come from the comparison columns published alongside each reading. Schedules are for prime stock sent to the works, not store sale prices.</p>
-      <details class="hub-data"><summary>Show the readings as a table</summary><div class="hub-table">${seriesIds.flatMap(id => data.schedules.filter(p => p.seriesId === id).slice().reverse().map(p => `<div class="hub-row"><span>${esc(data.series[id].label)}</span><span>${nz(p.weekOf, { year: 'numeric' })}${p.derived ? ' <small>approximate</small>' : ''}</span><span>${money(p.value, data.series[id].unit)}${unitShort(data.series[id].unit)}</span></div>`)).join('') || '<div class="empty">No readings yet.</div>'}</div></details>
+      <h3 class="hub-subhead">The season so far<span>1 October to 30 September · this season against last${anyWeekly ? ' and the five seasons before' : ''}</span></h3>
+      <div class="hub-legend"><span><i class="swatch this"></i>This season</span><span><i class="swatch last"></i>Last season</span>${anyWeekly ? '<span><i class="swatch avg"></i>5-season average and range</span>' : ''}${anyDerived ? '<span><i class="swatch derived"></i>Approximate week, from the published comparison</span>' : ''}</div>
+      <div class="hub-charts">${seriesIds.map(id => `<figure class="hub-chart"><figcaption>${esc(data.series[id].label)} <small>${esc(data.series[id].island)} · ${esc(data.series[id].published)}</small></figcaption><div class="hub-plot" data-series="${id}"></div><p class="hub-insight"></p></figure>`).join('')}</div>
+      <p class="meta hub-note">${esc(notes)} Schedules are for prime stock sent to the works, not store sale prices.</p>
+      <details class="hub-data"><summary>Show the last year of readings as a table</summary><div class="hub-table">${seriesIds.flatMap(id => seasonRows(id).map(p => `<div class="hub-row"><span>${esc(data.series[id].label)}</span><span>${nz(p.weekOf, { year: 'numeric' })}${p.derived ? ' <small>approximate</small>' : ''}</span><span>${money(p.value, data.series[id].unit)}${unitShort(data.series[id].unit)}</span></div>`)).join('') || '<div class="empty">No readings yet.</div>'}</div></details>
       <h3 class="hub-subhead">Local sale results<span>Latest reported result for each class at nearby yards · ranges, not averages, unless stated</span></h3>
       ${salesTable(data.sales.filter(s => species.includes(s.species) && !isDairyBeef(s.classLabel)))}`;
-    body.querySelectorAll('.hub-plot').forEach(el => seasonChart(el, data.schedules.filter(p => p.seriesId === el.dataset.series), data.series[el.dataset.series]));
+    body.querySelectorAll('.hub-plot').forEach(el => { const id = el.dataset.series; seriesChart(el, pointsFor(id), data.series[id], el.parentElement.querySelector('.hub-insight')); });
   }
 
   return {

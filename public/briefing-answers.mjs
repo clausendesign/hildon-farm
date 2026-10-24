@@ -1,6 +1,7 @@
 import { comparableTrends } from './market-trends.mjs';
 
-// Warwick runs store beef cattle, so dairy-beef sales, reports and prices (Friesian and dairy-cross stock) are left out.
+// Warwick runs store beef cattle and lambs, so dairy-beef (Friesian and dairy-cross stock) and adult sheep are left out.
+// Sheep sale days stay on the calendar because store lambs are sold at them.
 const DAIRY_BEEF = /dairy[\s-]?beef|friesian|dairy\b|speckle park.{0,3}dairy/i;
 export const isDairyBeef = text => DAIRY_BEEF.test(String(text || ''));
 export function focusOnStoreBeef(brief) {
@@ -9,13 +10,13 @@ export function focusOnStoreBeef(brief) {
   return {
     ...brief,
     events: brief.events.filter(e => !dairyEvents.has(e.id)),
-    outlooks: brief.outlooks.filter(o => !dairyEvents.has(o.eventId) && !isDairy(o)),
-    briefs: brief.briefs.filter(b => !isDairy(b)),
-    prices: brief.prices.filter(p => !isDairy(p)),
+    outlooks: brief.outlooks.filter(o => !dairyEvents.has(o.eventId) && !isDairy(o) && o.species !== 'sheep'),
+    briefs: brief.briefs.filter(b => !isDairy(b) && b.species !== 'sheep'),
+    prices: brief.prices.filter(p => !isDairy(p) && p.species !== 'sheep'),
   };
 }
 
-export const speciesName = value => ({ cattle: 'Cattle', lambs: 'Lambs', sheep: 'Sheep', weather: 'Weather' }[value] || value);
+export const speciesName = value => ({ cattle: 'Beef', lambs: 'Lambs', sheep: 'Lambs', weather: 'Weather' }[value] || value);
 export const nzDate = (value, options = {}) => value ? new Intl.DateTimeFormat('en-NZ', { timeZone: 'Pacific/Auckland', day: 'numeric', month: 'short', year: 'numeric', ...options }).format(new Date(value.length === 10 ? value + 'T12:00:00+12:00' : value)) : 'date not reported';
 export function nzToday(now = Date.now()) {
   const p = new Intl.DateTimeFormat('en-NZ', { timeZone: 'Pacific/Auckland', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date(now));
@@ -30,11 +31,13 @@ export function upcomingEvents(brief, stock = 'all', now = Date.now()) {
 function detectedSpecies(q) {
   if (/\b(lambs?|hoggets?)\b/.test(q)) return 'lambs';
   if (/\b(cattle|beef|steers?|heifers?|bulls?|calves|weaners?|cows?)\b/.test(q)) return 'cattle';
-  if (/\b(sheep|ewes?|rams?|mutton)\b/.test(q)) return 'sheep';
+  // The family runs beef cattle and lambs, so sheep questions are answered with the lamb evidence.
+  if (/\b(sheep|ewes?|rams?|mutton)\b/.test(q)) return 'lambs';
   return null;
 }
 // Processor schedule series recorded in the briefing (labels match lib/market-series.ts).
-const SCHEDULES = { 'lamb-yx-ni': ['lambs', 'North Island lamb schedule, 17.5 kg YX', 'head'], 'steer-p2-ni': ['cattle', 'North Island P2 steer schedule, 270 to 295 kg', 'kg'], 'bull-m2-ni': ['cattle', 'North Island M2 bull schedule, 296 to 320 kg', 'kg'] };
+const SCHEDULES = { 'lamb-yx-ni': ['lambs', 'North Island lamb schedule, 17.5 kg YX', 'head'], 'steer-p2-ni': ['cattle', 'North Island P2 steer schedule, 270 to 295 kg', 'kg'] };
+// The bull schedule is still recorded but not discussed: the family sells steers, not bulls.
 const scheduleMoney = (v, per) => per === 'kg' ? `$${(v / 100).toFixed(2)} a kilo carcass weight` : `$${Math.round(v)} a head`;
 function scheduleText(s) {
   const [, label, per] = SCHEDULES[s.seriesId], c = s.compare || {}, m = v => scheduleMoney(v, per);

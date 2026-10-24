@@ -26,3 +26,21 @@ hb.schedules=[{...hb.schedules[0],weekOf:'2026-11-02',value:210,compare:{weekAgo
 assert.equal(h.schedules.find(p=>p.weekOf==='2026-10-26').value,208,'A real reading is never replaced by a later comparison column');
 assert.equal(h.schedules.length,5);assert.equal(mergeHistory(h,hb).sales.length,1,'Saving twice does not duplicate sales');
 console.log('Market history keeps real weekly readings, labels derived points and de-duplicates sales.');
+
+const {mergeChartHistory}=await import('../lib/market-history.ts');
+const weeks=Array.from({length:20},(_,i)=>({weekOf:new Date(Date.UTC(2026,5,7)+i*7*86400000).toISOString().slice(0,10),value:900+i}));
+let ch=mergeChartHistory(h,'steer-p2-ni',weeks,'https://www.interest.co.nz/charts/rural/p2-steer2',Date.UTC(2026,9,24));
+assert.equal(ch.charts['steer-p2-ni'].points.length,20);assert.equal(ch.schedules.length,h.schedules.length,'Table readings are kept apart from the weekly chart');
+ch=mergeChartHistory(ch,'steer-p2-ni',weeks.slice(5),'https://www.interest.co.nz/charts/rural/p2-steer2',Date.UTC(2026,9,24));assert.equal(ch.charts['steer-p2-ni'].points.length,15,'A new import replaces the stored series');
+assert.throws(()=>mergeChartHistory(ch,'steer-p2-ni',weeks,'x',Date.UTC(2027,5,1)),/out of date/);
+assert.throws(()=>mergeChartHistory(ch,'steer-p2-ni',[...weeks,weeks[0]],'x',Date.UTC(2026,9,24)),/Duplicate/);
+console.log('Weekly chart history is validated, replaced as a whole and kept apart from table readings.');
+
+const {buildWelcome,pickJoke}=await import('../lib/welcome.ts');
+const fc={daily:{time:['2026-10-23','2026-10-24','2026-10-25','2026-10-26','2026-10-27','2026-10-28'],weather_code:[0,51,3,0,95,80],temperature_2m_max:[15,16.6,18.3,20,17.5,15.5],temperature_2m_min:[8,9.4,10.3,9,9.1,8.4],precipitation_sum:[0,0.3,0,0,7,1.7],precipitation_probability_max:[0,55,2,0,100,35],wind_speed_10m_max:[20,31.4,32.8,20,40.7,36.8],wind_direction_10m_dominant:[0,296,307,0,334,302]}};
+const w=buildWelcome(fc,'2026-10-24');
+assert.equal(w.days.length,5,'Today plus four days, starting today');assert.equal(w.days[0].date,'2026-10-24');
+assert.match(w.todayLine,/^Today in Feilding: drizzle, a top of 17 and a low of 9, with a fresh northwesterly\.$/);
+assert.match(w.aheadLine,/Sunday, cloudy and 18; Monday, fine and clear and 20; Tuesday, thunderstorms and 18; Wednesday, showers and 16/);
+assert.ok(!/kia ora/i.test(w.spoken));assert.notEqual(pickJoke(w.days[0],'2026-10-24'),pickJoke(w.days[0],'2026-10-25'),'The joke changes each day');
+console.log('Daily welcome: forecast wording, five days from today and a joke that changes daily.');

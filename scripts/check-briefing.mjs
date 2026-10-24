@@ -16,7 +16,14 @@ assert.match(price.text, /4 Sept? 2026/);
 assert.match(price.text, /no recent, verified Feilding price/);
 assert.match(answer('What are lamb prices?').text, /NZD\/head/);
 assert.match(answer('How much are my 300kg steers worth?').text, /can’t value your animals/);
-assert.match(answer('What are sheep prices?').text, /no verified sheep price/);
+// Sheep questions are answered with the lamb evidence: the family runs beef cattle and lambs.
+assert.equal(answer('What are sheep prices?').species, 'lambs');
+const withSchedules = { ...brief, sources: [...brief.sources, { id: 'sched', url: 'https://www.interest.co.nz/rural/livestock-schedule-averages', publisher: 'interest.co.nz', title: 'Schedules' }],
+  schedules: [{ seriesId: 'steer-p2-ni', weekOf: '2026-10-26', value: 985, compare: { fourWeeksAgo: 985, threeMonthsAgo: 965, yearAgo: 900, high52: 990, low52: 873 }, sourceId: 'sched' },
+    { seriesId: 'bull-m2-ni', weekOf: '2026-10-26', value: 955, compare: {}, sourceId: 'sched' }] };
+const steer = answerQuestion(withSchedules, 'What is the steer schedule?', {}, now);
+assert.match(steer.text, /P2 steer schedule.*\$9\.85 a kilo.*85 cents a kilo ahead/s);
+assert.doesNotMatch(steer.text, /bull/i, 'The bull schedule is not read out');
 assert.match(answer('Are prices trending up?').text, /aren’t enough recent, comparable/);
 assert.equal(answer('And what about lambs?', { species: 'cattle', intent: 'prices' }).intent, 'prices');
 assert.equal(answer('And what about lambs?', { species: 'cattle', intent: 'prices' }).species, 'lambs');

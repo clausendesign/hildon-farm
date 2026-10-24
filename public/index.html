@@ -5,7 +5,7 @@
   <meta name="theme-color" content="#0b130f"><title>Welcome · Hildon Farm</title>
   <meta name="description" content="Warwick’s daily livestock briefing and a closer look at Hildon Farm near Feilding.">
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&display=swap">
-  <link rel="icon" href="/favicon.svg"><link rel="stylesheet" href="/home.css"><link rel="stylesheet" href="/profile.css">
+  <link rel="icon" href="/favicon.svg"><link rel="stylesheet" href="/home.css"><link rel="stylesheet" href="/profile.css"><link rel="stylesheet" href="/welcome.css">
   <script type="module" src="/home.js"></script>
 </head>
 <body>
@@ -15,11 +15,12 @@
   </header>
   <main class="shell">
     <div class="home-intro"><div><div class="eyebrow">A LITTLE CONTEXT FOR YOUR DAY</div><h1 id="greeting">Welcome to the farm.</h1><p class="lead">Catch up on the markets.<br>Or take a look around your patch.</p></div><div id="home-date" class="home-date"></div></div>
+    <section id="welcome" class="welcome" aria-label="Today’s weather and joke" hidden></section>
     <div class="destinations">
       <a class="destination briefing-destination" data-tour="briefing" href="/markets.html?listen=1">
         <img class="card-photo" src="/data/card-briefing.jpg" alt="" width="1024" height="1024">
         <span class="card-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M5 17h3l3-8 5 16 5-19 3 11h3"/></svg></span>
-        <h2>Daily briefing</h2><p>What’s happening with cattle, lambs and sheep. Listen, then ask a question.</p>
+        <h2>Daily briefing</h2><p>What’s happening with beef and lambs. Listen, then ask a question.</p>
         <span class="destination-action">Take me to the briefing <span aria-hidden="true">↗</span></span>
       </a>
       <a class="destination map-destination" data-tour="map" href="/farm.html">

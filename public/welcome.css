@@ -1,0 +1,14 @@
+.welcome{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);grid-template-areas:"today days" "joke joke" "source source";gap:22px 34px;margin:0 0 26px;padding:28px 30px 20px;border:1px solid var(--line);border-radius:22px;background:#09110d}
+.welcome-today{grid-area:today}.welcome-now{display:flex;align-items:center;gap:14px;margin:12px 0 6px}
+.wx-icon{width:30px;height:30px;fill:none;stroke:var(--lime);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.welcome-now .wx-icon{width:50px;height:50px}
+.welcome-temp{font:500 52px/1 Geist,system-ui,sans-serif;letter-spacing:-1.5px;color:var(--ink)}.welcome-low{font-size:24px;color:var(--muted)}
+.welcome-words{margin:4px 0 0;font-size:18px;color:var(--ink)}.welcome-words small{display:block;font-size:14px;color:var(--muted);margin-top:4px}
+.welcome-days{grid-area:days;list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;align-self:center}
+.welcome-days li{display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 6px;border:1px solid var(--line);border-radius:14px;font-size:15px;color:var(--muted)}
+.wx-day{font-weight:600;color:var(--ink)}.wx-temps strong{color:var(--ink);font-weight:600}.wx-rain{font-size:13px}
+.welcome-joke{grid-area:joke;border-top:1px solid var(--line);padding-top:18px}
+.welcome-joke p{font-size:19px;line-height:1.55;color:var(--ink);margin:8px 0 12px;max-width:760px}
+.welcome-play{border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:22px;padding:9px 16px;font:inherit;font-size:15px;cursor:pointer;min-height:42px}.welcome-play:hover{background:#12201a}
+.welcome-source{grid-area:source;font-size:13px;color:var(--muted);text-decoration:none}.welcome-source:hover{text-decoration:underline}
+@media(max-width:700px){.welcome{grid-template-columns:1fr;grid-template-areas:"today" "days" "joke" "source";padding:22px 18px 16px;gap:18px}.welcome-days{gap:6px}.welcome-days li{padding:12px 2px;font-size:14px}.wx-icon{width:26px;height:26px}.welcome-temp{font-size:44px}}

@@ -6,7 +6,7 @@ import {mountHub} from './info-hub.mjs';
 let brief,filter='all';const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const date=(v,opts={})=>v?new Intl.DateTimeFormat('en-NZ',{timeZone:'Pacific/Auckland',day:'numeric',month:'short',year:'numeric',...opts}).format(new Date(v.length===10?v+'T12:00:00+13:00':v)):'Date not reported';
 const safeUrl=v=>{try{let u=new URL(v);return u.protocol==='https:'?esc(u.href):'#'}catch{return '#'}};
-const species=v=>({cattle:'Cattle',lambs:'Lambs',sheep:'Sheep',weather:'Weather'}[v]||v);const match=v=>filter==='all'||v===filter;
+const species=v=>({cattle:'Beef',lambs:'Lambs',sheep:'Lambs',weather:'Weather'}[v]||v);const match=v=>filter==='all'||v===filter;
 const source=id=>brief.sources.find(s=>s.id===id);
 const links=ids=>`<div class="sources-row">${ids.map(id=>{const s=source(id);return s?`<a href="${safeUrl(s.url)}" target="_blank" rel="noopener noreferrer">${esc(s.publisher)} ↗</a>`:''}).join('')}</div>`;
 const age=v=>Date.now()-Date.parse(v)>14*86400000;
