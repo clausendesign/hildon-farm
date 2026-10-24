@@ -2,14 +2,14 @@
 // Usage: node scripts/warm-voice.mjs [site URL]   (defaults to the live site)
 // Gemini only allows a few new clips a minute, so it pauses after each clip it has to make.
 import { readFileSync } from 'node:fs';
-import { answerQuestion, briefingScript } from '../public/briefing-answers.mjs';
+import { answerQuestion, briefingScript, focusOnStoreBeef } from '../public/briefing-answers.mjs';
 import { splitNaturalText } from '../public/briefing-audio.mjs';
 
 const HARD_OF_HEARING = 'Sorry, I’m a bit hard of hearing in me old age. Some may say I’m worse than Kaye, but I wouldn’t go that far. If it’s easier, you can just tap one of the buttons.';
 
 const site = (process.argv[2] || 'https://hildon-farm.hildonfarm.workers.dev').replace(/\/$/, '');
 const raps = JSON.parse(readFileSync(new URL('../public/raps.json', import.meta.url)));
-const brief = await fetch(`${site}/api/markets`).then(r => r.json());
+const brief = focusOnStoreBeef(await fetch(`${site}/api/markets`).then(r => r.json()));
 
 const talk = new Set([
   'Welcome to Hildon Farm. Who’s this? Kaye or Warwick?',

@@ -37,3 +37,12 @@ for (const q of ['When is the next sale?', 'What are cattle prices?', 'What is t
   assert(a.sourceIds.every(id => brief.sources.some(s => s.id === id)));
 }
 console.log('Briefing checks passed: dates, units, missing evidence, follow-up questions, sources and spoken names.');
+// Store beef only: dairy-beef sales, reports and prices are left out.
+{
+  const { focusOnStoreBeef } = await import('../public/briefing-answers.mjs');
+  const beef = focusOnStoreBeef(brief);
+  assert(!beef.events.some(e => /dairy/i.test(e.title)));
+  assert(!beef.prices.some(p => /friesian|dairy/i.test(p.class || '')));
+  assert.match(answerQuestion(beef, 'When is the next cattle sale?', {}, now).text, /Store/);
+  console.log('Store beef focus checks passed.');
+}

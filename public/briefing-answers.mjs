@@ -1,5 +1,19 @@
 import { comparableTrends } from './market-trends.mjs';
 
+// Warwick runs store beef cattle, so dairy-beef sales, reports and prices (Friesian and dairy-cross stock) are left out.
+const DAIRY_BEEF = /dairy[\s-]?beef|friesian|dairy\b|speckle park.{0,3}dairy/i;
+export function focusOnStoreBeef(brief) {
+  const dairyEvents = new Set(brief.events.filter(e => e.species === 'cattle' && DAIRY_BEEF.test(`${e.id} ${e.title}`)).map(e => e.id));
+  const isDairy = item => item.species === 'cattle' && DAIRY_BEEF.test([item.class, item.scope, item.summary, item.title, item.category].filter(Boolean).join(' '));
+  return {
+    ...brief,
+    events: brief.events.filter(e => !dairyEvents.has(e.id)),
+    outlooks: brief.outlooks.filter(o => !dairyEvents.has(o.eventId) && !isDairy(o)),
+    briefs: brief.briefs.filter(b => !isDairy(b)),
+    prices: brief.prices.filter(p => !isDairy(p)),
+  };
+}
+
 export const speciesName = value => ({ cattle: 'Cattle', lambs: 'Lambs', sheep: 'Sheep', weather: 'Weather' }[value] || value);
 export const nzDate = (value, options = {}) => value ? new Intl.DateTimeFormat('en-NZ', { timeZone: 'Pacific/Auckland', day: 'numeric', month: 'short', year: 'numeric', ...options }).format(new Date(value.length === 10 ? value + 'T12:00:00+12:00' : value)) : 'date not reported';
 export function nzToday(now = Date.now()) {

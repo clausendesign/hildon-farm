@@ -1,5 +1,6 @@
 import {comparableTrends} from './market-trends.mjs';
 import {initBriefing} from './daily-briefing.js';
+import {focusOnStoreBeef} from './briefing-answers.mjs';
 'use strict';
 let brief,filter='all';const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const date=(v,opts={})=>v?new Intl.DateTimeFormat('en-NZ',{timeZone:'Pacific/Auckland',day:'numeric',month:'short',year:'numeric',...opts}).format(new Date(v.length===10?v+'T12:00:00+13:00':v)):'Date not reported';
@@ -25,7 +26,7 @@ function render(){
  assistant.render(brief);
  $('#sources').innerHTML=brief.sources.map(s=>`<a href="${safeUrl(s.url)}" target="_blank" rel="noopener noreferrer">${esc(s.title)} · ${esc(s.publisher)} ↗</a>`).join('');
 }
-async function load(){const btn=$('#refresh');btn.disabled=true;$('#error').hidden=true;try{const r=await fetch('/api/markets',{cache:'no-store'});if(!r.ok)throw Error('HTTP '+r.status);brief=await r.json();render();}catch(e){$('#error').textContent='The saved briefing could not be loaded. Please try again. '+(brief?'The information below is the last version loaded in this session.':'');$('#error').hidden=false;if(!brief)$('#updated').textContent='Briefing unavailable';}finally{btn.disabled=false}}
+async function load(){const btn=$('#refresh');btn.disabled=true;$('#error').hidden=true;try{const r=await fetch('/api/markets',{cache:'no-store'});if(!r.ok)throw Error('HTTP '+r.status);brief=focusOnStoreBeef(await r.json());render();}catch(e){$('#error').textContent='The saved briefing could not be loaded. Please try again. '+(brief?'The information below is the last version loaded in this session.':'');$('#error').hidden=false;if(!brief)$('#updated').textContent='Briefing unavailable';}finally{btn.disabled=false}}
 document.querySelectorAll('[data-filter]').forEach(b=>b.addEventListener('click',()=>{filter=b.dataset.filter;document.querySelectorAll('[data-filter]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));if(brief)render()}));$('#refresh').addEventListener('click',load);
 const assistant=initBriefing({getBrief:()=>brief});
 load();
