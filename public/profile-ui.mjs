@@ -2,6 +2,9 @@ import { PEOPLE, readProfile, saveProfile, nameFromSpeech } from './farm-profile
 import { voice } from './farm-voice.mjs';
 import { createParticleOrb } from './particle-orb.mjs';
 
+// What the voice says when it can't make out a name; tapping a name is the easy way through.
+export const HARD_OF_HEARING = 'Sorry, I’m a bit hard of hearing in me old age. Some may say I’m worse than Kaye, but I wouldn’t go that far. If it’s easier, you can just tap one of the buttons.';
+
 export function mountProfile({ auto = true, greet } = {}) {
   const dialog = document.createElement('dialog');
   dialog.className = 'profile-dialog';
@@ -14,7 +17,7 @@ export function mountProfile({ auto = true, greet } = {}) {
   const particles = createParticleOrb(orb.querySelector('canvas'), () => ({ mode: voice.listening ? 'listening' : voice.speaking ? 'speaking' : voice.loading ? 'connecting' : 'idle', level: voice.level() }));
   dialog.addEventListener('close', () => particles.stop());
   const prompt = 'Welcome to Hildon Farm. Who’s this? Kaye or Warwick?';
-  voice.preload(prompt);
+  voice.preload(prompt); voice.preload(HARD_OF_HEARING);
   const WHO_KEY = 'hildon-farm-who';
   const knownThisVisit = () => { try { return sessionStorage.getItem(WHO_KEY) === '1'; } catch { return false; } };
   function close() { session++; voice.stop(); dialog.close(); priorFocus?.focus(); }
@@ -33,7 +36,7 @@ export function mountProfile({ auto = true, greet } = {}) {
       onResult: text => {
         const name = nameFromSpeech(text);
         if (name) choose(name);
-        else { say(`I heard “${text}”. Try again, or tap a name.`); const current = session; voice.speak('Sorry, I didn’t catch that. Is it Kaye or Warwick?').then(result => { if (result === 'finished' && dialog.open && current === session) listen(); }); }
+        else { say('Tap your name below, or tap the orb to try again.'); voice.speak(HARD_OF_HEARING); }
       }
     });
   }
