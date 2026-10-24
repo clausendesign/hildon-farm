@@ -1,4 +1,4 @@
-const allowedHosts=['spreaker.com','api.spreaker.com','omny.fm','omnycontent.com','feildingsaleyards.co.nz','beeflambnz.com','farmersweekly.co.nz','saleyard.co.nz','mylivestock.co.nz','rnz.co.nz','nzherald.co.nz'];
+const allowedHosts=['spreaker.com','api.spreaker.com','omny.fm','omnycontent.com','feildingsaleyards.co.nz','beeflambnz.com','farmersweekly.co.nz','saleyard.co.nz','mylivestock.co.nz','rnz.co.nz','nzherald.co.nz','interest.co.nz'];
 export function check(ok:unknown,message:string):asserts ok{if(!ok)throw new Error(message);}
 function validUrl(s:any){try{const u=new URL(s);return u.protocol==='https:'&&allowedHosts.some(h=>u.hostname===h||u.hostname.endsWith('.'+h));}catch{return false;}}
 export function validateBrief(d:any){
