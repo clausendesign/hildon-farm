@@ -39,7 +39,7 @@ export function initBriefing({ getBrief }) {
     if (role === 'assistant') {
       sourceLinks(refs, message);
       const replay = document.createElement('button'); replay.type = 'button'; replay.className = 'replay-answer'; replay.textContent = '▶ Hear this answer';
-      replay.addEventListener('click', () => { voice.setEnabled(true); voice.speak(text); }); message.append(replay);
+      replay.addEventListener('click', () => { voice.setEnabled(true); voice.speak(text, { quick: true }); }); message.append(replay);
     }
     log.append(message);
     // Keep the conversation bounded while preserving the current question context.
@@ -61,14 +61,15 @@ export function initBriefing({ getBrief }) {
     context = { species: answer.species, intent: answer.intent };
     appendMessage(answer.text, 'assistant', answer.sourceIds); suggestions(answer.suggestions);
     answering = false;
-    if (voice.enabled) voice.speak(answer.text);
+    if (voice.enabled) voice.speak(answer.text, { quick: true });
   }
   $('#question-form').addEventListener('submit', event => { event.preventDefault(); ask(input.value); });
   document.querySelectorAll('[data-question]').forEach(button => button.addEventListener('click', () => ask(button.dataset.question)));
   $('#ask-voice').addEventListener('click', () => {
     if (voice.listening) { voice.stopListening(); status.textContent = 'Microphone stopped.'; return; }
     voice.setEnabled(true); reading = false;
-    voice.listen({ onStatus: text => { status.textContent = text; }, onPartial: text => { input.value = text.slice(0, 500); }, onResult: text => { input.value = text; ask(text); } });
+    status.textContent = 'Listening… ask your question, then pause.';
+    voice.listen({ onStatus: text => { status.textContent = text || status.textContent; }, onPartial: text => { input.value = text.slice(0, 500); status.textContent = 'Got it so far. Pause when you’re done.'; }, onResult: text => { input.value = text; status.textContent = `You asked: “${text}”`; ask(text); } });
   });
   $('#clear-chat').addEventListener('click', () => {
     voice.stop(); context = {}; log.replaceChildren(); input.value = ''; status.textContent = 'Ready for a new question.';

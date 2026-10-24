@@ -90,16 +90,16 @@ class FarmVoice extends EventTarget {
     if (!value) this.stop();
     this.update();
   }
-  speak(text, { style } = {}) {
+  speak(text, { style, quick } = {}) {
     this.stop();
     if (!this.enabled) return Promise.resolve('muted');
     const sequence = this.sequence;
     document.querySelectorAll('audio').forEach(audio => audio.pause());
     if (Date.now() < this.naturalDownUntil) return this.speakBrowser(text, sequence);
     // The natural voice comes from the server; the browser's own voice stays as the backup.
-    return this.speakNatural(text, sequence, style).then(result => result === 'fallback' && sequence === this.sequence ? this.speakBrowser(text, sequence) : result);
+    return this.speakNatural(text, sequence, style, quick).then(result => result === 'fallback' && sequence === this.sequence ? this.speakBrowser(text, sequence) : result);
   }
-  speakNatural(text, sequence, style) {
+  speakNatural(text, sequence, style, quick) {
     const chunks = splitNaturalText(text);
     const audio = this.audio;
     return new Promise(resolve => {
@@ -108,7 +108,7 @@ class FarmVoice extends EventTarget {
       this.finishSpeech = finish;
       if (!chunks.length) { finish('finished'); return; }
       this.loading = true; this.update();
-      const load = index => fetch('/api/speech', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text: chunks[index], style }) }).then(response => { if (!response.ok) throw new Error('speech'); return response.blob(); });
+      const load = index => fetch('/api/speech', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text: chunks[index], style, quick }) }).then(response => { if (!response.ok) throw new Error('speech'); return response.blob(); });
       let pending = load(0);
       const play = async index => {
         let blob;
@@ -167,23 +167,30 @@ class FarmVoice extends EventTarget {
     recognition.lang = 'en-NZ';
     recognition.continuous = false;
     recognition.interimResults = true;
-    let received = false;
+    let received = false, heard = '', pause, silence;
+    const deliver = transcript => {
+      if (received || this.recognition !== recognition) return;
+      received = true; clearTimeout(pause); clearTimeout(silence);
+      this.recognition = null; this.listening = false; recognition.stop(); this.update();
+      onStatus(''); onResult(transcript.trim());
+    };
+    // Browsers can take several seconds to confirm a sentence; a short pause after real words is enough.
+    silence = setTimeout(() => { if (!heard && this.recognition === recognition) { this.recognition = null; this.listening = false; recognition.abort(); this.update(); onStatus('I didn’t hear anything. Tap to try again.'); } }, 8000);
     recognition.onstart = () => { if (this.recognition !== recognition) return; this.listening = true; this.update(); onStatus('Listening…'); };
     recognition.onresult = event => {
       if (this.recognition !== recognition) return;
       let interim = '';
       for (let i = event.resultIndex; i < event.results.length; i++) {
-        if (event.results[i].isFinal && !received) {
-          received = true;
-          const transcript = event.results[i][0].transcript.trim();
-          this.recognition = null; this.listening = false; recognition.stop(); this.update();
-          onStatus(''); onResult(transcript); return;
-        }
+        if (event.results[i].isFinal) { deliver(event.results[i][0].transcript); return; }
         interim += event.results[i][0].transcript;
       }
+      heard = interim;
       onPartial(interim);
+      clearTimeout(pause);
+      if (interim.trim()) pause = setTimeout(() => deliver(heard), 1200);
     };
     recognition.onerror = event => {
+      clearTimeout(pause); clearTimeout(silence);
       if (this.recognition !== recognition) return;
       this.recognition = null; this.listening = false; this.update();
       const messages = { 'not-allowed': 'Microphone permission was declined. Allow it in your browser settings, or use the options on screen.', 'service-not-allowed': 'Speech recognition is not available on this device. You can use the options on screen.', 'audio-capture': 'No microphone was found. You can use the options on screen.', 'network': 'The speech service could not connect. Please try again or type instead.', 'no-speech': 'I didn’t hear anything. Tap the microphone to try again.', 'aborted': '' };

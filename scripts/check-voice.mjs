@@ -42,8 +42,14 @@ voice.listen({ onResult: text => result = text }); assert.equal(voice.listening,
 const recognition = Recognition.current;
 recognition.onresult({ resultIndex: 0, results: [{ isFinal: true, 0: { transcript: 'Big Dog Wok' } }] });
 assert.equal(result, 'Big Dog Wok'); assert.equal(voice.listening, false);
+// A pause after some words counts as the end of the question, without waiting for the browser.
+let paused;
+voice.listen({ onResult: text => paused = text });
+Recognition.current.onresult({ resultIndex: 0, results: [{ isFinal: false, 0: { transcript: 'when is the next sale' } }] });
+await new Promise(resolve => setTimeout(resolve, 1300));
+assert.equal(paused, 'when is the next sale'); assert.equal(voice.listening, false);
 let permissionMessage;
 voice.listen({ onResult() {}, onStatus: text => permissionMessage = text });
 Recognition.current.onerror({ error: 'not-allowed' }); assert.match(permissionMessage, /permission was declined/);
 voice.listen({ onResult() {} }); document.hidden = true; document.dispatchEvent(new Event('visibilitychange')); assert.equal(voice.listening, false);
-console.log('Voice checks passed: enabled by default, natural voice with browser fallback, retained speech queue, blocked audio, cancellation, microphone transcript, permission denial and background cleanup.');
+console.log('Voice checks passed: enabled by default, natural voice with browser fallback, retained speech queue, blocked audio, cancellation, microphone transcript, pause detection, permission denial and background cleanup.');
