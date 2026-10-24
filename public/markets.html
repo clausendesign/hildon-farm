@@ -2,7 +2,7 @@
 <html lang="en-NZ"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0b130f">
 <title>Daily briefing · Hildon Farm</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&display=swap">
-  <link rel="icon" href="/favicon.svg"><link rel="stylesheet" href="/markets.css?v=9"><link rel="stylesheet" href="/daily.css"><link rel="stylesheet" href="/profile.css"><link rel="stylesheet" href="/info-hub.css"><script src="/markets.js?v=9" type="module"></script>
+  <link rel="icon" href="/favicon.svg"><link rel="stylesheet" href="/markets.css?v=10"><link rel="stylesheet" href="/daily.css"><link rel="stylesheet" href="/profile.css"><link rel="stylesheet" href="/info-hub.css"><script src="/markets.js?v=9" type="module"></script>
 </head><body>
 <header><a class="brand" href="/index.html" aria-label="Hildon Farm home"><span class="mark" aria-hidden="true"><svg viewBox="0 0 199.1 142.2"><path fill="currentColor" d="M0.3,141 C0.6,140.2 6.7,121.1 13.9,98.6 C41.9,11.2 45.6,0 46.2,0 C46.6,0.1 57,0.1 69.5,0.1 C82.1,0.1 91.8,0.5 91.5,1 C90.5,2.5 74,55.5 74.3,55.8 C74.9,56.4 138.4,49 139.1,48.3 C139.5,47.9 143.1,36.9 147.1,23.8 L154.4,0.1 L176.7,0.1 C197.6,0.1 199.1,0.2 198.4,1.8 C197.7,3.7 191.3,24.6 173.9,82.1 C168.3,100.5 162.4,120 160.7,125.3 L157.7,135.1 L135.4,135.1 L113,135.1 L114.5,129.8 C116.2,124.2 127.9,86.2 130.9,76.8 C131.9,73.7 132.5,71.1 132.1,71.1 C129.5,71.1 97.3,78.9 82.3,83.1 L64.3,88.2 L57.6,109.5 C53.9,121.2 50.9,131.2 50.9,131.9 C50.9,132.5 49.9,133.3 48.6,133.6 C46.6,134 16.9,139.2 7.9,140.7 C6,141 3.4,141.5 2.1,141.8 C0.5,142.2 0,141.9 0.3,141 Z"/></svg></span><span>Hildon Farm<small>FEILDING, NEW ZEALAND</small></span></a><nav aria-label="Page controls"><a href="/index.html">← Home</a><button id="voice-toggle" class="voice-toggle" aria-pressed="true">◖)) Voice on</button></nav></header>
 <main>
@@ -21,13 +21,13 @@
   <section id="info-hub" class="info-hub" aria-label="Stats and sales"></section>
   <div id="content" hidden>
     <aside id="coverage"></aside>
-    <details class="report-details"><summary><span>The reports & numbers<small>Commentary, reported prices, next-sale outlooks and original forecast history</small></span><span class="expand-sign" aria-hidden="true">+</span></summary>
+    <section class="report-details" aria-labelledby="reports-title"><div class="report-head"><h2 id="reports-title">The reports &amp; numbers</h2><small>Commentary, reported prices, next-sale outlooks and original forecast history</small></div>
       <div class="filters" role="group" aria-label="Stock type"><button data-filter="all" aria-pressed="true">Beef &amp; lambs</button><button data-filter="cattle" aria-pressed="false">Beef</button><button data-filter="lambs" aria-pressed="false">Lambs</button></div>
       <section><div class="section-head"><h2>What people are saying</h2><span>Reported commentary · mood interpreted by the app</span></div><div id="briefs" class="grid"></div></section>
       <section><div class="section-head"><h2>Reported prices & weights</h2><span>Individual observations, with their original dates</span></div><div id="prices" class="grid"></div><div id="trends" class="trend"></div></section>
       <section><div class="section-head"><h2>Next local sales</h2><span>All times New Zealand · confirm with the saleyard</span></div><div id="sales" class="sales-grid"></div></section>
       <section><div class="section-head"><h2>Did the outlook hold up?</h2><span>Original forecasts stay on the record</span></div><div id="history" class="history"></div></section>
-    </details>
+    </section>
     <details class="source-details"><summary>Where this briefing comes from</summary><p>Short summaries of public publisher reports and podcast descriptions, with links to the originals. “Firm” usually favours a seller; a buyer may pay more. “Soft” can favour a buyer. Mood labels describe reported conditions.</p><p>Weights may be estimated. Selected pens are not sale averages. Liveweight, carcass weight and per-head prices cannot be directly compared. GST, fees and freight are not assumed.</p><div id="sources"></div></details>
   </div>
 </main>

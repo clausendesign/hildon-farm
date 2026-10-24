@@ -4,3 +4,18 @@
 .mark{color:#deedb3}.mark svg{width:66%;height:auto;fill:currentColor;stroke:none}.brand-icon.mark{border-radius:14px 4px 14px 4px}
 .mark{background:#193d31}
 :root{color-scheme:dark}
+/* The reports section is always open. */
+.report-details{margin-top:32px;border:1px solid var(--line);border-radius:10px;color:var(--ink)}.report-head h2{font:500 25px Geist,system-ui,sans-serif;letter-spacing:-.4px;margin:0}.report-head small{display:block;font:14px/1.65 Geist,system-ui;color:#9da593;margin-top:7px}
+@media(max-width:760px){.report-head h2{font-size:23px}}
+/* A selected filter reads as dark text on the pale fill. */
+.filters button[aria-pressed=true]{color:#0d1913;font-weight:600}
+/* Mood chips: each mood gets its own colour and a dot, with the word always shown. */
+.pill{display:inline-flex;align-items:center;gap:7px;font-size:14px;font-weight:600;border:1px solid transparent;padding:4px 12px 4px 10px;text-transform:capitalize}
+.pill::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor;flex:none}
+.pill.firm{background:#15301f;color:#93dba3;border-color:#24533a}
+.pill.steady{background:#11253a;color:#93c4f0;border-color:#1f4468}
+.pill.soft{background:#341719;color:#f2a39b;border-color:#5c2a2c}
+.pill.mixed{background:#33280d;color:#f1c75f;border-color:#5a4718}
+.pill.caution{background:#3a220c;color:#f6a45a;border-color:#663c15}
+.pill.unknown{background:transparent;color:#a9b4ab;border-color:#34413a}
+.pill.unknown::before{background:transparent;border:1.5px solid currentColor;width:7px;height:7px}

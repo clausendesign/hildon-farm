@@ -25,3 +25,4 @@
 .hub-svg .avg-band{fill:#8d9a92;opacity:.14;stroke:none}.hub-svg .avg-line{fill:none;stroke:#8d9a92;stroke-width:1.5}
 .swatch.avg{border-top:2px solid #8d9a92;box-shadow:0 -5px 0 2px rgba(141,154,146,.18)}.hub-tip{width:210px}
 .hub-insight{font-size:15px;line-height:1.65;color:#cfe2db;margin:10px 4px 8px}.hub-insight:empty{display:none}
+.hub-svg .lead-in{fill:#ffffff;opacity:.025}.hub-svg .season-start{stroke:#4a5c52;stroke-width:1;stroke-dasharray:3 4}.hub-svg .season-label{font-size:11px;fill:#8f9d94}
