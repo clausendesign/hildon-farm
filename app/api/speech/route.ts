@@ -16,6 +16,19 @@ const AZURE_VOICE = 'en-NZ-MitchellNeural';
 const MODEL = '@cf/deepgram/aura-2-en';
 const SPEAKER = 'hyperion';
 const MAX_CHARS = 1500;
+// Hard monthly cap on paid Gemini speech: 60 minutes is about US$1. Past it, Chirp reads instead.
+const GEMINI_MONTHLY_SECONDS = 60 * 60;
+const usageKey = () => `usage/gemini-${new Date().toISOString().slice(0, 7)}.json`;
+
+async function geminiSecondsUsed() {
+  const item = await env.BUCKET?.get(usageKey());
+  return item ? Number((await item.json() as any).seconds) || 0 : 0;
+}
+
+async function addGeminiSeconds(seconds: number) {
+  const used = await geminiSecondsUsed();
+  await env.BUCKET?.put(usageKey(), JSON.stringify({ seconds: Math.round(used + seconds), updatedAt: new Date().toISOString() }), { httpMetadata: { contentType: 'application/json' } });
+}
 
 async function sha256(text: string) {
   const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
@@ -44,6 +57,7 @@ let geminiNote = '';
 async function gemini(text: string, voice: string, style: string): Promise<ArrayBuffer | null> {
   const key = (env as any).GEMINI_API_KEY as string | undefined;
   if (!key) return null;
+  if (await geminiSecondsUsed() >= GEMINI_MONTHLY_SECONDS) { geminiNote = 'monthly cap reached'; return null; }
   const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
@@ -59,7 +73,9 @@ async function gemini(text: string, voice: string, style: string): Promise<Array
   const data = await response.json().catch(() => null) as any;
   const audio = data?.candidates?.[0]?.content?.parts?.find((p: any) => p.inlineData)?.inlineData?.data;
   if (!audio) return null;
-  return wav(Uint8Array.from(atob(audio), c => c.charCodeAt(0)));
+  const pcm = Uint8Array.from(atob(audio), c => c.charCodeAt(0));
+  await addGeminiSeconds(pcm.length / (24000 * 2));
+  return wav(pcm);
 }
 
 async function chirp(text: string): Promise<ArrayBuffer | null> {
