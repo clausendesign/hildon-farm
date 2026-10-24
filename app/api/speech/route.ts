@@ -1,4 +1,5 @@
 import { env } from 'cloudflare:workers';
+import { Buffer } from 'node:buffer';
 
 // The site's voice: Gemini's Umbriel, performing each line with a relaxed Aussie character.
 // Each clip is cached in R2, so a repeated line (the briefing, greetings) is generated once
@@ -74,7 +75,8 @@ export async function POST(request: Request) {
   const data = await response.json().catch(() => null) as any;
   const audio = data?.candidates?.[0]?.content?.parts?.find((p: any) => p.inlineData)?.inlineData?.data;
   if (!audio) return unavailable('no audio returned');
-  const pcm = Uint8Array.from(atob(audio), c => c.charCodeAt(0));
+  // Native decoding: a character-by-character loop uses up the Worker's CPU allowance on long clips.
+  const pcm = new Uint8Array(Buffer.from(audio, 'base64'));
   await addGeminiSeconds(pcm.length / (24000 * 2));
   const clip = wav(pcm);
   await env.BUCKET?.put(path, clip, { httpMetadata: { contentType: 'audio/wav' } });
