@@ -19,7 +19,8 @@ export function splitSpeechText(text, limit = 240) {
 export function splitNaturalText(text, limit = 350) {
   const chunks = [];
   let chunk = '';
-  for (const sentence of String(text).trim().match(/[^.!?]+[.!?]*\s*/g) || []) {
+  // A full stop between digits (17.5 kg, $9.85) is a decimal point, not the end of a sentence.
+  for (const sentence of String(text).trim().match(/(?:\d\.\d|[^.!?])+[.!?]*\s*/g) || []) {
     if (chunk && (chunk.length + sentence.length > limit || chunks.length === 0)) { chunks.push(chunk.trim()); chunk = ''; }
     if (sentence.length > limit) { chunks.push(...splitSpeechText(sentence, limit)); continue; }
     chunk += sentence;

@@ -44,3 +44,7 @@ assert.match(w.todayLine,/^Today in Feilding: drizzle, a top of 17 and a low of 
 assert.match(w.aheadLine,/Sunday, cloudy and 18; Monday, fine and clear and 20; Tuesday, thunderstorms and 18; Wednesday, showers and 16/);
 assert.ok(!/kia ora/i.test(w.spoken));assert.notEqual(pickJoke(w.days[0],'2026-10-24'),pickJoke(w.days[0],'2026-10-25'),'The joke changes each day');
 console.log('Daily welcome: forecast wording, five days from today and a joke that changes daily.');
+
+const {splitNaturalText}=await import('../public/briefing-audio.mjs');
+assert.deepEqual(splitNaturalText('Righto, Warwick. A 17.5 kg YX lamb is $208 and steers are $9.85/kg. Done.'),['Righto, Warwick.','A 17.5 kg YX lamb is $208 and steers are $9.85/kg. Done.'],'Decimal points never end a spoken sentence');
+console.log('Spoken clips keep decimals like 17.5 kg and $9.85 in one piece.');
