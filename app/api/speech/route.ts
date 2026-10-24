@@ -5,7 +5,7 @@ import { env } from 'cloudflare:workers';
 // (the briefing, greetings) is generated once and replayed for free.
 const GEMINI_MODEL = 'gemini-2.5-flash-preview-tts';
 const GEMINI_VOICES = ['Achird', 'Umbriel', 'Algenib', 'Charon', 'Sadachbia', 'Sulafat'];
-const DEFAULT_GEMINI_VOICE = 'Achird';
+const DEFAULT_GEMINI_VOICE = 'Umbriel';
 const STYLES: Record<string, string> = {
   talk: 'Say this in a relaxed, warm, friendly Australian accent, like a neighbour catching up over the fence, at an easy pace',
   rap: 'Perform this as a fun, upbeat, rhythmic rap with swagger and a cheeky Australian accent, hitting the rhymes',
