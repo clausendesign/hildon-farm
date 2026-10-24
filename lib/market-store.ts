@@ -2,6 +2,8 @@ import {check,validateBrief,retainForecasts} from './market-schema';
 import { env } from 'cloudflare:workers';
 import seed from './market-seed.json';
 import instructions from './market-instructions.json';
+import {mergeHistory} from './market-history';
+const HISTORY_KEY='markets/history.json';
 const KEY='markets/current.json';
 export const updateInstructions=instructions;
 // The daily refresh on Todd's Mac signs in with the MARKET_EDITOR_TOKEN secret (the ChatGPT sign-in no longer applies here).
@@ -13,5 +15,9 @@ export async function writeBrief(d:any,expectedRevision:number){
  const history=retainForecasts(old,d);
  // The first issued forecast is retained, so later hindsight cannot rewrite it.
  const next:any={...d,revision:expectedRevision+1,forecastHistory:history,savedAt:new Date().toISOString()};delete next.persisted;
- const put=await env.BUCKET.put(KEY,JSON.stringify(next),{httpMetadata:{contentType:'application/json'},onlyIf:obj?{etagMatches:obj.etag}:{etagDoesNotMatch:'*'}});check(put,'Concurrent update. Read and retry.');return {revision:next.revision,checkedAt:next.checkedAt,persisted:true,forecastsRecorded:next.forecastHistory.length};
+ const put=await env.BUCKET.put(KEY,JSON.stringify(next),{httpMetadata:{contentType:'application/json'},onlyIf:obj?{etagMatches:obj.etag}:{etagDoesNotMatch:'*'}});check(put,'Concurrent update. Read and retry.');
+ // Every saved schedule reading and dated sale result is added to the long-running history used for seasonal views.
+ const h=await env.BUCKET.get(HISTORY_KEY);await env.BUCKET.put(HISTORY_KEY,JSON.stringify(mergeHistory(h?await h.json():null,next)),{httpMetadata:{contentType:'application/json'}});
+ return {revision:next.revision,checkedAt:next.checkedAt,persisted:true,forecastsRecorded:next.forecastHistory.length};
 }
+export async function readHistory(){const h=env.BUCKET&&await env.BUCKET.get(HISTORY_KEY);return h?await h.json():mergeHistory(null,(await readBrief()));}

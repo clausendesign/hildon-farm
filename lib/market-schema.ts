@@ -1,3 +1,4 @@
+import {series} from './market-series.ts';
 const allowedHosts=['spreaker.com','api.spreaker.com','omny.fm','omnycontent.com','feildingsaleyards.co.nz','beeflambnz.com','farmersweekly.co.nz','saleyard.co.nz','mylivestock.co.nz','rnz.co.nz','nzherald.co.nz','interest.co.nz'];
 export function check(ok:unknown,message:string):asserts ok{if(!ok)throw new Error(message);}
 function validUrl(s:any){try{const u=new URL(s);return u.protocol==='https:'&&allowedHosts.some(h=>u.hostname===h||u.hostname.endsWith('.'+h));}catch{return false;}}
@@ -11,6 +12,8 @@ export function validateBrief(d:any){
  const events=new Set();for(const e of d.events){check(typeof e.id==='string'&&!events.has(e.id)&&/^\d{4}-\d{2}-\d{2}$/.test(e.date)&&/^\d{2}:\d{2}$/.test(e.time),'Invalid sale date/time or ID.');events.add(e.id);check(ids.has(e.sourceId),'Sale calendar source missing.');}
  for(const o of d.outlooks){check(events.has(o.eventId),'Outlook needs a known sale.');check(['firm','steady','soft','mixed','uncertain'].includes(o.direction),'Invalid forecast direction.');check(['low','medium','high'].includes(o.confidence),'Invalid confidence.');check(o.type==='app-assessment'||o.type==='analyst-forecast','Label forecast origin.');check(typeof o.summary==='string'&&o.summary.length<=1000,'Invalid outlook summary.');check(o.priceRange===null,'Numeric price forecasts are not enabled without a validated comparable-price model.');refs(o);}
  for(const o of d.outcomes){check(typeof o.forecastId==='string'&&['matched','partly','missed','unscored'].includes(o.score),'Invalid outcome.');if(o.score!=='unscored')refs(o);}
+ // Processor schedule averages are weekly published averages, kept apart from saleyard results.
+ if(d.schedules!==undefined){check(Array.isArray(d.schedules)&&d.schedules.length<=12,'Invalid schedules.');const seen=new Set();const num=(v:any)=>v===null||(Number.isFinite(v)&&v>0);for(const s of d.schedules){check(Object.hasOwn(series,s.seriesId),'Unknown schedule series.');check(/^\d{4}-\d{2}-\d{2}$/.test(s.weekOf)&&!seen.has(s.seriesId+s.weekOf),'Schedules need a unique weekOf date.');seen.add(s.seriesId+s.weekOf);check(ids.has(s.sourceId),'Schedule source missing.');check(Number.isFinite(s.value)&&s.value>0,'Invalid schedule value.');const c=s.compare||{};for(const k of ['weekAgo','fourWeeksAgo','threeMonthsAgo','yearAgo','high52','low52'])check(c[k]===undefined||num(c[k]),'Invalid schedule comparison.');}}
  check(JSON.stringify(d).length<180000,'Brief is too large.');return d;
 }
 export function retainForecasts(old:any,d:any){

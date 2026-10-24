@@ -79,7 +79,7 @@ export function initBriefing({ getBrief }) {
   });
   $('#clear-chat').addEventListener('click', () => {
     voice.stop(); context = {}; log.replaceChildren(); input.value = ''; status.textContent = 'Ready for a new question.';
-    $('#clear-chat').hidden = true; suggestions(['When is the next sale?', 'What are lambs doing?', 'What prices have been reported?']); input.focus();
+    $('#clear-chat').hidden = true; suggestions(['When is the next sale?', 'What are lambs doing?', 'What prices have been reported?', 'How does the lamb schedule compare to last year?']); input.focus();
   });
   voice.addEventListener('state', event => {
     const state = event.detail;

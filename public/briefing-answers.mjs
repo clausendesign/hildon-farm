@@ -2,9 +2,10 @@ import { comparableTrends } from './market-trends.mjs';
 
 // Warwick runs store beef cattle, so dairy-beef sales, reports and prices (Friesian and dairy-cross stock) are left out.
 const DAIRY_BEEF = /dairy[\s-]?beef|friesian|dairy\b|speckle park.{0,3}dairy/i;
+export const isDairyBeef = text => DAIRY_BEEF.test(String(text || ''));
 export function focusOnStoreBeef(brief) {
   const dairyEvents = new Set(brief.events.filter(e => e.species === 'cattle' && DAIRY_BEEF.test(`${e.id} ${e.title}`)).map(e => e.id));
-  const isDairy = item => item.species === 'cattle' && DAIRY_BEEF.test([item.class, item.scope, item.summary, item.title, item.category].filter(Boolean).join(' '));
+  const isDairy = item => item.species === 'cattle' && DAIRY_BEEF.test([item.class, item.classLabel, item.scope, item.summary, item.title, item.category].filter(Boolean).join(' '));
   return {
     ...brief,
     events: brief.events.filter(e => !dairyEvents.has(e.id)),
@@ -32,11 +33,25 @@ function detectedSpecies(q) {
   if (/\b(sheep|ewes?|rams?|mutton)\b/.test(q)) return 'sheep';
   return null;
 }
+// Processor schedule series recorded in the briefing (labels match lib/market-series.ts).
+const SCHEDULES = { 'lamb-yx-ni': ['lambs', 'North Island lamb schedule, 17.5 kg YX', 'head'], 'steer-p2-ni': ['cattle', 'North Island P2 steer schedule, 270 to 295 kg', 'kg'], 'bull-m2-ni': ['cattle', 'North Island M2 bull schedule, 296 to 320 kg', 'kg'] };
+const scheduleMoney = (v, per) => per === 'kg' ? `$${(v / 100).toFixed(2)} a kilo carcass weight` : `$${Math.round(v)} a head`;
+function scheduleText(s) {
+  const [, label, per] = SCHEDULES[s.seriesId], c = s.compare || {}, m = v => scheduleMoney(v, per);
+  const gap = (v, before) => { const d = per === 'kg' ? `${Math.abs(v - before)} cents a kilo` : `$${Math.abs(Math.round(v - before))}`; return v === before ? 'the same' : `${d} ${v > before ? 'ahead' : 'behind'}`; };
+  const parts = [`${label}: ${m(s.value)}, week of ${nzDate(s.weekOf)}.`];
+  if (c.yearAgo) parts.push(`A year ago it was ${m(c.yearAgo)}, so it is ${gap(s.value, c.yearAgo)}.`);
+  const earlier = [c.fourWeeksAgo && `${m(c.fourWeeksAgo)} four weeks ago`, c.threeMonthsAgo && `${m(c.threeMonthsAgo)} three months ago`].filter(Boolean);
+  if (earlier.length) parts.push(`It was ${earlier.join(' and ')}.`);
+  if (c.high52 && c.low52) parts.push(`The 52-week range is ${m(c.low52)} to ${m(c.high52)}.`);
+  return parts.join(' ');
+}
 function classify(q) {
   if (/\b(mean|meaning|explain|definition|difference)\b/.test(q) && /\b(firm|soft|steady|liveweight|carcass|head|mixed|confidence)\b/.test(q)) return 'terms';
   if (/\b(how old|updated|checked|fresh|stale|current|up.to.date)\b/.test(q) && !/\b(price|prices)\b/.test(q)) return 'freshness';
   if (/\b(source|sources|where.*(?:come|from)|who.*(?:said|says|report)|radio|podcast)\b/.test(q)) return 'sources';
   if (/\b(weather|rain|dry|drought|feed|grass|el ni[ñn]o)\b/.test(q)) return 'weather';
+  if ((/\bschedules?\b/.test(q) && !/\b(sale|sales|saleyard)\b/.test(q)) || /\b(processors?|works price|meat companies|this time last year|last year|last season|this season)\b/.test(q)) return 'schedules';
   if (/\b(when|what time|calendar|schedule)\b/.test(q) || /\bnext\b.*\b(sale|sales|saleyard)\b/.test(q)) return 'sales';
   if (/\b(right|correct|accuracy|history|held up|hold up|did.*forecast|result.*forecast)\b/.test(q)) return 'history';
   if (/\b(forecast|outlook|predict|prediction|next week|next month|should i|should we|sell now|buy now|will .* (?:rise|fall|up|down)|going to)\b/.test(q)) return 'outlook';
@@ -68,9 +83,15 @@ export function answerQuestion(brief, question, context = {}, now = Date.now()) 
   const matching = item => stock === 'all' || item.species === stock;
   const paragraphs = [];
   const checked = `Sources last checked ${nzDate(brief.checkedAt)}.`;
-  const supported = ['overview', 'prices', 'sales', 'outlook', 'weather', 'trends', 'sources', 'terms', 'freshness', 'history'];
+  const supported = ['schedules', 'overview', 'prices', 'sales', 'outlook', 'weather', 'trends', 'sources', 'terms', 'freshness', 'history'];
   if (!supported.includes(intent)) {
     return { text: 'I can help with the saved livestock briefing: reported prices and weights, sale dates, market commentary, weather risks and the next-sale outlook. Which of those would you like to know about?', sourceIds: [], intent: context.intent || 'overview', species: stock, suggestions: ['When is the next sale?', 'What are lambs doing?', 'What prices have been reported?'] };
+  }
+  if (intent === 'schedules') {
+    const rows = (brief.schedules || []).filter(s => SCHEDULES[s.seriesId] && (stock === 'all' || stock === SCHEDULES[s.seriesId][0] || (stock === 'sheep' && SCHEDULES[s.seriesId][0] === 'lambs')));
+    if (!rows.length) paragraphs.push('There is no processor schedule reading saved in the briefing yet.');
+    rows.forEach(row => { add(row); paragraphs.push(scheduleText(row)); });
+    if (rows.length) paragraphs.push('These are averages of what processors pay for prime stock. They are not store sale prices, and the season charts under The numbers show how they have moved.');
   }
   if (intent === 'terms') {
     const definitions = [
@@ -130,7 +151,7 @@ export function answerQuestion(brief, question, context = {}, now = Date.now()) 
     if (!outcomes.length) paragraphs.push('There are no matched outcomes for those original forecasts yet. A forecast needs a comparable sale result before we can judge it; missing results do not count as a correct prediction.');
     outcomes.forEach(result => { add(result); paragraphs.push(`${result.score}: ${result.explanation || 'No further explanation recorded.'}`); });
   }
-  return { text: paragraphs.join('\n\n'), sourceIds: [...refs], intent, species: stock, suggestions: intent === 'sales' ? ['What is the outlook?', 'What prices have been reported?'] : intent === 'prices' ? ['Are prices trending up?', 'When is the next sale?'] : ['When is the next sale?', 'What prices have been reported?'] };
+  return { text: paragraphs.join('\n\n'), sourceIds: [...refs], intent, species: stock, suggestions: intent === 'schedules' ? [stock === 'cattle' ? 'And lambs?' : 'And steers?', 'When is the next sale?'] : intent === 'sales' ? ['What is the outlook?', 'What prices have been reported?'] : intent === 'prices' ? ['Are prices trending up?', 'When is the next sale?'] : ['When is the next sale?', 'What prices have been reported?'] };
 }
 
 export function briefingScript(brief, name, now = Date.now()) {
