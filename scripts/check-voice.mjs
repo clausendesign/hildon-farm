@@ -28,7 +28,9 @@ const natural = voice.speak('A natural voice line.'); await tick();
 assert.equal(voice.speaking, true); voice.audio.onended(); assert.equal(await natural, 'finished');
 // When the natural voice is unavailable, the browser voice takes over.
 globalThis.fetch = async () => ({ ok: false });
-const speaking = voice.speak('A useful spoken market briefing. '.repeat(40)); await tick();
+const speaking = voice.speak('A useful spoken market briefing. '.repeat(40));
+// The natural voice gets a second try before the browser voice takes over.
+await new Promise(resolve => setTimeout(resolve, 2200));
 assert(queue.length > 1);
 assert.equal(voice.utterances.length, queue.length);
 queue[0].onstart(); assert.equal(voice.speaking, true);

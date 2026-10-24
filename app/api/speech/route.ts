@@ -68,8 +68,7 @@ export async function POST(request: Request) {
       contents: [{ parts: [{ text: `${STYLES[style]}:\n\n${line}` }] }],
       generationConfig: { responseModalities: ['AUDIO'], speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: GEMINI_VOICE } } } },
     }),
-    // Raps take longer to perform than a spoken line.
-    signal: AbortSignal.timeout(style === 'rap' ? 30000 : 20000),
+    signal: AbortSignal.timeout(45000),
   }).catch(() => null);
   if (!response?.ok) return unavailable(`${response?.status ?? 'timed out'} ${(await response?.text().catch(() => '')) ?? ''}`);
   const data = await response.json().catch(() => null) as any;

@@ -119,7 +119,10 @@ class FarmVoice extends EventTarget {
       let pending = load(0);
       const play = async index => {
         let blob;
+        // A clip that's still being made elsewhere, or briefly limited, gets one more try.
         try { blob = await pending; }
+        catch { await new Promise(resolve => setTimeout(resolve, 2000)); if (!ended && sequence === this.sequence) pending = load(index); }
+        if (!blob) try { blob = await pending; }
         catch { if (index === 0) { this.naturalDownUntil = Date.now() + 10 * 60 * 1000; finish('fallback'); } else finish('unavailable'); return; }
         if (ended || sequence !== this.sequence) return;
         if (index + 1 < chunks.length) pending = load(index + 1);

@@ -14,9 +14,9 @@ export function splitSpeechText(text, limit = 240) {
   return chunks;
 }
 
-// Sentence-sized groups keep each server request small. The first sentence goes on its own,
+// Sentence-sized groups (about 20 seconds of speech each) keep each clip quick to make. The first sentence goes on its own,
 // so the voice starts quickly while the rest is being made.
-export function splitNaturalText(text, limit = 1200) {
+export function splitNaturalText(text, limit = 350) {
   const chunks = [];
   let chunk = '';
   for (const sentence of String(text).trim().match(/[^.!?]+[.!?]*\s*/g) || []) {
