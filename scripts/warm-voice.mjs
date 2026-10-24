@@ -38,7 +38,9 @@ const lines = [...[...talk].flatMap(text => splitNaturalText(text).map(chunk => 
 let made = 0, failed = 0;
 for (const [text, style] of lines) {
   const started = Date.now();
-  const speak = () => fetch(`${site}/api/speech`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text, style }) });
+  // A dropped connection counts as a failure for this clip rather than stopping the whole run.
+  const speak = () => fetch(`${site}/api/speech`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text, style }), signal: AbortSignal.timeout(90000) })
+    .catch(error => ({ ok: false, status: 503, headers: new Headers({ 'x-voice-note': error.message }) }));
   let response = await speak();
   // Over the per-minute limit: wait a minute and try once more.
   if (response.status === 503) { await new Promise(resolve => setTimeout(resolve, 60000)); response = await speak(); }
