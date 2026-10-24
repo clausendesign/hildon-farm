@@ -1,13 +1,13 @@
 // Saves a refreshed market briefing to the live site, then reads it back to confirm.
 // Usage: node scripts/update-brief.mjs <brief.json> [site URL]
 // Get the current briefing with: node scripts/update-brief.mjs --get > current.json
-// The editor token lives outside the repository, in ~/.config/hildon-farm/editor-token.
+// The editor token comes from MARKET_EDITOR_TOKEN (cloud runs) or ~/.config/hildon-farm/editor-token (Todd's Mac).
 import { readFileSync } from 'node:fs';
 import { homedir } from 'node:os';
 
 const [file, siteArg] = process.argv.slice(2);
 const site = (siteArg || 'https://hildon-farm.hildonfarm.workers.dev').replace(/\/$/, '');
-const token = readFileSync(`${homedir()}/.config/hildon-farm/editor-token`, 'utf8').trim();
+const token = (process.env.MARKET_EDITOR_TOKEN || readFileSync(`${homedir()}/.config/hildon-farm/editor-token`, 'utf8')).trim();
 
 async function call(name, args = {}) {
   const response = await fetch(`${site}/mcp`, {
