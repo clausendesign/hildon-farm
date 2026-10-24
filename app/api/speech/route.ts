@@ -1,7 +1,8 @@
 import { env } from 'cloudflare:workers';
 
-// Natural voice. Google's Chirp 3 HD voice comes first (raps try Gemini first, as it can
-// perform them), then Azure's Kiwi voice, then Cloudflare's Australian voice. Each clip is cached in R2, so a repeated line
+// Natural voice. Gemini performs the lines first (the Aussie character comes from it), with
+// Google's Chirp 3 HD reading them if Gemini is capped or slow, then Azure's Kiwi voice,
+// then Cloudflare's Australian voice. Each clip is cached in R2, so a repeated line
 // (the briefing, greetings) is generated once and replayed for free.
 const GEMINI_MODEL = 'gemini-2.5-flash-preview-tts';
 const GEMINI_VOICES = ['Achird', 'Umbriel', 'Algenib', 'Charon', 'Sadachbia', 'Sulafat'];
@@ -50,6 +51,8 @@ async function gemini(text: string, voice: string, style: string): Promise<Array
       contents: [{ parts: [{ text: `${STYLES[style]}:\n\n${text}` }] }],
       generationConfig: { responseModalities: ['AUDIO'], speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: voice } } } },
     }),
+    // A long wait is worse than the backup voice; raps get longer as they are slower to perform.
+    signal: AbortSignal.timeout(style === 'rap' ? 25000 : 9000),
   }).catch(() => null);
   // A used-up free allowance answers 429; fall through to the next voice.
   if (!response?.ok) { geminiNote = `${response?.status ?? 'no response'} ${(await response?.text().catch(() => ''))?.slice(0, 160).replace(/\s+/g, ' ')}`; console.warn('Gemini voice unavailable', geminiNote); return null; }
@@ -106,7 +109,7 @@ export async function POST(request: Request) {
     [`gemini-${geminiVoice}`, hash, 'wav', t => gemini(t, geminiVoice, style), !!(env as any).GEMINI_API_KEY];
   const reader: typeof performer = [CHIRP_VOICE, plainHash, 'mp3', chirp, !!(env as any).GOOGLE_TTS_KEY];
   const voices: (typeof performer)[] = [
-    ...(style === 'rap' || !(env as any).GOOGLE_TTS_KEY ? [performer, reader] : [reader]),
+    performer, reader,
     [AZURE_VOICE, plainHash, 'mp3', azure, !!(env as any).AZURE_SPEECH_KEY],
     [SPEAKER, plainHash, 'mp3', cloudflare, true],
   ];
