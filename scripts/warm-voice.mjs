@@ -12,17 +12,18 @@ const site = (process.argv[2] || 'https://hildon-farm.hildonfarm.workers.dev').r
 const raps = JSON.parse(readFileSync(new URL('../public/raps.json', import.meta.url)));
 const brief = focusOnStoreBeef(await fetch(`${site}/api/markets`).then(r => r.json()));
 
-const talk = new Set([
+const talk = new Set();
+// Today's welcome (weather and joke) changes each NZ day, so it is made fresh every morning.
+const welcome = await fetch(`${site}/api/welcome`).then(r => r.ok ? r.json() : null).catch(() => null);
+// "Who's this?" comes first, then the welcome, since that is the order a visitor hears them.
+for (const line of [
   'Welcome to Hildon Farm. Who’s this? Kaye or Warwick?',
   'Voice is on.',
   HARD_OF_HEARING,
-]);
-// Today's welcome (weather and joke) changes each NZ day, so it is made fresh every morning.
-const welcome = await fetch(`${site}/api/welcome`).then(r => r.ok ? r.json() : null).catch(() => null);
-for (const name of ['Kaye', 'Warwick']) {
-  if (welcome) talk.add(welcomeSpeech(welcome, name));
-  talk.add(briefingScript(brief, name));
-}
+]) talk.add(line);
+// The welcome follows straight after, ahead of the briefing, in case the day's voice quota runs short.
+for (const name of ['Kaye', 'Warwick']) if (welcome) talk.add(welcomeSpeech(welcome, name));
+for (const name of ['Kaye', 'Warwick']) talk.add(briefingScript(brief, name));
 talk.add(briefingScript(brief, null));
 const questions = ['When is the next sale?', 'What are lambs doing?', 'What prices have been reported?', 'What is the outlook?', 'Are prices trending up?',
   'What are cattle doing?', 'How does the lamb schedule compare to last year?'];
@@ -35,7 +36,7 @@ for (const question of questions) {
 
 const lines = [...[...talk].flatMap(text => splitNaturalText(text).map(chunk => [chunk, undefined])),
   ...raps.flatMap(rap => splitNaturalText(rap).map(chunk => [chunk, 'rap']))];
-let made = 0, failed = 0;
+let made = 0, failed = 0, quotaInARow = 0;
 for (const [text, style] of lines) {
   const started = Date.now();
   // A dropped connection counts as a failure for this clip rather than stopping the whole run.
@@ -46,6 +47,12 @@ for (const [text, style] of lines) {
   if (response.status === 503) { await new Promise(resolve => setTimeout(resolve, 60000)); response = await speak(); }
   const seconds = (Date.now() - started) / 1000;
   if (response.ok) { made++; if (seconds > 1) { console.log(`made in ${seconds.toFixed(1)}s: ${text.slice(0, 50)}`); await new Promise(resolve => setTimeout(resolve, 7000)); } }
-  else { failed++; console.log(`failed (${response.status} ${response.headers.get('x-voice-note') || ''}): ${text.slice(0, 50)}`); }
+  else {
+    failed++; console.log(`failed (${response.status} ${response.headers.get('x-voice-note') || ''}): ${text.slice(0, 50)}`);
+    // Once Google says the quota is used up, more requests only fail; stop and leave the rest for tomorrow.
+    if (/429|quota|cap reached/i.test(response.headers.get('x-voice-note') || '')) { if (++quotaInARow >= 3) { console.log('Voice quota used up; stopping early.'); break; } }
+    continue;
+  }
+  quotaInARow = 0;
 }
 console.log(`${made} of ${lines.length} clips ready${failed ? `, ${failed} failed` : ''}.`);

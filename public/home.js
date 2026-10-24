@@ -26,11 +26,17 @@ const welcomeReady = loadWelcome().then(w => {
   [...new Set(['Kaye', 'Warwick', readProfile().name].filter(Boolean))].forEach(name => voice.preload(welcomeSpeech(w, name)));
   $('#welcome .welcome-play').addEventListener('click', () => { voice.setEnabled(true); voice.speak(welcomeSpeech(w, readProfile().name)); });
 });
+// The welcome plays once per visit: straight after Kaye or Warwick says who they are, or on arrival when that's
+// already known. Coming back to this page later in the same visit doesn't repeat it.
+const HEARD_KEY = 'hildon-farm-welcome-heard';
+const heardThisVisit = () => { try { return sessionStorage.getItem(HEARD_KEY) === '1'; } catch { return false; } };
 async function sayWelcome(name) {
   await welcomeReady;
+  try { sessionStorage.setItem(HEARD_KEY, '1'); } catch { /* Plays again next time instead. */ }
   voice.speak(welcome ? welcomeSpeech(welcome, name) : `G’day ${name}. Good to see you.`);
 }
 const setup = mountProfile({ greet: sayWelcome });
+if (!setup.dialog.open && !heardThisVisit() && readProfile().name && voice.enabled) sayWelcome(readProfile().name);
 $('#change-name').addEventListener('click', () => setup.open());
 window.addEventListener('farm-profile', greet);
 
