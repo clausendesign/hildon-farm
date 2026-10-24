@@ -1,19 +1,8 @@
 import { readProfile, saveProfile } from './farm-profile.mjs';
-import { splitSpeechText } from './briefing-audio.mjs';
+import { splitSpeechText, splitNaturalText } from './briefing-audio.mjs';
 
-// Sentence-sized groups keep each server request small. The first sentence goes on its own,
-// so the voice starts quickly while the rest is being made.
-export function splitNaturalText(text, limit = 1200) {
-  const chunks = [];
-  let chunk = '';
-  for (const sentence of String(text).trim().match(/[^.!?]+[.!?]*\s*/g) || []) {
-    if (chunk && (chunk.length + sentence.length > limit || chunks.length === 0)) { chunks.push(chunk.trim()); chunk = ''; }
-    if (sentence.length > limit) { chunks.push(...splitSpeechText(sentence, limit)); continue; }
-    chunk += sentence;
-  }
-  if (chunk.trim()) chunks.push(chunk.trim());
-  return chunks;
-}
+export { splitNaturalText };
+
 
 const ENVELOPE_RATE = 30;
 // Measure loudness from the clip itself, so the speaker's output never has to pass through Web Audio.
@@ -52,6 +41,7 @@ class FarmVoice extends EventTarget {
     this.Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     this.audio = new Audio();
     this.naturalDownUntil = 0;
+    this.clips = new Map();
     // Mobile browsers only let audio play later if it was started once from a tap.
     const unlock = () => { const clip = silentClip(); this.audio.src = clip; this.audio.play().then(() => { if (this.audio.src === clip) this.audio.pause(); }, () => {}); };
     document.addEventListener('pointerdown', unlock, { once: true, capture: true });
@@ -100,6 +90,22 @@ class FarmVoice extends EventTarget {
     // The natural voice comes from the server; the browser's own voice stays as the backup.
     return this.speakNatural(text, sequence, style).then(result => result === 'fallback' && sequence === this.sequence ? this.speakBrowser(text, sequence) : result);
   }
+  // Fetches (or reuses) one clip. Clips are kept in memory, so preloaded lines play without a pause.
+  clip(text, style) {
+    const key = `${style || 'talk'}|${text}`;
+    if (!this.clips.has(key)) {
+      const request = fetch('/api/speech', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text, style }) })
+        .then(response => { if (!response.ok) throw new Error('speech'); return response.blob(); });
+      request.catch(() => this.clips.delete(key));
+      this.clips.set(key, request);
+      while (this.clips.size > 80) this.clips.delete(this.clips.keys().next().value);
+    }
+    return this.clips.get(key);
+  }
+  // Gets a line ready in the background, so it starts straight away when it's spoken.
+  preload(text, { style } = {}) {
+    splitNaturalText(text).forEach(chunk => this.clip(chunk, style).catch(() => {}));
+  }
   speakNatural(text, sequence, style) {
     const chunks = splitNaturalText(text);
     const audio = this.audio;
@@ -109,7 +115,7 @@ class FarmVoice extends EventTarget {
       this.finishSpeech = finish;
       if (!chunks.length) { finish('finished'); return; }
       this.loading = true; this.update();
-      const load = index => fetch('/api/speech', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text: chunks[index], style }) }).then(response => { if (!response.ok) throw new Error('speech'); return response.blob(); });
+      const load = index => this.clip(chunks[index], style);
       let pending = load(0);
       const play = async index => {
         let blob;

@@ -14,6 +14,20 @@ export function splitSpeechText(text, limit = 240) {
   return chunks;
 }
 
+// Sentence-sized groups keep each server request small. The first sentence goes on its own,
+// so the voice starts quickly while the rest is being made.
+export function splitNaturalText(text, limit = 1200) {
+  const chunks = [];
+  let chunk = '';
+  for (const sentence of String(text).trim().match(/[^.!?]+[.!?]*\s*/g) || []) {
+    if (chunk && (chunk.length + sentence.length > limit || chunks.length === 0)) { chunks.push(chunk.trim()); chunk = ''; }
+    if (sentence.length > limit) { chunks.push(...splitSpeechText(sentence, limit)); continue; }
+    chunk += sentence;
+  }
+  if (chunk.trim()) chunks.push(chunk.trim());
+  return chunks;
+}
+
 export function createBriefingAudio({button, status, getText, onFallback, beforePlay, win = window, startTimeoutMs = 7000}) {
   const synth = win.speechSynthesis;
   const supported = !!synth && typeof win.SpeechSynthesisUtterance === 'function';

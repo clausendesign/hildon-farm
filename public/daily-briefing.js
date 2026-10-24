@@ -47,7 +47,13 @@ export function initBriefing({ getBrief }) {
     log.scrollTop = log.scrollHeight;
     $('#clear-chat').hidden = false;
   }
+  // Answers to the questions on screen are got ready in advance, so tapping one is answered without a pause.
+  function preloadAnswers(questions, from = context) {
+    const brief = getBrief(); if (!brief || !voice.enabled) return;
+    questions.forEach(question => voice.preload(answerQuestion(brief, question, from).text));
+  }
   function suggestions(questions) {
+    preloadAnswers(questions);
     const row = $('#suggested-questions'); row.replaceChildren();
     questions.forEach(question => { const button = document.createElement('button'); button.type = 'button'; button.textContent = question; button.addEventListener('click', () => ask(question)); row.append(button); });
   }
@@ -104,6 +110,9 @@ export function initBriefing({ getBrief }) {
   }, true);
   $('#report-audio').addEventListener('error', () => { audioStatus.hidden = false; audioStatus.textContent = 'The original audio could not load. Open the report link below to listen on the publisher’s website.'; });
   function render(brief) {
+    if (voice.enabled) voice.preload(briefingScript(brief, readProfile().name));
+    preloadAnswers([...document.querySelectorAll('[data-question]')].map(b => b.dataset.question), {});
+    preloadAnswers(['cattle', 'lambs', 'sheep'].map(stock => `What are ${stock} doing?`), {});
     $('#listen').disabled = false; input.disabled = false; $('#send-question').disabled = false; $('#ask-voice').disabled = false;
     const summary = $('#daily-summary'); summary.replaceChildren();
     ['cattle', 'lambs', 'sheep'].forEach((stock, index) => {

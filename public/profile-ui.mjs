@@ -14,6 +14,7 @@ export function mountProfile({ auto = true, greet } = {}) {
   const particles = createParticleOrb(orb.querySelector('canvas'), () => ({ mode: voice.listening ? 'listening' : voice.speaking ? 'speaking' : voice.loading ? 'connecting' : 'idle', level: voice.level() }));
   dialog.addEventListener('close', () => particles.stop());
   const prompt = 'Welcome to Hildon Farm. Who’s this? Kaye or Warwick?';
+  voice.preload(prompt);
   const WHO_KEY = 'hildon-farm-who';
   const knownThisVisit = () => { try { return sessionStorage.getItem(WHO_KEY) === '1'; } catch { return false; } };
   function close() { session++; voice.stop(); dialog.close(); priorFocus?.focus(); }
