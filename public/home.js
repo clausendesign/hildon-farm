@@ -56,7 +56,7 @@ async function playRap() {
     voice.setEnabled(true);
     const reveal = event => { if (event.detail.speaking && turn === rapTurn) { showLyrics(); voice.removeEventListener('state', reveal); } };
     voice.addEventListener('state', reveal);
-    const result = await voice.speak(text);
+    const result = await voice.speak(text, { style: 'rap' });
     voice.removeEventListener('state', reveal);
     // If the browser wouldn't play sound, still show the words.
     if (turn === rapTurn && rapDialog.open) showLyrics();

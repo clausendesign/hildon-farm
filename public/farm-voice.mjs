@@ -90,16 +90,16 @@ class FarmVoice extends EventTarget {
     if (!value) this.stop();
     this.update();
   }
-  speak(text) {
+  speak(text, { style } = {}) {
     this.stop();
     if (!this.enabled) return Promise.resolve('muted');
     const sequence = this.sequence;
     document.querySelectorAll('audio').forEach(audio => audio.pause());
     if (Date.now() < this.naturalDownUntil) return this.speakBrowser(text, sequence);
     // The natural voice comes from the server; the browser's own voice stays as the backup.
-    return this.speakNatural(text, sequence).then(result => result === 'fallback' && sequence === this.sequence ? this.speakBrowser(text, sequence) : result);
+    return this.speakNatural(text, sequence, style).then(result => result === 'fallback' && sequence === this.sequence ? this.speakBrowser(text, sequence) : result);
   }
-  speakNatural(text, sequence) {
+  speakNatural(text, sequence, style) {
     const chunks = splitNaturalText(text);
     const audio = this.audio;
     return new Promise(resolve => {
@@ -108,7 +108,7 @@ class FarmVoice extends EventTarget {
       this.finishSpeech = finish;
       if (!chunks.length) { finish('finished'); return; }
       this.loading = true; this.update();
-      const load = index => fetch('/api/speech', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text: chunks[index] }) }).then(response => { if (!response.ok) throw new Error('speech'); return response.blob(); });
+      const load = index => fetch('/api/speech', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text: chunks[index], style }) }).then(response => { if (!response.ok) throw new Error('speech'); return response.blob(); });
       let pending = load(0);
       const play = async index => {
         let blob;
