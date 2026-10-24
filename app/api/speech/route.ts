@@ -76,7 +76,7 @@ async function cloudflare(text: string): Promise<ArrayBuffer | null> {
 }
 
 export async function POST(request: Request) {
-  const { text, style: wanted, voice: picked, quick } = await request.json().catch(() => ({})) as { text?: unknown; style?: string; voice?: string; quick?: boolean };
+  const { text, style: wanted, voice: picked } = await request.json().catch(() => ({})) as { text?: unknown; style?: string; voice?: string };
   if (typeof text !== 'string' || !text.trim() || text.length > MAX_CHARS) {
     return Response.json({ error: 'Text must be 1 to 1500 characters.' }, { status: 400 });
   }
@@ -95,8 +95,6 @@ export async function POST(request: Request) {
     const type = ext === 'wav' ? 'audio/wav' : 'audio/mpeg';
     const cached = await env.BUCKET?.get(`speech/${name}/${key}.${ext}`);
     if (cached) return audioResponse(cached.body, type);
-    // Quick requests (one-off answers) don't wait on Gemini's slower voice unless the clip is already saved.
-    if (quick && name.startsWith('gemini-')) continue;
     const audio = await make(line);
     if (!audio?.byteLength) continue;
     await env.BUCKET?.put(`speech/${name}/${key}.${ext}`, audio, { httpMetadata: { contentType: type } });

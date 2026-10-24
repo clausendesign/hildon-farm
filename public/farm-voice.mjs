@@ -1,12 +1,13 @@
 import { readProfile, saveProfile } from './farm-profile.mjs';
 import { splitSpeechText } from './briefing-audio.mjs';
 
-// Sentence-sized groups keep each server request small and let playback start sooner.
+// Sentence-sized groups keep each server request small. The first sentence goes on its own,
+// so the voice starts quickly while the rest is being made.
 export function splitNaturalText(text, limit = 1200) {
   const chunks = [];
   let chunk = '';
   for (const sentence of String(text).trim().match(/[^.!?]+[.!?]*\s*/g) || []) {
-    if (chunk && chunk.length + sentence.length > limit) { chunks.push(chunk.trim()); chunk = ''; }
+    if (chunk && (chunk.length + sentence.length > limit || chunks.length === 0)) { chunks.push(chunk.trim()); chunk = ''; }
     if (sentence.length > limit) { chunks.push(...splitSpeechText(sentence, limit)); continue; }
     chunk += sentence;
   }
@@ -90,16 +91,16 @@ class FarmVoice extends EventTarget {
     if (!value) this.stop();
     this.update();
   }
-  speak(text, { style, quick } = {}) {
+  speak(text, { style } = {}) {
     this.stop();
     if (!this.enabled) return Promise.resolve('muted');
     const sequence = this.sequence;
     document.querySelectorAll('audio').forEach(audio => audio.pause());
     if (Date.now() < this.naturalDownUntil) return this.speakBrowser(text, sequence);
     // The natural voice comes from the server; the browser's own voice stays as the backup.
-    return this.speakNatural(text, sequence, style, quick).then(result => result === 'fallback' && sequence === this.sequence ? this.speakBrowser(text, sequence) : result);
+    return this.speakNatural(text, sequence, style).then(result => result === 'fallback' && sequence === this.sequence ? this.speakBrowser(text, sequence) : result);
   }
-  speakNatural(text, sequence, style, quick) {
+  speakNatural(text, sequence, style) {
     const chunks = splitNaturalText(text);
     const audio = this.audio;
     return new Promise(resolve => {
@@ -108,7 +109,7 @@ class FarmVoice extends EventTarget {
       this.finishSpeech = finish;
       if (!chunks.length) { finish('finished'); return; }
       this.loading = true; this.update();
-      const load = index => fetch('/api/speech', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text: chunks[index], style, quick }) }).then(response => { if (!response.ok) throw new Error('speech'); return response.blob(); });
+      const load = index => fetch('/api/speech', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text: chunks[index], style }) }).then(response => { if (!response.ok) throw new Error('speech'); return response.blob(); });
       let pending = load(0);
       const play = async index => {
         let blob;
